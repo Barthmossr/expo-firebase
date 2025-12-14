@@ -1,0 +1,7 @@
+build
+coverage
+node_modules
+dist
+
+# Auto-generated files
+package-lock.json
