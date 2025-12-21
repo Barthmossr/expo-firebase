@@ -1,17 +1,19 @@
 {
-  "name": "node-ts",
-  "version": "1.0.4",
-  "description": "A production-ready Node.js TypeScript template",
+  "name": "expo-firebase",
+  "version": "1.0.0",
+  "description": "A production-ready Expo with Firebase template",
   "main": "dist/main.js",
   "author": "Barthmossr",
   "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/Barthmossr/node-ts.git"
+    "url": "https://github.com/Barthmossr/expo-firebase.git"
   },
   "keywords": [
-    "nodejs",
+    "react-native",
+    "expo",
+    "firebase",
     "typescript",
     "template",
     "boilerplate"
@@ -36,9 +38,9 @@
     "prepare": "husky"
   },
   "bugs": {
-    "url": "https://github.com/Barthmossr/node-ts/issues"
+    "url": "https://github.com/Barthmossr/expo-firebase/issues"
   },
-  "homepage": "https://github.com/Barthmossr/node-ts#readme",
+  "homepage": "https://github.com/Barthmossr/expo-firebase#readme",
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
