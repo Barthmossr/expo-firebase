@@ -1,6 +1,6 @@
 # Documentation
 
-Welcome to the **Node ts** documentation! This directory contains comprehensive guides to help you understand, use, and contribute to this template.
+Welcome to the **Expo Firebase** documentation! This directory contains comprehensive guides to help you understand, use, and contribute to this template.
 
 ## 📚 Documentation Structure
 
@@ -44,17 +44,11 @@ Understanding the tools we use:
    - Configuration explanations
    - Future considerations (Bun, Biome)
 
-5. **[Docker Guide](guides/docker.md)** 🐳
-   - Development and production containers
-   - Docker Compose setup
-   - Dev Containers for VS Code
-   - Multi-stage build optimization
-
 ### Contributing
 
 If you want to contribute:
 
-6. **[Contributing Guidelines](./CONTRIBUTING.md)** 🤝
+5. **[Contributing Guidelines](./CONTRIBUTING.md)** 🤝
    - Branch strategy and workflow
    - Commit message standards
    - Pull request process
@@ -90,7 +84,6 @@ If you want to contribute:
 | **Setup and workflow**      | [Development Guide](guides/development.md)     |
 | **Configuration files**     | [Configuration Guide](guides/configuration.md) |
 | **Tool choices**            | [Libraries](guides/libraries.md)               |
-| **Docker**                  | [Docker Guide](guides/docker.md)               |
 | **Branch strategy**         | [Contributing Guidelines](CONTRIBUTING.md)     |
 | **Commit standards**        | [Contributing Guidelines](CONTRIBUTING.md)     |
 | **Testing strategy**        | [Development Guide](guides/development.md)     |
@@ -231,6 +224,6 @@ Additional learning resources:
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/Barthmossr/node-ts/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Barthmossr/node-ts/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Barthmossr/expo-firebase/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Barthmossr/expo-firebase/discussions)
 - **Maintainer**: [@Barthmossr](https://github.com/Barthmossr)

@@ -22,7 +22,7 @@ Before you begin, ensure you have the following installed:
 
 ### Required
 
-- **Node.js v24.11.1**
+- **Node.js v24.12.0**
   - Check version: `node --version`
   - Download: [nodejs.org](https://nodejs.org/)
   - We recommend using [nvm](https://github.com/nvm-sh/nvm) (Node Version Manager)
@@ -51,7 +51,6 @@ Extensions are automatically suggested from `.vscode/extensions.json`:
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **EditorConfig** - Editor settings
-- **Jest** - Test runner integration
 - **GitLens** - Git history and blame
 - **Conventional Commits** - Commit message helper
 
@@ -64,8 +63,8 @@ Extensions are automatically suggested from `.vscode/extensions.json`:
 # Use GitHub's "Use this template" button, then clone your new repo
 
 # If forking for contribution
-git clone https://github.com/Barthmossr/node-ts.git
-cd node-ts
+git clone https://github.com/Barthmossr/expo-firebase.git
+cd expo-firebase
 ```
 
 ### 2. Install Node.js Version
@@ -80,7 +79,7 @@ nvm install
 nvm use
 ```
 
-Without nvm, ensure you have Node.js v24.11.1 installed.
+Without nvm, ensure you have Node.js v24.12.0 installed.
 
 ### 3. Run Setup
 
@@ -188,15 +187,15 @@ git commit -m "Added authentication"
 | ----------- | --------------------------- | ----------------------- |
 | `dev`       | `tsx src/app/main.ts`       | Run TypeScript directly |
 | `dev:watch` | `tsx watch src/app/main.ts` | Run with hot reload     |
-| `start`     | `node dist/app/main.js`     | Run built application   |
+| `start`     | `node dist/main.mjs`        | Run built application   |
 
 ### Build Scripts
 
-| Script      | Command                      | Description            |
-| ----------- | ---------------------------- | ---------------------- |
-| `build`     | `tsc -p tsconfig.build.json` | Compile TypeScript     |
-| `clean`     | `rimraf dist coverage`       | Remove build artifacts |
-| `typecheck` | `tsc --noEmit`               | Check types only       |
+| Script      | Command                | Description            |
+| ----------- | ---------------------- | ---------------------- |
+| `build`     | `tsdown`               | Build with tsdown      |
+| `clean`     | `rimraf dist coverage` | Remove build artifacts |
+| `typecheck` | `tsc --noEmit`         | Check types only       |
 
 ### Quality Scripts
 
@@ -328,16 +327,15 @@ npm run build
 
 This will:
 
-1. Compile TypeScript to JavaScript using `tsconfig.build.json`
+1. Bundle TypeScript to JavaScript using `tsdown`
 2. Output to `dist/` directory
-3. Generate source maps and declaration files
+3. Minify and tree-shake the code for production
 
 ### Build Output
 
 ```
 dist/
-└── app/
-    └── main.js
+└── main.mjs
 ```
 
 ### Test Production Build
@@ -518,7 +516,7 @@ After releases, check `CHANGELOG.md` for the full history of changes organized b
 ```bash
 # Install Node.js from nodejs.org
 # Or use nvm
-nvm install 24.11.1
+nvm install 24.12.0
 ```
 
 #### Issue: Node.js Version Mismatch
@@ -640,4 +638,4 @@ Before submitting a PR, ensure:
 
 **Happy Coding! 🚀**
 
-Need help? Open an issue on [GitHub](https://github.com/Barthmossr/node-ts/issues).
+Need help? Open an issue on [GitHub](https://github.com/Barthmossr/expo-firebase/issues).

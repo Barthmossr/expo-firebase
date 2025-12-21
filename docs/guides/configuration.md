@@ -22,21 +22,28 @@ The heart of your Node.js project.
 
 ```json
 {
-  "name": "node-ts",
+  "name": "expo-firebase",
   "version": "1.0.0",
-  "description": "A production-ready Node.js TypeScript template",
-  "main": "dist/app/main.js",
+  "description": "A production-ready Expo with Firebase template",
+  "main": "dist/main.js",
   "author": "Barthmossr",
   "license": "MIT",
   "private": false,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Barthmossr/node-ts.git"
+    "url": "https://github.com/Barthmossr/expo-firebase.git"
   },
-  "keywords": ["nodejs", "typescript", "template", "boilerplate"],
+  "keywords": [
+    "react-native",
+    "expo",
+    "firebase",
+    "typescript",
+    "template",
+    "boilerplate"
+  ],
   "engines": {
-    "node": "24.11.1"
+    "node": "24.12.0"
   }
 }
 ```
@@ -60,10 +67,10 @@ The heart of your Node.js project.
 ```json
 {
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsdown",
     "dev": "tsx src/app/main.ts",
     "dev:watch": "tsx watch src/app/main.ts",
-    "start": "node dist/app/main.js",
+    "start": "node dist/main.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -171,12 +178,7 @@ Main TypeScript configuration for editor support and type checking:
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "skipLibCheck": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "noEmit": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
@@ -196,26 +198,36 @@ Main TypeScript configuration for editor support and type checking:
 - **verbatimModuleSyntax**: Enforce explicit import/export type annotations
 - **skipLibCheck**: Faster compilation
 
-### tsconfig.build.json
+### tsdown.config.ts
 
-For production builds (excludes tests):
+For production builds using tsdown:
 
-```json
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "./src"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"]
-}
+```typescript
+import { defineConfig } from 'tsdown'
+
+const config = defineConfig({
+  entry: ['src/app/main.ts'],
+  format: 'es',
+  platform: 'node',
+  outDir: 'dist',
+  clean: true,
+  minify: true,
+  treeshake: true,
+  sourcemap: false,
+  dts: false,
+  skipNodeModulesBundle: true,
+  tsconfig: './tsconfig.json',
+})
+
+export default config
 ```
 
-**Why Separate Build Config**:
+**Why tsdown**:
 
-- Main `tsconfig.json` includes tests for editor support
-- Build config only compiles source files
-- Prevents test files from appearing in `dist/`
+- Faster builds with esbuild
+- Built-in minification and tree-shaking
+- Simpler configuration than tsc
+- Better for bundling Node.js applications
 
 ## 🎨 ESLint Configuration
 
@@ -514,7 +526,6 @@ trim_trailing_whitespace = false
 - **ESLint**: Linting integration
 - **Prettier**: Code formatting
 - **EditorConfig**: Basic editor settings
-- **Jest**: Test runner integration
 - **GitLens**: Git history and blame
 - **Conventional Commits**: Commit message helper
 
@@ -523,13 +534,13 @@ trim_trailing_whitespace = false
 ### .nvmrc
 
 ```
-24.11.1
+24.12.0
 ```
 
 ### .node-version
 
 ```
-24.11.1
+24.12.0
 ```
 
 **Usage with nvm**:
@@ -563,4 +574,4 @@ APP_HOST=localhost
 
 ---
 
-**Questions?** Open an issue on [GitHub](https://github.com/Barthmossr/node-ts/issues).
+**Questions?** Open an issue on [GitHub](https://github.com/Barthmossr/expo-firebase/issues).
