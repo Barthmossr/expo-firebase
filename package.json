@@ -53,6 +53,7 @@
     "expo": "~54.0.30",
     "expo-dev-client": "~6.0.20",
     "expo-status-bar": "~3.0.9",
+    "expo-system-ui": "^6.0.9",
     "react": "^19.2.3",
     "react-native": "0.81.5"
   },
