@@ -1,7 +1,3 @@
-beforeAll(() => {
-  // Global setup before all tests
-})
-
-afterAll(() => {
-  // Global cleanup after all tests
-})
+jest.mock('expo-status-bar', () => ({
+  StatusBar: jest.fn(() => null),
+}))
