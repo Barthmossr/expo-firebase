@@ -191,21 +191,24 @@ git commit -m "Added authentication"
 
 ### Build Scripts
 
-| Script      | Command                | Description            |
-| ----------- | ---------------------- | ---------------------- |
-| `build`     | `tsdown`               | Build with tsdown      |
-| `clean`     | `rimraf dist coverage` | Remove build artifacts |
-| `typecheck` | `tsc --noEmit`         | Check types only       |
+| Script               | Command                                              | Description               |
+| -------------------- | ---------------------------------------------------- | ------------------------- |
+| `prebuild`           | `expo prebuild`                                      | Generate native folders   |
+| `prebuild:clean`     | `expo prebuild --clean`                              | Regenerate native folders |
+| `build:dev:android`  | `eas build --profile development --platform android` | Build development Android |
+| `build:prod:android` | `eas build --profile production --platform android`  | Build production Android  |
+| `clean`              | `rimraf dist coverage android ios`                   | Remove build artifacts    |
+| `typecheck`          | `tsc --noEmit`                                       | Check types only          |
 
 ### Quality Scripts
 
-| Script         | Command                           | Description            |
-| -------------- | --------------------------------- | ---------------------- |
-| `lint`         | `eslint .`                        | Check code with ESLint |
-| `lint:fix`     | `eslint . --fix`                  | Auto-fix ESLint issues |
-| `format`       | `prettier --write .`              | Format all files       |
-| `format:check` | `prettier --check .`              | Check formatting       |
-| `validate`     | lint + format + typecheck + build | Run all checks         |
+| Script         | Command                         | Description            |
+| -------------- | ------------------------------- | ---------------------- |
+| `lint`         | `eslint .`                      | Check code with ESLint |
+| `lint:fix`     | `eslint . --fix`                | Auto-fix ESLint issues |
+| `format`       | `prettier --write .`            | Format all files       |
+| `format:check` | `prettier --check .`            | Check formatting       |
+| `validate`     | lint + format:check + typecheck | Run all checks         |
 
 ### Test Scripts
 
@@ -325,11 +328,11 @@ start coverage/lcov-report/index.html
 npm run build
 ```
 
-This will:
+Expo builds are handled through EAS (Expo Application Services):
 
-1. Bundle TypeScript to JavaScript using `tsdown`
-2. Output to `dist/` directory
-3. Minify and tree-shake the code for production
+1. For development builds: `npm run build:dev:android` or `npm run build:dev:ios`
+2. For production builds: `npm run build:prod:android` or `npm run build:prod:ios`
+3. Native folders can be generated with `npm run prebuild`
 
 ### Build Output
 

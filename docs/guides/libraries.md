@@ -490,7 +490,7 @@ npm run dev:watch  # tsx watch src/app/main.ts
 
 **Workflows**:
 
-1. **validate.yml**: Lint, format, typecheck, build
+1. **validate.yml**: Lint, format check, typecheck
 2. **test.yml**: Run tests with coverage, upload to Codecov
 
 **Alternatives Considered**:

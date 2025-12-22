@@ -124,7 +124,7 @@ This template is focused on **React Native Expo with Firebase integration**. We 
 
 **Workflows**:
 
-- **validate.yml**: Lint, format check, typecheck, build
+- **validate.yml**: Lint, format check, typecheck
 - **test.yml**: Run tests with coverage, upload to Codecov
 
 **Rationale**:
@@ -216,23 +216,23 @@ expo-firebase/
 
 ## 📜 Available Scripts
 
-| Script                  | Description                   |
-| ----------------------- | ----------------------------- |
-| `npm run dev`           | Run TypeScript directly       |
-| `npm run dev:watch`     | Run with hot reload           |
-| `npm run build`         | Compile to JavaScript         |
-| `npm start`             | Run built application         |
-| `npm run typecheck`     | Check TypeScript types        |
-| `npm run lint`          | Check code with ESLint        |
-| `npm run lint:fix`      | Auto-fix ESLint issues        |
-| `npm run format`        | Format with Prettier          |
-| `npm run format:check`  | Check formatting              |
-| `npm run validate`      | Run all quality checks        |
-| `npm test`              | Run tests                     |
-| `npm run test:watch`    | Tests in watch mode           |
-| `npm run test:coverage` | Generate coverage report      |
-| `npm run check`         | Interactive dependency update |
-| `npm run clean`         | Remove build artifacts        |
+| Script                  | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| `npm run dev`           | Run TypeScript directly                          |
+| `npm run dev:watch`     | Run with hot reload                              |
+| `npm run build`         | Compile to JavaScript                            |
+| `npm start`             | Run built application                            |
+| `npm run typecheck`     | Check TypeScript types                           |
+| `npm run lint`          | Check code with ESLint                           |
+| `npm run lint:fix`      | Auto-fix ESLint issues                           |
+| `npm run format`        | Format with Prettier                             |
+| `npm run format:check`  | Check formatting                                 |
+| `npm run validate`      | Run all quality checks (lint, format, typecheck) |
+| `npm test`              | Run tests                                        |
+| `npm run test:watch`    | Tests in watch mode                              |
+| `npm run test:coverage` | Generate coverage report                         |
+| `npm run check`         | Interactive dependency update                    |
+| `npm run clean`         | Remove build artifacts                           |
 
 ## 🎓 Design Principles
 

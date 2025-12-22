@@ -67,7 +67,8 @@ The heart of your Node.js project.
 ```json
 {
   "scripts": {
-    "build": "tsdown",
+    "prebuild": "expo prebuild",
+    "build:dev:android": "eas build --profile development --platform android",
     "dev": "tsx src/app/main.ts",
     "dev:watch": "tsx watch src/app/main.ts",
     "start": "node dist/main.mjs",
@@ -77,7 +78,7 @@ The heart of your Node.js project.
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rimraf dist coverage",
-    "validate": "npm run lint && npm run format:check && npm run typecheck && npm run build",
+    "validate": "npm run lint && npm run format:check && npm run typecheck",
     "check": "ncu -ui",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -99,7 +100,7 @@ The heart of your Node.js project.
 - **format**: Format code with Prettier
 - **format:check**: Check if code is formatted
 - **clean**: Remove build artifacts (dist and coverage)
-- **validate**: Run all quality checks (lint, format, typecheck, build)
+- **validate**: Run all quality checks (lint, format check, typecheck)
 - **check**: Interactive dependency update check with npm-check-updates
 - **test**: Run all tests
 - **test:watch**: Run tests in watch mode
@@ -198,36 +199,14 @@ Main TypeScript configuration for editor support and type checking:
 - **verbatimModuleSyntax**: Enforce explicit import/export type annotations
 - **skipLibCheck**: Faster compilation
 
-### tsdown.config.ts
+### Expo Build Configuration
 
-For production builds using tsdown:
+Expo builds are configured through `app.json` and `eas.json`:
 
-```typescript
-import { defineConfig } from 'tsdown'
+- **app.json** - Expo app configuration (name, icons, splash screens, etc.)
+- **eas.json** - EAS Build profiles for development, preview, and production builds
 
-const config = defineConfig({
-  entry: ['src/app/main.ts'],
-  format: 'es',
-  platform: 'node',
-  outDir: 'dist',
-  clean: true,
-  minify: true,
-  treeshake: true,
-  sourcemap: false,
-  dts: false,
-  skipNodeModulesBundle: true,
-  tsconfig: './tsconfig.json',
-})
-
-export default config
-```
-
-**Why tsdown**:
-
-- Faster builds with esbuild
-- Built-in minification and tree-shaking
-- Simpler configuration than tsc
-- Better for bundling Node.js applications
+For native builds, Expo handles the bundling through Metro bundler and native build tools.
 
 ## 🎨 ESLint Configuration
 
