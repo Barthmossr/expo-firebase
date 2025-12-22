@@ -1,16 +1,19 @@
 import type { Config } from 'jest'
 
 const config: Config = {
-  preset: 'ts-jest',
+  preset: 'jest-expo',
+  transformIgnorePatterns: [
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)',
+  ],
   testEnvironment: 'node',
   roots: ['<rootDir>/tests'],
-  testMatch: ['**/*.test.ts', '**/*.spec.ts'],
+  testMatch: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   collectCoverageFrom: [
-    'src/**/*.ts',
+    'src/**/*.{ts,tsx}',
     '!src/**/*.types.ts',
     '!src/**/index.ts',
   ],
@@ -29,7 +32,5 @@ const config: Config = {
   resetMocks: true,
   restoreMocks: true,
 }
-
-export { config }
 
 export default config
