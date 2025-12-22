@@ -7,6 +7,11 @@ dist
 # Test coverage
 coverage
 
+# Expo
+.expo
+.expo-shared
+__generated__
+
 # IDE
 .idea
 *.swp
@@ -25,7 +30,15 @@ Thumbs.db
 logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Cache
 .cache
 *.tsbuildinfo
+
+# React Native / Metro
+.metro-health-check*
+
+# Web
+web-build/
