@@ -4,10 +4,8 @@ import App from '@/App'
 
 describe('App', () => {
   it('should render without crashing', () => {
-    const { getByText } = render(<App />)
-    expect(
-      getByText(/Open up App.tsx to start working on your app!/i),
-    ).toBeTruthy()
+    const { getByTestId } = render(<App />)
+    expect(getByTestId('welcome-message')).toBeTruthy()
   })
 
   it('should render StatusBar component', () => {
