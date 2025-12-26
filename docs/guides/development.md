@@ -353,11 +353,19 @@ npm start
 
 ### Branching Strategy
 
-- **main**: Production-ready code
-- **develop**: Integration branch
+| Branch    | Purpose                           | EAS Channel | Build Profile |
+| --------- | --------------------------------- | ----------- | ------------- |
+| `main`    | Production (App Store/Play Store) | production  | production    |
+| `stage`   | Testing (TestFlight/Internal)     | staging     | preview       |
+| `develop` | Code review and integration       | development | development   |
+
+**Feature Branches:**
+
 - **feat/\***: New features
 - **fix/\***: Bug fixes
 - **chore/\***: Maintenance tasks
+- **docs/\***: Documentation changes
+- **ci/\***: CI/CD changes
 
 ### Commit Messages
 
@@ -406,37 +414,86 @@ chore: update dependencies
 
 ### GitHub Actions Workflows
 
-Two workflows are configured in `.github/workflows/`:
+Workflows are configured in `.github/workflows/`:
 
-#### validate.yml
+#### Quality Workflows
 
-Runs on every push and PR:
+**validate.yml** - Runs on every push and PR:
 
 1. Checkout code
 2. Setup Node.js (from `.nvmrc`)
 3. Install dependencies (`npm ci`)
-4. Run lint check
-5. Run format check
-6. Run type check
-7. Build project
+4. Run lint, format check, and type check
 
-#### test.yml
+**test.yml** - Runs on every push and PR:
 
-Runs on every push and PR:
+1. Run tests with coverage
+2. Upload coverage to Codecov
+3. Generate coverage badge
 
-1. Checkout code
-2. Setup Node.js
-3. Install dependencies
-4. Run tests with coverage
-5. Upload coverage to Codecov
-6. Generate coverage badge
-7. Upload artifacts
+#### EAS Build & Deploy Workflows
 
-### Required Secrets
+**eas-update.yml** - OTA Updates (runs on push to main/stage/develop):
 
-For full CI/CD functionality, add these secrets in GitHub:
+1. Setup Expo with EAS CLI
+2. Publish EAS Update to branch-specific channel
+3. Instant code updates without store review
 
-- `CODECOV_TOKEN`: For coverage uploads (optional but recommended)
+**eas-build-stage.yml** - Preview Builds (runs on push to `stage`):
+
+1. Build iOS and Android with `preview` profile
+2. Submit to TestFlight (iOS) and Internal Testing (Android)
+3. For QA and internal testing
+
+**eas-build-prod.yml** - Production Builds (runs on push to `main`):
+
+1. Build iOS and Android with `production` profile
+2. Auto-submit to App Store and Play Store
+3. Requires first manual submission (see below)
+
+### Required GitHub Secrets
+
+| Secret                        | Description                           |
+| ----------------------------- | ------------------------------------- |
+| `EXPO_TOKEN`                  | EAS authentication token              |
+| `CODECOV_TOKEN`               | Coverage uploads (optional)           |
+| `APPLE_ID`                    | Apple ID email                        |
+| `ASC_APP_ID`                  | App Store Connect App ID              |
+| `APPLE_TEAM_ID`               | Apple Developer Team ID               |
+| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password for submissions |
+| `GOOGLE_SERVICE_ACCOUNT_KEY`  | Google Play Service Account JSON      |
+
+### First Release (Manual)
+
+The **first app submission** to App Store/Play Store must be done manually:
+
+#### iOS (App Store Connect)
+
+```bash
+# 1. Build production
+eas build --profile production --platform ios
+
+# 2. Submit to App Store Connect
+eas submit --platform ios --latest
+
+# 3. Complete store listing manually (screenshots, description)
+# 4. Submit for review
+```
+
+#### Android (Google Play Console)
+
+```bash
+# 1. Build production
+eas build --profile production --platform android
+
+# 2. Submit to Play Store
+eas submit --platform android --latest
+
+# 3. Complete store listing manually (screenshots, description)
+# 4. Submit for review
+```
+
+After the first successful submission, CI/CD will handle subsequent releases automatically.
 
 ## 🏷️ Releases
 

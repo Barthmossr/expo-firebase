@@ -1,0 +1,174 @@
+name: EAS Build (Production)
+
+# IMPORTANT: First release must be done manually
+# After the first successful submission to both stores, this workflow will handle
+# subsequent releases automatically.
+#
+# First Release Steps:
+# 1. Run: eas build --profile production --platform all
+# 2. Download builds from expo.dev
+# 3. iOS: Upload via Transporter or eas submit --platform ios
+# 4. Android: Upload via eas submit --platform android or Play Console
+# 5. Complete store listings manually (screenshots, descriptions)
+# 6. Submit for review
+#
+# Required Secrets (GitHub):
+# - EXPO_TOKEN: EAS authentication token
+# - APPLE_ID: Apple ID email
+# - ASC_APP_ID: App Store Connect App ID
+# - APPLE_TEAM_ID: Apple Developer Team ID
+# - APPLE_APP_SPECIFIC_PASSWORD: App-specific password for Apple ID
+# - GOOGLE_SERVICE_ACCOUNT_KEY: Google Play Service Account JSON content
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      skip_submit:
+        description: 'Skip store submission (build only)'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: eas-build-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Production (${{ matrix.platform }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ios, android]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build ${{ matrix.platform }}
+        run: |
+          eas build \
+            --profile production \
+            --platform ${{ matrix.platform }} \
+            --non-interactive \
+            --no-wait
+
+      - name: Summary
+        run: |
+          echo "## EAS Production Build Started (${{ matrix.platform }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Profile:** production" >> $GITHUB_STEP_SUMMARY
+          echo "- **Platform:** ${{ matrix.platform }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** main" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check build status at [expo.dev](https://expo.dev)" >> $GITHUB_STEP_SUMMARY
+
+  submit-ios:
+    name: Submit to App Store
+    needs: build
+    runs-on: ubuntu-latest
+    if: success() && github.event.inputs.skip_submit != 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Submit to App Store
+        run: |
+          eas submit \
+            --profile production \
+            --platform ios \
+            --latest \
+            --non-interactive
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+
+      - name: Summary
+        run: |
+          echo "## iOS Submitted to App Store Connect" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The build has been submitted to App Store Connect." >> $GITHUB_STEP_SUMMARY
+          echo "Review status in [App Store Connect](https://appstoreconnect.apple.com)" >> $GITHUB_STEP_SUMMARY
+
+  submit-android:
+    name: Submit to Play Store
+    needs: build
+    runs-on: ubuntu-latest
+    if: success() && github.event.inputs.skip_submit != 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Google Service Account file
+        run: echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}' > google-service-account.json
+
+      - name: Submit to Play Store
+        run: |
+          eas submit \
+            --profile production \
+            --platform android \
+            --latest \
+            --non-interactive
+
+      - name: Cleanup
+        if: always()
+        run: rm -f google-service-account.json
+
+      - name: Summary
+        run: |
+          echo "## Android Submitted to Play Store" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The build has been submitted to Google Play Console." >> $GITHUB_STEP_SUMMARY
+          echo "Review status in [Play Console](https://play.google.com/console)" >> $GITHUB_STEP_SUMMARY

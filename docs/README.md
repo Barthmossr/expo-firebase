@@ -44,11 +44,22 @@ Understanding the tools we use:
    - Configuration explanations
    - Future considerations (Bun, Biome)
 
+### CI/CD & Deployment
+
+Building and deploying the app:
+
+5. **[CI/CD Guide](guides/ci-cd.md)** 🚀
+   - Branch strategy (develop, stage, main)
+   - EAS Build and Update workflows
+   - First release process
+   - GitHub Secrets setup
+   - Troubleshooting deployments
+
 ### Contributing
 
 If you want to contribute:
 
-5. **[Contributing Guidelines](./CONTRIBUTING.md)** 🤝
+6. **[Contributing Guidelines](./CONTRIBUTING.md)** 🤝
    - Branch strategy and workflow
    - Commit message standards
    - Pull request process
@@ -70,6 +81,12 @@ If you want to contribute:
 2. Understand [Project Overview](guides/project-overview.md)
 3. Follow [Development Guide](guides/development.md)
 
+**I'm deploying the app:**
+
+1. Read [CI/CD Guide](guides/ci-cd.md)
+2. Set up GitHub Secrets
+3. Follow the first release process
+
 **I'm customizing the template:**
 
 1. Understand [Project Overview](guides/project-overview.md)
@@ -84,10 +101,10 @@ If you want to contribute:
 | **Setup and workflow**      | [Development Guide](guides/development.md)     |
 | **Configuration files**     | [Configuration Guide](guides/configuration.md) |
 | **Tool choices**            | [Libraries](guides/libraries.md)               |
+| **CI/CD pipelines**         | [CI/CD Guide](guides/ci-cd.md)                 |
 | **Branch strategy**         | [Contributing Guidelines](CONTRIBUTING.md)     |
 | **Commit standards**        | [Contributing Guidelines](CONTRIBUTING.md)     |
 | **Testing strategy**        | [Development Guide](guides/development.md)     |
-| **CI/CD pipelines**         | [Development Guide](guides/development.md)     |
 
 ## 📖 Reading Order
 
@@ -102,7 +119,9 @@ We recommend reading the documentation in this order:
    ↓
 4. Configuration Guide        (customize settings)
    ↓
-5. Contributing Guidelines    (contribute back)
+5. CI/CD Guide                (deploy your app)
+   ↓
+6. Contributing Guidelines    (contribute back)
 ```
 
 ## 🎓 Key Concepts

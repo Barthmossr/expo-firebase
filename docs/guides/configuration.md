@@ -5,6 +5,8 @@ Comprehensive guide to all configuration files in this template.
 ## 📋 Table of Contents
 
 - [package.json](#packagejson)
+- [Expo Configuration](#expo-configuration)
+- [EAS Configuration](#eas-configuration)
 - [TypeScript Configuration](#typescript-configuration)
 - [ESLint Configuration](#eslint-configuration)
 - [Prettier Configuration](#prettier-configuration)
@@ -25,7 +27,7 @@ The heart of your Node.js project.
   "name": "expo-firebase",
   "version": "1.0.0",
   "description": "A production-ready Expo with Firebase template",
-  "main": "dist/main.js",
+  "main": "src/index.ts",
   "author": "Barthmossr",
   "license": "MIT",
   "private": false,
@@ -137,6 +139,150 @@ The heart of your Node.js project.
 ```
 
 **Important**: Since this is a template with no application logic yet, all dependencies are dev dependencies. When you add your application code, runtime dependencies will go in `dependencies`.
+
+## 📱 Expo Configuration
+
+### app.config.ts
+
+Dynamic Expo configuration using TypeScript:
+
+```typescript
+import { ExpoConfig } from 'expo/config'
+
+const defineConfig = (): ExpoConfig => ({
+  name: 'expo-firebase',
+  slug: 'expo-firebase',
+  version: '1.0.0',
+  orientation: 'portrait',
+  icon: './assets/icon.png',
+  userInterfaceStyle: 'light',
+  newArchEnabled: true,
+  splash: {
+    image: './assets/splash-icon.png',
+    resizeMode: 'contain',
+    backgroundColor: '#ffffff',
+  },
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: 'com.barthmossr.expofirebase',
+    googleServicesFile: './GoogleService-Info.plist',
+  },
+  android: {
+    package: 'com.barthmossr.expofirebase',
+    adaptiveIcon: {
+      foregroundImage: './assets/adaptive-icon.png',
+      backgroundColor: '#ffffff',
+    },
+    edgeToEdgeEnabled: true,
+    googleServicesFile: './google-services.json',
+  },
+  plugins: [
+    '@react-native-firebase/app',
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          useFrameworks: 'static',
+        },
+      },
+    ],
+  ],
+  extra: {
+    eas: {
+      projectId: 'your-project-id',
+    },
+    firebase: {
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      // ... other Firebase config from env
+    },
+  },
+})
+
+export default defineConfig
+```
+
+**Why TypeScript Config**:
+
+- Dynamic configuration with environment variables
+- Type safety for config values
+- Firebase credentials from environment
+- Conditional configuration per environment
+
+**Firebase Files** (not committed to git):
+
+- `google-services.json` - Android Firebase config
+- `GoogleService-Info.plist` - iOS Firebase config
+
+## 🔧 EAS Configuration
+
+### eas.json
+
+EAS Build and Submit configuration:
+
+```json
+{
+  "cli": {
+    "version": ">= 16.28.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "base": {
+      "node": "24.12.0",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "channel": "staging",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "production": {
+      "extends": "base",
+      "autoIncrement": true,
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "${APPLE_ID}",
+        "ascAppId": "${ASC_APP_ID}",
+        "appleTeamId": "${APPLE_TEAM_ID}"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "production"
+      }
+    }
+  }
+}
+```
+
+**Build Profiles**:
+
+| Profile       | Purpose                     | Channel     | Distribution |
+| ------------- | --------------------------- | ----------- | ------------ |
+| `development` | Local development           | development | internal     |
+| `preview`     | TestFlight/Internal Testing | staging     | internal     |
+| `production`  | App Store/Play Store        | production  | store        |
+
+**EAS Update Channels**:
+
+- `development` - OTA updates for develop branch
+- `staging` - OTA updates for stage branch
+- `production` - OTA updates for main branch
 
 ## 📘 TypeScript Configuration
 
@@ -538,12 +684,57 @@ nvm use
 # Node environment
 NODE_ENV=development
 
-# Application
-APP_PORT=3000
-APP_HOST=localhost
+# Firebase Configuration (Web/JS SDK)
+FIREBASE_API_KEY=your_firebase_api_key
+FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+FIREBASE_APP_ID=your_firebase_app_id
+FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+# Firebase Android (from google-services.json)
+FIREBASE_ANDROID_APP_ID=your_android_app_id
+FIREBASE_ANDROID_API_KEY=your_android_api_key
+FIREBASE_ANDROID_CLIENT_ID=your_android_client_id
+
+# Firebase iOS (from GoogleService-Info.plist)
+FIREBASE_IOS_APP_ID=your_ios_app_id
+FIREBASE_IOS_API_KEY=your_ios_api_key
+FIREBASE_IOS_CLIENT_ID=your_ios_client_id
 ```
 
 **Important**: Never commit `.env` to git! It's in `.gitignore`. The `.env.example` shows what environment variables are needed without exposing secrets.
+
+### Firebase Config Files
+
+These files contain sensitive API keys and are **NOT committed to git**:
+
+| File                       | Platform | Source           |
+| -------------------------- | -------- | ---------------- |
+| `google-services.json`     | Android  | Firebase Console |
+| `GoogleService-Info.plist` | iOS      | Firebase Console |
+
+**Setup Steps**:
+
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Select your project
+3. Add iOS/Android apps with your bundle identifiers
+4. Download config files to project root
+5. Run `expo prebuild --clean` to regenerate native folders
+
+### GitHub Secrets (for CI/CD)
+
+Add these secrets in GitHub repository settings:
+
+| Secret                        | Description                            |
+| ----------------------------- | -------------------------------------- |
+| `EXPO_TOKEN`                  | EAS authentication token from expo.dev |
+| `APPLE_ID`                    | Apple ID email for submissions         |
+| `ASC_APP_ID`                  | App Store Connect App ID               |
+| `APPLE_TEAM_ID`               | Apple Developer Team ID                |
+| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password                  |
+| `GOOGLE_SERVICE_ACCOUNT_KEY`  | Google Play Service Account JSON       |
 
 ## 🔗 Related Guides
 
