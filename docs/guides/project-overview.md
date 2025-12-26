@@ -96,14 +96,21 @@ This template is focused on **React Native Expo with Firebase integration**. We 
 
 ### 5. Git Flow Branch Strategy
 
-**Decision**: Use a Git Flow-inspired branching model with `main`, `develop`, and feature branches.
+**Decision**: Use a Git Flow-inspired branching model with `main`, `stage`, `develop`, and feature branches.
+
+| Branch    | Purpose                     | EAS Channel | Deployment           |
+| --------- | --------------------------- | ----------- | -------------------- |
+| `main`    | Production releases         | production  | App Store/Play Store |
+| `stage`   | Testing and QA              | staging     | TestFlight/Internal  |
+| `develop` | Code review and integration | development | OTA updates only     |
 
 **Rationale**:
 
 - **Stability**: `main` is always production-ready
-- **Safety**: Development happens in isolation
+- **Testing**: `stage` allows QA before production
+- **Safety**: Development happens in isolation on `develop`
 - **Review Process**: All changes go through PRs to `develop`
-- **Deployment**: Clean separation between development and production
+- **Deployment**: Clean separation between environments
 - **Rollback**: Easy to roll back changes if needed
 
 ### 6. 100% Test Coverage
@@ -126,12 +133,16 @@ This template is focused on **React Native Expo with Firebase integration**. We 
 
 - **validate.yml**: Lint, format check, typecheck
 - **test.yml**: Run tests with coverage, upload to Codecov
+- **eas-update.yml**: OTA updates for all branches
+- **eas-build-stage.yml**: Preview builds for TestFlight/Internal Testing
+- **eas-build-prod.yml**: Production builds with store submission
 
 **Rationale**:
 
 - **Automation**: Automated testing and deployment save time
 - **Quality**: Catch issues before they reach production
 - **Standards**: Enforce code quality automatically
+- **OTA Updates**: Instant code updates without store review
 - **Best Practice**: Modern development requires automation
 
 ### 8. ESLint Flat Config
@@ -201,18 +212,20 @@ expo-firebase/
 
 ## 🛠️ Tooling Stack
 
-| Tool              | Purpose                | Version  |
-| ----------------- | ---------------------- | -------- |
-| Node.js           | Runtime                | v24.12.0 |
-| TypeScript        | Type system            | ^5.9.3   |
-| ESLint            | Linting                | ^9.39.2  |
-| Prettier          | Formatting             | ^3.7.4   |
-| Jest              | Testing                | ^30.2.0  |
-| Husky             | Git hooks              | ^9.1.7   |
-| lint-staged       | Pre-commit linting     | ^16.2.7  |
-| commitlint        | Commit message linting | ^20.2.0  |
-| tsx               | Direct TS execution    | ^4.21.0  |
-| npm-check-updates | Dependency updates     | ^19.2.0  |
+| Tool                   | Purpose                | Version  |
+| ---------------------- | ---------------------- | -------- |
+| Node.js                | Runtime                | v24.12.0 |
+| Expo                   | React Native framework | ~54.0.30 |
+| React Native           | Mobile framework       | 0.81.5   |
+| TypeScript             | Type system            | ^5.9.3   |
+| @react-native-firebase | Firebase SDK           | ^23.7.0  |
+| ESLint                 | Linting                | ^9.39.2  |
+| Prettier               | Formatting             | ^3.7.4   |
+| Jest                   | Testing                | ^29.7.0  |
+| Husky                  | Git hooks              | ^9.1.7   |
+| lint-staged            | Pre-commit linting     | ^16.2.7  |
+| commitlint             | Commit message linting | ^20.2.0  |
+| EAS CLI                | Build & deploy         | latest   |
 
 ## 📜 Available Scripts
 
