@@ -22,21 +22,28 @@ The heart of your Node.js project.
 
 ```json
 {
-  "name": "node-ts",
+  "name": "expo-firebase",
   "version": "1.0.0",
-  "description": "A production-ready Node.js TypeScript template",
-  "main": "dist/app/main.js",
+  "description": "A production-ready Expo with Firebase template",
+  "main": "dist/main.js",
   "author": "Barthmossr",
   "license": "MIT",
   "private": false,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Barthmossr/node-ts.git"
+    "url": "https://github.com/Barthmossr/expo-firebase.git"
   },
-  "keywords": ["nodejs", "typescript", "template", "boilerplate"],
+  "keywords": [
+    "react-native",
+    "expo",
+    "firebase",
+    "typescript",
+    "template",
+    "boilerplate"
+  ],
   "engines": {
-    "node": "24.11.1"
+    "node": "24.12.0"
   }
 }
 ```
@@ -60,17 +67,18 @@ The heart of your Node.js project.
 ```json
 {
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "prebuild": "expo prebuild",
+    "build:dev:android": "eas build --profile development --platform android",
     "dev": "tsx src/app/main.ts",
     "dev:watch": "tsx watch src/app/main.ts",
-    "start": "node dist/app/main.js",
+    "start": "node dist/main.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rimraf dist coverage",
-    "validate": "npm run lint && npm run format:check && npm run typecheck && npm run build",
+    "validate": "npm run lint && npm run format:check && npm run typecheck",
     "check": "ncu -ui",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -92,7 +100,7 @@ The heart of your Node.js project.
 - **format**: Format code with Prettier
 - **format:check**: Check if code is formatted
 - **clean**: Remove build artifacts (dist and coverage)
-- **validate**: Run all quality checks (lint, format, typecheck, build)
+- **validate**: Run all quality checks (lint, format check, typecheck)
 - **check**: Interactive dependency update check with npm-check-updates
 - **test**: Run all tests
 - **test:watch**: Run tests in watch mode
@@ -171,12 +179,7 @@ Main TypeScript configuration for editor support and type checking:
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "skipLibCheck": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "noEmit": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
@@ -196,26 +199,14 @@ Main TypeScript configuration for editor support and type checking:
 - **verbatimModuleSyntax**: Enforce explicit import/export type annotations
 - **skipLibCheck**: Faster compilation
 
-### tsconfig.build.json
+### Expo Build Configuration
 
-For production builds (excludes tests):
+Expo builds are configured through `app.json` and `eas.json`:
 
-```json
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "./src"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"]
-}
-```
+- **app.json** - Expo app configuration (name, icons, splash screens, etc.)
+- **eas.json** - EAS Build profiles for development, preview, and production builds
 
-**Why Separate Build Config**:
-
-- Main `tsconfig.json` includes tests for editor support
-- Build config only compiles source files
-- Prevents test files from appearing in `dist/`
+For native builds, Expo handles the bundling through Metro bundler and native build tools.
 
 ## 🎨 ESLint Configuration
 
@@ -514,7 +505,6 @@ trim_trailing_whitespace = false
 - **ESLint**: Linting integration
 - **Prettier**: Code formatting
 - **EditorConfig**: Basic editor settings
-- **Jest**: Test runner integration
 - **GitLens**: Git history and blame
 - **Conventional Commits**: Commit message helper
 
@@ -523,13 +513,13 @@ trim_trailing_whitespace = false
 ### .nvmrc
 
 ```
-24.11.1
+24.12.0
 ```
 
 ### .node-version
 
 ```
-24.11.1
+24.12.0
 ```
 
 **Usage with nvm**:
@@ -563,4 +553,4 @@ APP_HOST=localhost
 
 ---
 
-**Questions?** Open an issue on [GitHub](https://github.com/Barthmossr/node-ts/issues).
+**Questions?** Open an issue on [GitHub](https://github.com/Barthmossr/expo-firebase/issues).
