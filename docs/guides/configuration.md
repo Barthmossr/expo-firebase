@@ -5,6 +5,8 @@ Comprehensive guide to all configuration files in this template.
 ## 📋 Table of Contents
 
 - [package.json](#packagejson)
+- [Expo Configuration](#expo-configuration)
+- [EAS Configuration](#eas-configuration)
 - [TypeScript Configuration](#typescript-configuration)
 - [ESLint Configuration](#eslint-configuration)
 - [Prettier Configuration](#prettier-configuration)
@@ -22,21 +24,28 @@ The heart of your Node.js project.
 
 ```json
 {
-  "name": "node-ts",
+  "name": "expo-firebase",
   "version": "1.0.0",
-  "description": "A production-ready Node.js TypeScript template",
-  "main": "dist/app/main.js",
+  "description": "A production-ready Expo with Firebase template",
+  "main": "src/index.ts",
   "author": "Barthmossr",
   "license": "MIT",
   "private": false,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Barthmossr/node-ts.git"
+    "url": "https://github.com/Barthmossr/expo-firebase.git"
   },
-  "keywords": ["nodejs", "typescript", "template", "boilerplate"],
+  "keywords": [
+    "react-native",
+    "expo",
+    "firebase",
+    "typescript",
+    "template",
+    "boilerplate"
+  ],
   "engines": {
-    "node": "24.11.1"
+    "node": "24.12.0"
   }
 }
 ```
@@ -60,17 +69,18 @@ The heart of your Node.js project.
 ```json
 {
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "prebuild": "expo prebuild",
+    "build:dev:android": "eas build --profile development --platform android",
     "dev": "tsx src/app/main.ts",
     "dev:watch": "tsx watch src/app/main.ts",
-    "start": "node dist/app/main.js",
+    "start": "node dist/main.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rimraf dist coverage",
-    "validate": "npm run lint && npm run format:check && npm run typecheck && npm run build",
+    "validate": "npm run lint && npm run format:check && npm run typecheck",
     "check": "ncu -ui",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -92,7 +102,7 @@ The heart of your Node.js project.
 - **format**: Format code with Prettier
 - **format:check**: Check if code is formatted
 - **clean**: Remove build artifacts (dist and coverage)
-- **validate**: Run all quality checks (lint, format, typecheck, build)
+- **validate**: Run all quality checks (lint, format check, typecheck)
 - **check**: Interactive dependency update check with npm-check-updates
 - **test**: Run all tests
 - **test:watch**: Run tests in watch mode
@@ -129,6 +139,150 @@ The heart of your Node.js project.
 ```
 
 **Important**: Since this is a template with no application logic yet, all dependencies are dev dependencies. When you add your application code, runtime dependencies will go in `dependencies`.
+
+## 📱 Expo Configuration
+
+### app.config.ts
+
+Dynamic Expo configuration using TypeScript:
+
+```typescript
+import { ExpoConfig } from 'expo/config'
+
+const defineConfig = (): ExpoConfig => ({
+  name: 'expo-firebase',
+  slug: 'expo-firebase',
+  version: '1.0.0',
+  orientation: 'portrait',
+  icon: './assets/icon.png',
+  userInterfaceStyle: 'light',
+  newArchEnabled: true,
+  splash: {
+    image: './assets/splash-icon.png',
+    resizeMode: 'contain',
+    backgroundColor: '#ffffff',
+  },
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: 'com.barthmossr.expofirebase',
+    googleServicesFile: './GoogleService-Info.plist',
+  },
+  android: {
+    package: 'com.barthmossr.expofirebase',
+    adaptiveIcon: {
+      foregroundImage: './assets/adaptive-icon.png',
+      backgroundColor: '#ffffff',
+    },
+    edgeToEdgeEnabled: true,
+    googleServicesFile: './google-services.json',
+  },
+  plugins: [
+    '@react-native-firebase/app',
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          useFrameworks: 'static',
+        },
+      },
+    ],
+  ],
+  extra: {
+    eas: {
+      projectId: 'your-project-id',
+    },
+    firebase: {
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      // ... other Firebase config from env
+    },
+  },
+})
+
+export default defineConfig
+```
+
+**Why TypeScript Config**:
+
+- Dynamic configuration with environment variables
+- Type safety for config values
+- Firebase credentials from environment
+- Conditional configuration per environment
+
+**Firebase Files** (not committed to git):
+
+- `google-services.json` - Android Firebase config
+- `GoogleService-Info.plist` - iOS Firebase config
+
+## 🔧 EAS Configuration
+
+### eas.json
+
+EAS Build and Submit configuration:
+
+```json
+{
+  "cli": {
+    "version": ">= 16.28.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "base": {
+      "node": "24.12.0",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "channel": "staging",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "production": {
+      "extends": "base",
+      "autoIncrement": true,
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "${APPLE_ID}",
+        "ascAppId": "${ASC_APP_ID}",
+        "appleTeamId": "${APPLE_TEAM_ID}"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "production"
+      }
+    }
+  }
+}
+```
+
+**Build Profiles**:
+
+| Profile       | Purpose                     | Channel     | Distribution |
+| ------------- | --------------------------- | ----------- | ------------ |
+| `development` | Local development           | development | internal     |
+| `preview`     | TestFlight/Internal Testing | staging     | internal     |
+| `production`  | App Store/Play Store        | production  | store        |
+
+**EAS Update Channels**:
+
+- `development` - OTA updates for develop branch
+- `staging` - OTA updates for stage branch
+- `production` - OTA updates for main branch
 
 ## 📘 TypeScript Configuration
 
@@ -171,12 +325,7 @@ Main TypeScript configuration for editor support and type checking:
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "skipLibCheck": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "noEmit": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
@@ -196,26 +345,14 @@ Main TypeScript configuration for editor support and type checking:
 - **verbatimModuleSyntax**: Enforce explicit import/export type annotations
 - **skipLibCheck**: Faster compilation
 
-### tsconfig.build.json
+### Expo Build Configuration
 
-For production builds (excludes tests):
+Expo builds are configured through `app.json` and `eas.json`:
 
-```json
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "./src"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"]
-}
-```
+- **app.json** - Expo app configuration (name, icons, splash screens, etc.)
+- **eas.json** - EAS Build profiles for development, preview, and production builds
 
-**Why Separate Build Config**:
-
-- Main `tsconfig.json` includes tests for editor support
-- Build config only compiles source files
-- Prevents test files from appearing in `dist/`
+For native builds, Expo handles the bundling through Metro bundler and native build tools.
 
 ## 🎨 ESLint Configuration
 
@@ -514,7 +651,6 @@ trim_trailing_whitespace = false
 - **ESLint**: Linting integration
 - **Prettier**: Code formatting
 - **EditorConfig**: Basic editor settings
-- **Jest**: Test runner integration
 - **GitLens**: Git history and blame
 - **Conventional Commits**: Commit message helper
 
@@ -523,13 +659,13 @@ trim_trailing_whitespace = false
 ### .nvmrc
 
 ```
-24.11.1
+24.12.0
 ```
 
 ### .node-version
 
 ```
-24.11.1
+24.12.0
 ```
 
 **Usage with nvm**:
@@ -548,12 +684,57 @@ nvm use
 # Node environment
 NODE_ENV=development
 
-# Application
-APP_PORT=3000
-APP_HOST=localhost
+# Firebase Configuration (Web/JS SDK)
+FIREBASE_API_KEY=your_firebase_api_key
+FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+FIREBASE_APP_ID=your_firebase_app_id
+FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+# Firebase Android (from google-services.json)
+FIREBASE_ANDROID_APP_ID=your_android_app_id
+FIREBASE_ANDROID_API_KEY=your_android_api_key
+FIREBASE_ANDROID_CLIENT_ID=your_android_client_id
+
+# Firebase iOS (from GoogleService-Info.plist)
+FIREBASE_IOS_APP_ID=your_ios_app_id
+FIREBASE_IOS_API_KEY=your_ios_api_key
+FIREBASE_IOS_CLIENT_ID=your_ios_client_id
 ```
 
 **Important**: Never commit `.env` to git! It's in `.gitignore`. The `.env.example` shows what environment variables are needed without exposing secrets.
+
+### Firebase Config Files
+
+These files contain sensitive API keys and are **NOT committed to git**:
+
+| File                       | Platform | Source           |
+| -------------------------- | -------- | ---------------- |
+| `google-services.json`     | Android  | Firebase Console |
+| `GoogleService-Info.plist` | iOS      | Firebase Console |
+
+**Setup Steps**:
+
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Select your project
+3. Add iOS/Android apps with your bundle identifiers
+4. Download config files to project root
+5. Run `expo prebuild --clean` to regenerate native folders
+
+### GitHub Secrets (for CI/CD)
+
+Add these secrets in GitHub repository settings:
+
+| Secret                        | Description                            |
+| ----------------------------- | -------------------------------------- |
+| `EXPO_TOKEN`                  | EAS authentication token from expo.dev |
+| `APPLE_ID`                    | Apple ID email for submissions         |
+| `ASC_APP_ID`                  | App Store Connect App ID               |
+| `APPLE_TEAM_ID`               | Apple Developer Team ID                |
+| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password                  |
+| `GOOGLE_SERVICE_ACCOUNT_KEY`  | Google Play Service Account JSON       |
 
 ## 🔗 Related Guides
 
@@ -563,4 +744,4 @@ APP_HOST=localhost
 
 ---
 
-**Questions?** Open an issue on [GitHub](https://github.com/Barthmossr/node-ts/issues).
+**Questions?** Open an issue on [GitHub](https://github.com/Barthmossr/expo-firebase/issues).

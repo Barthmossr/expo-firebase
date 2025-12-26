@@ -1,6 +1,6 @@
 # Documentation
 
-Welcome to the **Node ts** documentation! This directory contains comprehensive guides to help you understand, use, and contribute to this template.
+Welcome to the **Expo Firebase** documentation! This directory contains comprehensive guides to help you understand, use, and contribute to this template.
 
 ## 📚 Documentation Structure
 
@@ -44,11 +44,16 @@ Understanding the tools we use:
    - Configuration explanations
    - Future considerations (Bun, Biome)
 
-5. **[Docker Guide](guides/docker.md)** 🐳
-   - Development and production containers
-   - Docker Compose setup
-   - Dev Containers for VS Code
-   - Multi-stage build optimization
+### CI/CD & Deployment
+
+Building and deploying the app:
+
+5. **[CI/CD Guide](guides/ci-cd.md)** 🚀
+   - Branch strategy (develop, stage, main)
+   - EAS Build and Update workflows
+   - First release process
+   - GitHub Secrets setup
+   - Troubleshooting deployments
 
 ### Contributing
 
@@ -76,6 +81,12 @@ If you want to contribute:
 2. Understand [Project Overview](guides/project-overview.md)
 3. Follow [Development Guide](guides/development.md)
 
+**I'm deploying the app:**
+
+1. Read [CI/CD Guide](guides/ci-cd.md)
+2. Set up GitHub Secrets
+3. Follow the first release process
+
 **I'm customizing the template:**
 
 1. Understand [Project Overview](guides/project-overview.md)
@@ -90,11 +101,10 @@ If you want to contribute:
 | **Setup and workflow**      | [Development Guide](guides/development.md)     |
 | **Configuration files**     | [Configuration Guide](guides/configuration.md) |
 | **Tool choices**            | [Libraries](guides/libraries.md)               |
-| **Docker**                  | [Docker Guide](guides/docker.md)               |
+| **CI/CD pipelines**         | [CI/CD Guide](guides/ci-cd.md)                 |
 | **Branch strategy**         | [Contributing Guidelines](CONTRIBUTING.md)     |
 | **Commit standards**        | [Contributing Guidelines](CONTRIBUTING.md)     |
 | **Testing strategy**        | [Development Guide](guides/development.md)     |
-| **CI/CD pipelines**         | [Development Guide](guides/development.md)     |
 
 ## 📖 Reading Order
 
@@ -109,7 +119,9 @@ We recommend reading the documentation in this order:
    ↓
 4. Configuration Guide        (customize settings)
    ↓
-5. Contributing Guidelines    (contribute back)
+5. CI/CD Guide                (deploy your app)
+   ↓
+6. Contributing Guidelines    (contribute back)
 ```
 
 ## 🎓 Key Concepts
@@ -231,6 +243,6 @@ Additional learning resources:
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/Barthmossr/node-ts/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Barthmossr/node-ts/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Barthmossr/expo-firebase/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Barthmossr/expo-firebase/discussions)
 - **Maintainer**: [@Barthmossr](https://github.com/Barthmossr)
