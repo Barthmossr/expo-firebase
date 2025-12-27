@@ -131,6 +131,14 @@ Functions configuration:
 - Global options: region `southamerica-east1`, maxInstances `10`
 - HTTP endpoint: `health` (returns status ok; CORS enabled)
 - URL pattern: https://southamerica-east1-<project-id>.cloudfunctions.net/health
+- Make `health` public (after deploy):
+
+```bash
+gcloud functions add-invoker-policy-binding health \
+  --region=southamerica-east1 \
+  --project=expo-firebase-46af7 \
+  --member=allUsers
+```
 
 ## Security Rules
 
