@@ -124,7 +124,29 @@ npm run serve
 npm run deploy
 ```
 
+Functions configuration:
+
+- Global options: region `southamerica-east1`, maxInstances `10`
+- HTTP endpoint: `health` (returns status ok; CORS enabled)
+
 ## Security Rules
+
+### Authentication Providers
+
+- Email/Password: enabled
+- Google: enabled
+  - Android OAuth client ID: 382102907936-uv03kgvjha72o1t660gm5tf3rjpkr2le.apps.googleusercontent.com
+  - iOS OAuth client ID: 382102907936-4c72n0fr2uuoltacfqr2c23jrs5fp7fj.apps.googleusercontent.com
+  - iOS reversed client ID (URL scheme): com.googleusercontent.apps.382102907936-4c72n0fr2uuoltacfqr2c23jrs5fp7fj
+- Web analytics: not in use (no Measurement ID required)
+
+Android SHA guidance:
+
+- Register SHA-1 and SHA-256 for both debug and release keystores in Firebase Console > Project Settings > Your Apps > Android.
+
+iOS URL scheme:
+
+- Ensure the reversed client ID is present in Info.plist (already in GoogleService-Info.plist) for Google sign-in.
 
 ### Firestore Rules
 
@@ -134,6 +156,13 @@ Located in `firestore.rules`. Deploy with:
 firebase deploy --only firestore:rules
 ```
 
+Firestore structure and access:
+
+- users/{uid}: owner read/write
+- userProfiles/{uid}: owner read/write
+- userSettings/{uid}: owner read/write
+- All other collections: denied by default
+
 ### Realtime Database Rules
 
 Located in `database.rules.json`. Deploy with:
@@ -142,6 +171,12 @@ Located in `database.rules.json`. Deploy with:
 firebase deploy --only database
 ```
 
+Realtime Database structure and access:
+
+- users/{uid}/profile: owner read/write (displayName, photoURL)
+- users/{uid}/settings: owner read/write (notificationsEnabled, theme)
+- All other paths: denied by default
+
 ### Storage Rules
 
 Located in `storage.rules`. Deploy with:
@@ -149,6 +184,12 @@ Located in `storage.rules`. Deploy with:
 ```bash
 firebase deploy --only storage
 ```
+
+Storage structure and access:
+
+- users/{uid}/\*\*: owner read/write
+- Writes limited to <10 MB and content types: images or PDF
+- All other paths: denied by default
 
 ## Troubleshooting
 
