@@ -124,6 +124,13 @@ npm run serve
 npm run deploy
 # or from repo root
 npm run functions:deploy
+# or combined deploys via root scripts
+npm run firebase:deploy:firestore   # Firestore rules
+npm run firebase:deploy:database    # Realtime Database rules
+npm run firebase:deploy:storage     # Storage rules
+npm run firebase:deploy:functions   # Cloud Functions
+npm run firebase:deploy             # Firestore+Database+Storage
+npm run firebase:deploy:all         # Rules + Functions
 ```
 
 Functions configuration:
