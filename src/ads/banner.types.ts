@@ -1,5 +1,3 @@
-type BannerProps = {
-  unitId?: string
-}
+type BannerProps = Record<string, never>
 
 export type { BannerProps }
