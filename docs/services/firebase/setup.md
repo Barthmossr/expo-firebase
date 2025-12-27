@@ -122,12 +122,15 @@ npm run serve
 
 ```bash
 npm run deploy
+# or from repo root
+npm run functions:deploy
 ```
 
 Functions configuration:
 
 - Global options: region `southamerica-east1`, maxInstances `10`
 - HTTP endpoint: `health` (returns status ok; CORS enabled)
+- URL pattern: https://southamerica-east1-<project-id>.cloudfunctions.net/health
 
 ## Security Rules
 
