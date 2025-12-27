@@ -54,6 +54,10 @@ const defineConfig = (): ExpoConfig => ({
       appId: process.env.FIREBASE_APP_ID,
       measurementId: process.env.FIREBASE_MEASUREMENT_ID,
     },
+    admob: {
+      bannerUnitAndroid: process.env.ADMOB_BANNER_UNIT_ANDROID,
+      bannerUnitIos: process.env.ADMOB_BANNER_UNIT_IOS,
+    },
   },
 })
 
