@@ -35,6 +35,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "functions:deploy": "cd functions && npm run deploy",
     "format": "prettier --write .",
     "format:check": "prettier --write --check .",
     "clean": "rimraf dist coverage android ios",
