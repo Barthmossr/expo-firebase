@@ -1,12 +1,25 @@
-rules_version = '2';
+rules_version = '2'
 
-// Craft rules based on data in your Firestore database
-// allow write: if firestore.get(
-//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
 service firebase.storage {
   match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null
+    }
+
+    function owner(uid) {
+      return signedIn() && request.auth.uid == uid
+    }
+
+    match /users/{uid}/{allPaths=**} {
+      allow read: if owner(uid)
+      allow write: if owner(uid)
+        && request.resource != null
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*|application/pdf')
+    }
+
     match /{allPaths=**} {
-      allow read, write: if false;
+      allow read, write: if false
     }
   }
 }
