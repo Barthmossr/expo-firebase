@@ -34,11 +34,17 @@ This document describes the Firebase project configuration for expo-firebase.
 ├── firestore.indexes.json  # Firestore indexes
 ├── database.rules.json     # Realtime Database rules
 ├── storage.rules           # Cloud Storage rules
-└── functions/              # Cloud Functions source
-    ├── src/
-    │   └── index.ts        # Functions entry point
-    ├── package.json
-    └── tsconfig.json
+├── functions/              # Cloud Functions source
+│   ├── src/
+│   │   └── index.ts        # Functions entry point
+│   ├── package.json
+│   └── tsconfig.json
+└── src/
+  ├── ads/
+  │   └── banner.tsx      # AdMob banner component (test ID fallback)
+  └── firebase/
+    ├── analytics.ts    # Analytics helpers
+    └── crashlytics.ts  # Crashlytics helpers
 ```
 
 ## Prerequisites
@@ -69,7 +75,15 @@ FIREBASE_STORAGE_BUCKET=expo-firebase-46af7.firebasestorage.app
 FIREBASE_MESSAGING_SENDER_ID=382102907936
 FIREBASE_APP_ID=your-app-id
 FIREBASE_DATABASE_URL=https://expo-firebase-46af7-default-rtdb.firebaseio.com
+ANALYTICS_COLLECTION_ENABLED=true
+CRASHLYTICS_COLLECTION_ENABLED=true
+ADMOB_APP_ID_ANDROID=your_admob_android_app_id
+ADMOB_APP_ID_IOS=your_admob_ios_app_id
+ADMOB_BANNER_UNIT_ANDROID=your_admob_android_banner_unit_id
+ADMOB_BANNER_UNIT_IOS=your_admob_ios_banner_unit_id
 ```
+
+For where to find each value, see [credentials.md](./credentials.md).
 
 ### Native Config Files
 
@@ -146,6 +160,19 @@ gcloud functions add-invoker-policy-binding health \
   --project=expo-firebase-46af7 \
   --member=allUsers
 ```
+
+AdMob
+
+- Uses react-native-google-mobile-ads with test ad unit IDs by default. Replace env values with real AdMob app IDs and banner unit IDs before production.
+- Banners render via src/ads/banner.tsx.
+
+Analytics
+
+- Enabled by default. Control with ANALYTICS_COLLECTION_ENABLED if you add consent gating.
+
+Crashlytics
+
+- Enabled by default. Control with CRASHLYTICS_COLLECTION_ENABLED if needed.
 
 ## Security Rules
 
