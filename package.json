@@ -56,7 +56,10 @@
   },
   "homepage": "https://github.com/Barthmossr/expo-firebase#readme",
   "dependencies": {
+    "@react-native-firebase/analytics": "^23.7.0",
     "@react-native-firebase/app": "^23.7.0",
+    "@react-native-firebase/crashlytics": "^23.7.0",
+    "react-native-google-mobile-ads": "^14.6.0",
     "expo": "~54.0.30",
     "expo-build-properties": "^1.0.10",
     "expo-constants": "^18.0.12",
