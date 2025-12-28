@@ -35,5 +35,24 @@ describe('createAdmobAdapter', () => {
 
       expect(unitId).toBe('ca-app-pub-android')
     })
+
+    it('should return iOS unit id on iOS', () => {
+      Platform.OS = 'ios'
+      mockConstants.expoConfig = {
+        name: 'test',
+        slug: 'test',
+        extra: {
+          admob: {
+            bannerUnitAndroid: 'ca-app-pub-android',
+            bannerUnitIos: 'ca-app-pub-ios',
+          },
+        },
+      } as typeof Constants.expoConfig
+
+      const adapter = createAdmobAdapter()
+      const unitId = adapter.getBannerUnitId()
+
+      expect(unitId).toBe('ca-app-pub-ios')
+    })
   })
 })
