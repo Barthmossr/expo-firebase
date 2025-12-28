@@ -1,3 +1,5 @@
-jest.mock('expo-status-bar', () => ({
-  StatusBar: jest.fn(() => null),
-}))
+jest.mock('@react-native-firebase/app')
+jest.mock('@react-native-firebase/analytics')
+jest.mock('@react-native-firebase/crashlytics')
+jest.mock('expo-constants')
+jest.mock('expo-status-bar')
