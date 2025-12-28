@@ -178,6 +178,14 @@ const defineConfig = (): ExpoConfig => ({
   },
   plugins: [
     '@react-native-firebase/app',
+    '@react-native-firebase/crashlytics',
+    [
+      'react-native-google-mobile-ads',
+      {
+        androidAppId: process.env.ADMOB_APP_ID_ANDROID,
+        iosAppId: process.env.ADMOB_APP_ID_IOS,
+      },
+    ],
     [
       'expo-build-properties',
       {
@@ -214,6 +222,26 @@ export default defineConfig
 
 - `google-services.json` - Android Firebase config
 - `GoogleService-Info.plist` - iOS Firebase config
+
+### firebase.json (React Native section)
+
+For Crashlytics to work properly in debug builds, add the `react-native` section:
+
+```json
+{
+  "react-native": {
+    "crashlytics_debug_enabled": true,
+    "crashlytics_auto_collection_enabled": true,
+    "crashlytics_javascript_exception_handler_chaining_enabled": false
+  }
+}
+```
+
+**Settings Explained**:
+
+- **crashlytics_debug_enabled**: Enables crash reporting in debug builds (required for testing)
+- **crashlytics_auto_collection_enabled**: Automatically collect crash reports
+- **crashlytics_javascript_exception_handler_chaining_enabled**: Disable JS exception chaining to avoid conflicts
 
 ## 🔧 EAS Configuration
 
