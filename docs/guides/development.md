@@ -233,10 +233,11 @@ Tests are organized in the `tests/` directory with separation by test type:
 
 ```
 tests/
-├── setup.ts              # Global test setup
+├── setup.ts              # Global test setup (mocks for services, hooks)
+├── __mocks__/            # Manual mocks for modules
+│   └── expo-status-bar.ts
 ├── unit/                 # Unit tests (isolated, fast)
-│   └── app/
-│       └── main.test.ts  # Tests for src/app/main.ts
+│   └── App.test.tsx      # Tests for App component
 ├── integration/          # Integration tests (multiple components)
 │   └── ...
 └── e2e/                  # End-to-end tests (full system)
@@ -649,12 +650,21 @@ npm run test:coverage
 - ✅ Keep files under 100 lines
 - ✅ Use path aliases (`@/*`) for imports
 
+### Architecture (Ports & Adapters)
+
+- ✅ Define interfaces in `src/core/ports/`
+- ✅ Implement adapters in `src/adapters/`
+- ✅ Use service factories in `src/services/`
+- ✅ Never import adapters directly in components
+- ✅ Always depend on ports (interfaces), not implementations
+
 ### File Organization
 
 - ✅ Follow the folder structure
 - ✅ Types in `*.types.ts` files
-- ✅ Styles in `*.styles.ts` files
-- ✅ Use `index.ts` for module exports
+- ✅ Only create `index.ts` in leaf folders (no subfolders)
+- ✅ Never create `index.ts` in parent folders
+- ✅ Use specific imports: `@/components/ads/banner`, not `@/components`
 - ✅ Never export inline with declarations
 
 ### Git Workflow

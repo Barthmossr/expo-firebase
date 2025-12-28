@@ -1,0 +1,11 @@
+# AWS Adapters
+
+This folder will contain AWS service implementations.
+
+Planned adapters:
+- analytics/ - Amplitude or AWS Pinpoint
+- crash-reporting/ - Sentry
+- auth/ - AWS Cognito
+- storage/ - AWS S3
+- database/ - DynamoDB
+- functions/ - AWS Lambda

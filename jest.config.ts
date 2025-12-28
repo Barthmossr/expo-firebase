@@ -30,8 +30,6 @@ const config: Config = {
   },
   verbose: true,
   clearMocks: true,
-  resetMocks: true,
-  restoreMocks: true,
 }
 
 export default config

@@ -1,0 +1,13 @@
+# Profile Flow
+
+User profile and settings flow.
+
+Structure:
+
+- screens/
+  - profile-view/
+  - profile-edit/
+  - settings/
+- hooks/
+- components/
+- profile.navigator.tsx

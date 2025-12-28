@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
-import { logAppOpen, setAnalyticsEnabled } from '../../firebase/analytics'
-import { forceCrash, setCrashlyticsEnabled } from '../../firebase/crashlytics'
-import { getTelemetryFlags } from '../../firebase/telemetry'
+import { getAnalyticsService, getCrashReportingService } from '@/services'
+import { getTelemetryConfig } from '@/config/telemetry'
 import type { UseTelemetryOutput } from './use-telemetry.types'
 
 const useTelemetry = (): UseTelemetryOutput => {
@@ -9,10 +8,13 @@ const useTelemetry = (): UseTelemetryOutput => {
 
   useEffect(() => {
     const initialize = async (): Promise<void> => {
-      const flags = getTelemetryFlags()
-      await setAnalyticsEnabled(flags.analyticsEnabled)
-      await setCrashlyticsEnabled(flags.crashlyticsEnabled)
-      await logAppOpen()
+      const config = getTelemetryConfig()
+      const analytics = getAnalyticsService()
+      const crashReporting = getCrashReportingService()
+
+      await analytics.setEnabled(config.analyticsEnabled)
+      await crashReporting.setEnabled(config.crashlyticsEnabled)
+      await analytics.logEvent({ name: 'app_open' })
       setReady(true)
     }
 
@@ -20,7 +22,8 @@ const useTelemetry = (): UseTelemetryOutput => {
   }, [])
 
   const triggerCrash = useCallback((): void => {
-    void forceCrash()
+    const crashReporting = getCrashReportingService()
+    crashReporting.forceCrash()
   }, [])
 
   return { ready, triggerCrash }
