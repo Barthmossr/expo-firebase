@@ -84,4 +84,17 @@ describe('createFirebaseAnalyticsAdapter', () => {
       )
     })
   })
+
+  describe('setUserId', () => {
+    it('should call setUserId with user id', async () => {
+      const adapter = createFirebaseAnalyticsAdapter()
+
+      await adapter.setUserId('user-123')
+
+      expect(mockSetUserId).toHaveBeenCalledWith(
+        mockAnalyticsInstance,
+        'user-123',
+      )
+    })
+  })
 })
