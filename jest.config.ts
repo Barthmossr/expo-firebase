@@ -17,6 +17,7 @@ const config: Config = {
     'src/**/*.{ts,tsx}',
     '!src/**/*.types.ts',
     '!src/**/index.ts',
+    '!src/core/ports/**/*.ts',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
