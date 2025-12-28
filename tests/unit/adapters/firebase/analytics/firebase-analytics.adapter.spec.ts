@@ -105,4 +105,18 @@ describe('createFirebaseAnalyticsAdapter', () => {
       expect(mockSetUserId).toHaveBeenCalledWith(mockAnalyticsInstance, null)
     })
   })
+
+  describe('setUserProperties', () => {
+    it('should call setUserProperties with properties', async () => {
+      const adapter = createFirebaseAnalyticsAdapter()
+      const properties = { plan: 'premium', country: 'US' }
+
+      await adapter.setUserProperties(properties)
+
+      expect(mockSetUserProperties).toHaveBeenCalledWith(
+        mockAnalyticsInstance,
+        properties,
+      )
+    })
+  })
 })
