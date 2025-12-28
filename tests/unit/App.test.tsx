@@ -35,4 +35,13 @@ describe('App', () => {
     const { getByText } = render(<App />)
     expect(getByText('Telemetry ready: yes')).toBeTruthy()
   })
+
+  it('should display no when telemetry is not ready', () => {
+    mockUseTelemetry.mockReturnValue({
+      ready: false,
+      triggerCrash: jest.fn(),
+    })
+    const { getByText } = render(<App />)
+    expect(getByText('Telemetry ready: no')).toBeTruthy()
+  })
 })
