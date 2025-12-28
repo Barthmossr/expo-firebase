@@ -51,4 +51,14 @@ describe('createFirebaseAnalyticsAdapter', () => {
     expect(adapter.setUserId).toBeDefined()
     expect(adapter.setUserProperties).toBeDefined()
   })
+
+  describe('setEnabled', () => {
+    it('should call setAnalyticsCollectionEnabled with true', async () => {
+      const adapter = createFirebaseAnalyticsAdapter()
+
+      await adapter.setEnabled(true)
+
+      expect(mockSetEnabled).toHaveBeenCalledWith(mockAnalyticsInstance, true)
+    })
+  })
 })
