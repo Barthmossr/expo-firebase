@@ -60,5 +60,13 @@ describe('createFirebaseAnalyticsAdapter', () => {
 
       expect(mockSetEnabled).toHaveBeenCalledWith(mockAnalyticsInstance, true)
     })
+
+    it('should call setAnalyticsCollectionEnabled with false', async () => {
+      const adapter = createFirebaseAnalyticsAdapter()
+
+      await adapter.setEnabled(false)
+
+      expect(mockSetEnabled).toHaveBeenCalledWith(mockAnalyticsInstance, false)
+    })
   })
 })
