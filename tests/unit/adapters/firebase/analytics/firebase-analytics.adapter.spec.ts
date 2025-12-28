@@ -96,5 +96,13 @@ describe('createFirebaseAnalyticsAdapter', () => {
         'user-123',
       )
     })
+
+    it('should call setUserId with null', async () => {
+      const adapter = createFirebaseAnalyticsAdapter()
+
+      await adapter.setUserId(null)
+
+      expect(mockSetUserId).toHaveBeenCalledWith(mockAnalyticsInstance, null)
+    })
   })
 })
