@@ -68,5 +68,15 @@ describe('createAdmobAdapter', () => {
 
       expect(unitId).toBe('test-banner-id')
     })
+
+    it('should return test id when extra is undefined', () => {
+      Platform.OS = 'android'
+      mockConstants.expoConfig = null
+
+      const adapter = createAdmobAdapter()
+      const unitId = adapter.getBannerUnitId()
+
+      expect(unitId).toBe('test-banner-id')
+    })
   })
 })
