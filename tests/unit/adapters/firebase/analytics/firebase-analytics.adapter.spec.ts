@@ -69,4 +69,19 @@ describe('createFirebaseAnalyticsAdapter', () => {
       expect(mockSetEnabled).toHaveBeenCalledWith(mockAnalyticsInstance, false)
     })
   })
+
+  describe('logEvent', () => {
+    it('should call logEvent with event name and params', async () => {
+      const adapter = createFirebaseAnalyticsAdapter()
+      const event = { name: 'test_event', params: { key: 'value' } }
+
+      await adapter.logEvent(event)
+
+      expect(mockLogEvent).toHaveBeenCalledWith(
+        mockAnalyticsInstance,
+        'test_event',
+        { key: 'value' },
+      )
+    })
+  })
 })
