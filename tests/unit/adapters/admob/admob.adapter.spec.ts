@@ -54,5 +54,19 @@ describe('createAdmobAdapter', () => {
 
       expect(unitId).toBe('ca-app-pub-ios')
     })
+
+    it('should return test id when admob config is missing', () => {
+      Platform.OS = 'android'
+      mockConstants.expoConfig = {
+        name: 'test',
+        slug: 'test',
+        extra: {},
+      } as typeof Constants.expoConfig
+
+      const adapter = createAdmobAdapter()
+      const unitId = adapter.getBannerUnitId()
+
+      expect(unitId).toBe('test-banner-id')
+    })
   })
 })
