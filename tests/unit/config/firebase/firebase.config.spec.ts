@@ -67,4 +67,18 @@ describe('getFirebaseConfig', () => {
       'Missing required Firebase config: authDomain',
     )
   })
+
+  it('should throw error when projectId is missing', () => {
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: {
+        firebase: { ...validConfig, projectId: undefined },
+      },
+    } as typeof Constants.expoConfig
+
+    expect(() => getFirebaseConfig()).toThrow(
+      'Missing required Firebase config: projectId',
+    )
+  })
 })
