@@ -31,4 +31,22 @@ describe('getTelemetryConfig', () => {
     expect(config.analyticsEnabled).toBe(false)
     expect(config.crashlyticsEnabled).toBe(false)
   })
+
+  it('should return config values when telemetry is defined', () => {
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: {
+        telemetry: {
+          analyticsEnabled: true,
+          crashlyticsEnabled: true,
+        },
+      },
+    } as typeof Constants.expoConfig
+
+    const config = getTelemetryConfig()
+
+    expect(config.analyticsEnabled).toBe(true)
+    expect(config.crashlyticsEnabled).toBe(true)
+  })
 })
