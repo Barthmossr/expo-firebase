@@ -53,4 +53,18 @@ describe('getFirebaseConfig', () => {
       'Missing required Firebase config: apiKey',
     )
   })
+
+  it('should throw error when authDomain is missing', () => {
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: {
+        firebase: { ...validConfig, authDomain: undefined },
+      },
+    } as typeof Constants.expoConfig
+
+    expect(() => getFirebaseConfig()).toThrow(
+      'Missing required Firebase config: authDomain',
+    )
+  })
 })
