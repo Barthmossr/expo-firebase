@@ -122,5 +122,13 @@ describe('createFirebaseCrashlyticsAdapter', () => {
         'user123',
       )
     })
+
+    it('should call setUserId with empty string when null', () => {
+      const adapter = createFirebaseCrashlyticsAdapter()
+
+      adapter.setUserId(null)
+
+      expect(mockSetUserId).toHaveBeenCalledWith(mockCrashlyticsInstance, '')
+    })
   })
 })
