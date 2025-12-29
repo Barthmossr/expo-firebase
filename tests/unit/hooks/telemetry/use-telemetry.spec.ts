@@ -71,4 +71,11 @@ describe('useTelemetry', () => {
     await waitFor(() => expect(result.current.ready).toBe(true))
     expect(mockCrashReporting.setEnabled).toHaveBeenCalledWith(true)
   })
+
+  it('should log app_open event on initialization', async () => {
+    const { result } = renderHook(() => useTelemetry())
+
+    await waitFor(() => expect(result.current.ready).toBe(true))
+    expect(mockAnalytics.logEvent).toHaveBeenCalledWith({ name: 'app_open' })
+  })
 })
