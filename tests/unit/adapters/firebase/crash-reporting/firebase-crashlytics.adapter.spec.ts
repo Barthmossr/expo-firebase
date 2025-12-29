@@ -85,4 +85,17 @@ describe('createFirebaseCrashlyticsAdapter', () => {
       )
     })
   })
+
+  describe('recordError', () => {
+    it('should call recordError with error message', () => {
+      const adapter = createFirebaseCrashlyticsAdapter()
+
+      adapter.recordError({ message: 'Test error' })
+
+      expect(mockRecordError).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        expect.objectContaining({ message: 'Test error' }),
+      )
+    })
+  })
 })
