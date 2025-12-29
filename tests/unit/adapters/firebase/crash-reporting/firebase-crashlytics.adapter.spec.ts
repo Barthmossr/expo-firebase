@@ -110,4 +110,17 @@ describe('createFirebaseCrashlyticsAdapter', () => {
       )
     })
   })
+
+  describe('setUserId', () => {
+    it('should call setUserId with user id', () => {
+      const adapter = createFirebaseCrashlyticsAdapter()
+
+      adapter.setUserId('user123')
+
+      expect(mockSetUserId).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        'user123',
+      )
+    })
+  })
 })
