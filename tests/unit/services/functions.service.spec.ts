@@ -37,4 +37,14 @@ describe('functions.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetFunctionsService', () => {
+    it('should create new adapter after reset', () => {
+      getFunctionsService()
+      resetFunctionsService()
+      getFunctionsService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
