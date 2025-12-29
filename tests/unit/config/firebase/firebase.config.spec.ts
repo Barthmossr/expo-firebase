@@ -31,4 +31,12 @@ describe('getFirebaseConfig', () => {
       'Firebase configuration not found in app.config.ts extra',
     )
   })
+
+  it('should throw error when extra is undefined', () => {
+    mockConstants.expoConfig = null
+
+    expect(() => getFirebaseConfig()).toThrow(
+      'Firebase configuration not found in app.config.ts extra',
+    )
+  })
 })
