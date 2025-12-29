@@ -141,4 +141,20 @@ describe('getFirebaseConfig', () => {
     expect(config.appId).toBe(validConfig.appId)
     expect(config.measurementId).toBe(validConfig.measurementId)
   })
+
+  it('should return config without measurementId when not provided', () => {
+    const configWithoutMeasurement = {
+      ...validConfig,
+      measurementId: undefined,
+    }
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: { firebase: configWithoutMeasurement },
+    } as typeof Constants.expoConfig
+
+    const config = getFirebaseConfig()
+
+    expect(config.measurementId).toBeUndefined()
+  })
 })
