@@ -41,4 +41,14 @@ describe('storage.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetStorageService', () => {
+    it('should create new adapter after reset', () => {
+      getStorageService()
+      resetStorageService()
+      getStorageService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
