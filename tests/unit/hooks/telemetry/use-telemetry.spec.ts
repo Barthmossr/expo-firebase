@@ -78,4 +78,12 @@ describe('useTelemetry', () => {
     await waitFor(() => expect(result.current.ready).toBe(true))
     expect(mockAnalytics.logEvent).toHaveBeenCalledWith({ name: 'app_open' })
   })
+
+  it('should call forceCrash when triggerCrash is called', async () => {
+    const { result } = renderHook(() => useTelemetry())
+
+    await waitFor(() => expect(result.current.ready).toBe(true))
+    result.current.triggerCrash()
+    expect(mockCrashReporting.forceCrash).toHaveBeenCalled()
+  })
 })
