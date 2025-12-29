@@ -40,4 +40,14 @@ describe('analytics.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetAnalyticsService', () => {
+    it('should create new adapter after reset', () => {
+      getAnalyticsService()
+      resetAnalyticsService()
+      getAnalyticsService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
