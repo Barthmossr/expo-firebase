@@ -95,4 +95,18 @@ describe('getFirebaseConfig', () => {
       'Missing required Firebase config: storageBucket',
     )
   })
+
+  it('should throw error when messagingSenderId is missing', () => {
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: {
+        firebase: { ...validConfig, messagingSenderId: undefined },
+      },
+    } as typeof Constants.expoConfig
+
+    expect(() => getFirebaseConfig()).toThrow(
+      'Missing required Firebase config: messagingSenderId',
+    )
+  })
 })
