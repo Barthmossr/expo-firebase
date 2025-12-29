@@ -22,7 +22,7 @@ Before you begin, ensure you have the following installed:
 
 ### Required
 
-- **Node.js v24.11.1**
+- **Node.js v24.12.0**
   - Check version: `node --version`
   - Download: [nodejs.org](https://nodejs.org/)
   - We recommend using [nvm](https://github.com/nvm-sh/nvm) (Node Version Manager)
@@ -51,7 +51,6 @@ Extensions are automatically suggested from `.vscode/extensions.json`:
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **EditorConfig** - Editor settings
-- **Jest** - Test runner integration
 - **GitLens** - Git history and blame
 - **Conventional Commits** - Commit message helper
 
@@ -64,8 +63,8 @@ Extensions are automatically suggested from `.vscode/extensions.json`:
 # Use GitHub's "Use this template" button, then clone your new repo
 
 # If forking for contribution
-git clone https://github.com/Barthmossr/node-ts.git
-cd node-ts
+git clone https://github.com/Barthmossr/expo-firebase.git
+cd expo-firebase
 ```
 
 ### 2. Install Node.js Version
@@ -80,7 +79,7 @@ nvm install
 nvm use
 ```
 
-Without nvm, ensure you have Node.js v24.11.1 installed.
+Without nvm, ensure you have Node.js v24.12.0 installed.
 
 ### 3. Run Setup
 
@@ -188,25 +187,28 @@ git commit -m "Added authentication"
 | ----------- | --------------------------- | ----------------------- |
 | `dev`       | `tsx src/app/main.ts`       | Run TypeScript directly |
 | `dev:watch` | `tsx watch src/app/main.ts` | Run with hot reload     |
-| `start`     | `node dist/app/main.js`     | Run built application   |
+| `start`     | `node dist/main.mjs`        | Run built application   |
 
 ### Build Scripts
 
-| Script      | Command                      | Description            |
-| ----------- | ---------------------------- | ---------------------- |
-| `build`     | `tsc -p tsconfig.build.json` | Compile TypeScript     |
-| `clean`     | `rimraf dist coverage`       | Remove build artifacts |
-| `typecheck` | `tsc --noEmit`               | Check types only       |
+| Script               | Command                                              | Description               |
+| -------------------- | ---------------------------------------------------- | ------------------------- |
+| `prebuild`           | `expo prebuild`                                      | Generate native folders   |
+| `prebuild:clean`     | `expo prebuild --clean`                              | Regenerate native folders |
+| `build:dev:android`  | `eas build --profile development --platform android` | Build development Android |
+| `build:prod:android` | `eas build --profile production --platform android`  | Build production Android  |
+| `clean`              | `rimraf dist coverage android ios`                   | Remove build artifacts    |
+| `typecheck`          | `tsc --noEmit`                                       | Check types only          |
 
 ### Quality Scripts
 
-| Script         | Command                           | Description            |
-| -------------- | --------------------------------- | ---------------------- |
-| `lint`         | `eslint .`                        | Check code with ESLint |
-| `lint:fix`     | `eslint . --fix`                  | Auto-fix ESLint issues |
-| `format`       | `prettier --write .`              | Format all files       |
-| `format:check` | `prettier --check .`              | Check formatting       |
-| `validate`     | lint + format + typecheck + build | Run all checks         |
+| Script         | Command                         | Description            |
+| -------------- | ------------------------------- | ---------------------- |
+| `lint`         | `eslint .`                      | Check code with ESLint |
+| `lint:fix`     | `eslint . --fix`                | Auto-fix ESLint issues |
+| `format`       | `prettier --write .`            | Format all files       |
+| `format:check` | `prettier --check .`            | Check formatting       |
+| `validate`     | lint + format:check + typecheck | Run all checks         |
 
 ### Test Scripts
 
@@ -231,10 +233,11 @@ Tests are organized in the `tests/` directory with separation by test type:
 
 ```
 tests/
-├── setup.ts              # Global test setup
+├── setup.ts              # Global test setup (mocks for services, hooks)
+├── __mocks__/            # Manual mocks for modules
+│   └── expo-status-bar.ts
 ├── unit/                 # Unit tests (isolated, fast)
-│   └── app/
-│       └── main.test.ts  # Tests for src/app/main.ts
+│   └── App.test.tsx      # Tests for App component
 ├── integration/          # Integration tests (multiple components)
 │   └── ...
 └── e2e/                  # End-to-end tests (full system)
@@ -326,18 +329,17 @@ start coverage/lcov-report/index.html
 npm run build
 ```
 
-This will:
+Expo builds are handled through EAS (Expo Application Services):
 
-1. Compile TypeScript to JavaScript using `tsconfig.build.json`
-2. Output to `dist/` directory
-3. Generate source maps and declaration files
+1. For development builds: `npm run build:dev:android` or `npm run build:dev:ios`
+2. For production builds: `npm run build:prod:android` or `npm run build:prod:ios`
+3. Native folders can be generated with `npm run prebuild`
 
 ### Build Output
 
 ```
 dist/
-└── app/
-    └── main.js
+└── main.mjs
 ```
 
 ### Test Production Build
@@ -352,11 +354,19 @@ npm start
 
 ### Branching Strategy
 
-- **main**: Production-ready code
-- **develop**: Integration branch
+| Branch    | Purpose                           | EAS Channel | Build Profile |
+| --------- | --------------------------------- | ----------- | ------------- |
+| `main`    | Production (App Store/Play Store) | production  | production    |
+| `stage`   | Testing (TestFlight/Internal)     | staging     | preview       |
+| `develop` | Code review and integration       | development | development   |
+
+**Feature Branches:**
+
 - **feat/\***: New features
 - **fix/\***: Bug fixes
 - **chore/\***: Maintenance tasks
+- **docs/\***: Documentation changes
+- **ci/\***: CI/CD changes
 
 ### Commit Messages
 
@@ -405,37 +415,86 @@ chore: update dependencies
 
 ### GitHub Actions Workflows
 
-Two workflows are configured in `.github/workflows/`:
+Workflows are configured in `.github/workflows/`:
 
-#### validate.yml
+#### Quality Workflows
 
-Runs on every push and PR:
+**validate.yml** - Runs on every push and PR:
 
 1. Checkout code
 2. Setup Node.js (from `.nvmrc`)
 3. Install dependencies (`npm ci`)
-4. Run lint check
-5. Run format check
-6. Run type check
-7. Build project
+4. Run lint, format check, and type check
 
-#### test.yml
+**test.yml** - Runs on every push and PR:
 
-Runs on every push and PR:
+1. Run tests with coverage
+2. Upload coverage to Codecov
+3. Generate coverage badge
 
-1. Checkout code
-2. Setup Node.js
-3. Install dependencies
-4. Run tests with coverage
-5. Upload coverage to Codecov
-6. Generate coverage badge
-7. Upload artifacts
+#### EAS Build & Deploy Workflows
 
-### Required Secrets
+**eas-update.yml** - OTA Updates (runs on push to main/stage/develop):
 
-For full CI/CD functionality, add these secrets in GitHub:
+1. Setup Expo with EAS CLI
+2. Publish EAS Update to branch-specific channel
+3. Instant code updates without store review
 
-- `CODECOV_TOKEN`: For coverage uploads (optional but recommended)
+**eas-build-stage.yml** - Preview Builds (runs on push to `stage`):
+
+1. Build iOS and Android with `preview` profile
+2. Submit to TestFlight (iOS) and Internal Testing (Android)
+3. For QA and internal testing
+
+**eas-build-prod.yml** - Production Builds (runs on push to `main`):
+
+1. Build iOS and Android with `production` profile
+2. Auto-submit to App Store and Play Store
+3. Requires first manual submission (see below)
+
+### Required GitHub Secrets
+
+| Secret                        | Description                           |
+| ----------------------------- | ------------------------------------- |
+| `EXPO_TOKEN`                  | EAS authentication token              |
+| `CODECOV_TOKEN`               | Coverage uploads (optional)           |
+| `APPLE_ID`                    | Apple ID email                        |
+| `ASC_APP_ID`                  | App Store Connect App ID              |
+| `APPLE_TEAM_ID`               | Apple Developer Team ID               |
+| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password for submissions |
+| `GOOGLE_SERVICE_ACCOUNT_KEY`  | Google Play Service Account JSON      |
+
+### First Release (Manual)
+
+The **first app submission** to App Store/Play Store must be done manually:
+
+#### iOS (App Store Connect)
+
+```bash
+# 1. Build production
+eas build --profile production --platform ios
+
+# 2. Submit to App Store Connect
+eas submit --platform ios --latest
+
+# 3. Complete store listing manually (screenshots, description)
+# 4. Submit for review
+```
+
+#### Android (Google Play Console)
+
+```bash
+# 1. Build production
+eas build --profile production --platform android
+
+# 2. Submit to Play Store
+eas submit --platform android --latest
+
+# 3. Complete store listing manually (screenshots, description)
+# 4. Submit for review
+```
+
+After the first successful submission, CI/CD will handle subsequent releases automatically.
 
 ## 🏷️ Releases
 
@@ -518,7 +577,7 @@ After releases, check `CHANGELOG.md` for the full history of changes organized b
 ```bash
 # Install Node.js from nodejs.org
 # Or use nvm
-nvm install 24.11.1
+nvm install 24.12.0
 ```
 
 #### Issue: Node.js Version Mismatch
@@ -591,12 +650,21 @@ npm run test:coverage
 - ✅ Keep files under 100 lines
 - ✅ Use path aliases (`@/*`) for imports
 
+### Architecture (Ports & Adapters)
+
+- ✅ Define interfaces in `src/core/ports/`
+- ✅ Implement adapters in `src/adapters/`
+- ✅ Use service factories in `src/services/`
+- ✅ Never import adapters directly in components
+- ✅ Always depend on ports (interfaces), not implementations
+
 ### File Organization
 
 - ✅ Follow the folder structure
 - ✅ Types in `*.types.ts` files
-- ✅ Styles in `*.styles.ts` files
-- ✅ Use `index.ts` for module exports
+- ✅ Only create `index.ts` in leaf folders (no subfolders)
+- ✅ Never create `index.ts` in parent folders
+- ✅ Use specific imports: `@/components/ads/banner`, not `@/components`
 - ✅ Never export inline with declarations
 
 ### Git Workflow
@@ -640,4 +708,4 @@ Before submitting a PR, ensure:
 
 **Happy Coding! 🚀**
 
-Need help? Open an issue on [GitHub](https://github.com/Barthmossr/node-ts/issues).
+Need help? Open an issue on [GitHub](https://github.com/Barthmossr/expo-firebase/issues).

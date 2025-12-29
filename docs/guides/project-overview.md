@@ -2,32 +2,32 @@
 
 ## 📖 Introduction
 
-**Node ts** is a comprehensive Node.js TypeScript template repository designed to serve as a production-ready foundation for future projects. This document explains the architectural decisions, design philosophy, and rationale behind this template.
+**Expo Firebase** is a comprehensive React Native Expo with Firebase template repository designed to serve as a production-ready foundation for mobile application projects. This document explains the architectural decisions, design philosophy, and rationale behind this template.
 
 ## 🎯 Philosophy
 
-### General-Purpose by Design
+### Mobile-First by Design
 
-This template is intentionally **framework-agnostic** and **database-agnostic**. We believe in:
+This template is focused on **React Native Expo with Firebase integration**. We believe in:
 
-1. **Flexibility** - Not locking developers into specific frameworks or databases
-2. **Modularity** - Easy to add or remove components based on project needs
-3. **Standards** - Enforcing best practices that apply to any Node.js project
-4. **Simplicity** - Starting with essentials, not overwhelming with choices
+1. **Cross-Platform** - Build for iOS and Android from a single codebase
+2. **Firebase Ready** - Pre-configured for easy Firebase service integration
+3. **Standards** - Enforcing best practices that apply to mobile app development
+4. **Modern Tooling** - Using the latest React Native and Expo features
 
 ### What This Template IS
 
-✅ **A solid foundation** for Node.js TypeScript projects  
-✅ **A development environment** with modern tooling  
-✅ **A standard** for code quality and organization  
-✅ **A starting point** that can be customized  
-✅ **A template** for creating specialized templates
+✅ **A solid foundation** for React Native Expo projects  
+✅ **A development environment** with modern mobile tooling  
+✅ **A Firebase integration** ready for auth, Firestore, storage, etc.  
+✅ **A starting point** that can be customized for any mobile app  
+✅ **A template** for production-ready mobile applications
 
 ### What This Template IS NOT
 
-❌ **NOT a full-stack framework** (no Express, Fastify, NestJS, etc.)  
-❌ **NOT database-specific** (no MongoDB, PostgreSQL, etc.)  
-❌ **NOT opinionated about architecture** (no MVC, Clean Architecture, etc.)  
+❌ **NOT a complete app** (no pre-built screens or features)  
+❌ **NOT UI framework-specific** (bring your own component library)  
+❌ **NOT opinionated about state management** (no Redux, MobX, etc.)  
 ❌ **NOT a production application** (no business logic)  
 ❌ **NOT feature-complete** (intentionally minimal)
 
@@ -96,14 +96,21 @@ This template is intentionally **framework-agnostic** and **database-agnostic**.
 
 ### 5. Git Flow Branch Strategy
 
-**Decision**: Use a Git Flow-inspired branching model with `main`, `develop`, and feature branches.
+**Decision**: Use a Git Flow-inspired branching model with `main`, `stage`, `develop`, and feature branches.
+
+| Branch    | Purpose                     | EAS Channel | Deployment           |
+| --------- | --------------------------- | ----------- | -------------------- |
+| `main`    | Production releases         | production  | App Store/Play Store |
+| `stage`   | Testing and QA              | staging     | TestFlight/Internal  |
+| `develop` | Code review and integration | development | OTA updates only     |
 
 **Rationale**:
 
 - **Stability**: `main` is always production-ready
-- **Safety**: Development happens in isolation
+- **Testing**: `stage` allows QA before production
+- **Safety**: Development happens in isolation on `develop`
 - **Review Process**: All changes go through PRs to `develop`
-- **Deployment**: Clean separation between development and production
+- **Deployment**: Clean separation between environments
 - **Rollback**: Easy to roll back changes if needed
 
 ### 6. 100% Test Coverage
@@ -124,14 +131,18 @@ This template is intentionally **framework-agnostic** and **database-agnostic**.
 
 **Workflows**:
 
-- **validate.yml**: Lint, format check, typecheck, build
+- **validate.yml**: Lint, format check, typecheck
 - **test.yml**: Run tests with coverage, upload to Codecov
+- **eas-update.yml**: OTA updates for all branches
+- **eas-build-stage.yml**: Preview builds for TestFlight/Internal Testing
+- **eas-build-prod.yml**: Production builds with store submission
 
 **Rationale**:
 
 - **Automation**: Automated testing and deployment save time
 - **Quality**: Catch issues before they reach production
 - **Standards**: Enforce code quality automatically
+- **OTA Updates**: Instant code updates without store review
 - **Best Practice**: Modern development requires automation
 
 ### 8. ESLint Flat Config
@@ -171,67 +182,153 @@ This template is intentionally **framework-agnostic** and **database-agnostic**.
 ## 📁 Folder Structure
 
 ```
-node-ts/
+expo-firebase/
 ├── src/
-│   └── app/              # Application code
-│       └── main.ts       # Entry point
+│   ├── app/                    # Application entry point
+│   │   └── App.tsx
+│   ├── core/                   # Domain layer (ports/interfaces)
+│   │   └── ports/
+│   │       ├── analytics/      # Analytics port interface
+│   │       ├── crash-reporting/# Crash reporting port interface
+│   │       ├── auth/           # Authentication port interface
+│   │       ├── storage/        # File storage port interface
+│   │       ├── database/       # Database port interface
+│   │       ├── functions/      # Cloud functions port interface
+│   │       └── ads/            # Ads port interface
+│   ├── adapters/               # Infrastructure layer (implementations)
+│   │   ├── firebase/           # Firebase implementations
+│   │   │   ├── analytics/
+│   │   │   ├── crash-reporting/
+│   │   │   ├── auth/
+│   │   │   ├── storage/
+│   │   │   ├── database/
+│   │   │   └── functions/
+│   │   └── admob/              # AdMob implementation
+│   ├── services/               # Service factories (dependency injection)
+│   │   ├── analytics.service.ts
+│   │   ├── crash-reporting.service.ts
+│   │   ├── auth.service.ts
+│   │   ├── storage.service.ts
+│   │   ├── database.service.ts
+│   │   ├── functions.service.ts
+│   │   ├── ads.service.ts
+│   │   └── index.ts
+│   ├── hooks/                  # React hooks
+│   │   └── telemetry/
+│   ├── components/             # Reusable UI components
+│   │   └── ads/
+│   │       └── banner/
+│   ├── config/                 # Configuration modules
+│   │   └── telemetry/
+│   └── flows/                  # Feature modules (future)
+│       ├── auth/
+│       ├── profile/
+│       └── onboarding/
 ├── tests/
-│   ├── setup.ts          # Global test setup
-│   └── app/
-│       └── main.test.ts  # Tests mirror src/ structure
+│   ├── setup.ts                # Global test setup
+│   ├── __mocks__/              # Manual mocks
+│   └── unit/                   # Unit tests mirror src/ structure
 ├── docs/
 │   ├── CONTRIBUTING.md
 │   ├── README.md
-│   └── guides/           # Detailed documentation
+│   ├── guides/                 # Detailed documentation
+│   └── services/               # Third-party service docs
 ├── scripts/
-│   └── setup.sh          # Setup and utility scripts
+│   └── setup.sh                # Setup and utility scripts
 ├── .github/
-│   └── workflows/        # CI/CD automation
-├── .vscode/              # Editor configuration
-└── dist/                 # Build output (git ignored)
+│   ├── workflows/              # CI/CD automation
+│   └── copilot-instructions.md # AI agent rules
+├── .vscode/                    # Editor configuration
+└── dist/                       # Build output (git ignored)
 ```
+
+### Architecture: Ports & Adapters (Hexagonal)
+
+This project follows the **Ports & Adapters** (Hexagonal) architecture pattern:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Application                          │
+│  ┌───────────┐  ┌────────────┐  ┌────────────────────────┐  │
+│  │   Hooks   │  │ Components │  │         Flows          │  │
+│  └─────┬─────┘  └──────┬─────┘  └───────────┬────────────┘  │
+│        │               │                    │               │
+│        └───────────────┼────────────────────┘               │
+│                        ▼                                    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                    Services                         │    │
+│  │           (Dependency Injection Layer)              │    │
+│  └─────────────────────┬───────────────────────────────┘    │
+│                        ▼                                    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                  Core (Ports)                       │    │
+│  │              Interfaces/Contracts                   │    │
+│  └─────────────────────┬───────────────────────────────┘    │
+│                        ▼                                    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                    Adapters                         │    │
+│  │    Firebase │ AdMob │ AWS │ Custom implementations  │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Benefits:**
+
+- **Backend Agnostic**: Swap Firebase for Supabase/AWS by creating new adapters
+- **Testable**: Mock services easily without touching real implementations
+- **Maintainable**: Clear separation of concerns
+- **Scalable**: Add new features without affecting existing code
+
+### Barrel Files (index.ts) Rule
+
+- Only create `index.ts` in **leaf folders** (folders with no subfolders)
+- Never create `index.ts` in parent folders
+- Always use specific imports: `@/components/ads/banner`, not `@/components`
 
 ### Why This Structure
 
-1. **Tests mirror src/**: Easy to find corresponding tests
-2. **Docs in dedicated folder**: Documentation organized separately
-3. **VS Code config included**: Consistent editor experience
-4. **Build output ignored**: Only source in version control
+1. **Ports define contracts**: Interfaces in `core/ports/` define what services must do
+2. **Adapters implement contracts**: `adapters/` contains actual implementations
+3. **Services inject dependencies**: `services/` factories return the right adapter
+4. **Tests mirror src/**: Easy to find corresponding tests
+5. **Docs in dedicated folder**: Documentation organized separately
 
 ## 🛠️ Tooling Stack
 
-| Tool              | Purpose                | Version  |
-| ----------------- | ---------------------- | -------- |
-| Node.js           | Runtime                | v24.11.1 |
-| TypeScript        | Type system            | ^5.9.3   |
-| ESLint            | Linting                | ^9.39.1  |
-| Prettier          | Formatting             | ^3.7.3   |
-| Jest              | Testing                | ^30.2.0  |
-| Husky             | Git hooks              | ^9.1.7   |
-| lint-staged       | Pre-commit linting     | ^16.2.7  |
-| commitlint        | Commit message linting | ^20.1.0  |
-| tsx               | Direct TS execution    | ^4.20.6  |
-| npm-check-updates | Dependency updates     | ^19.1.2  |
+| Tool                   | Purpose                | Version  |
+| ---------------------- | ---------------------- | -------- |
+| Node.js                | Runtime                | v24.12.0 |
+| Expo                   | React Native framework | ~54.0.30 |
+| React Native           | Mobile framework       | 0.81.5   |
+| TypeScript             | Type system            | ^5.9.3   |
+| @react-native-firebase | Firebase SDK           | ^23.7.0  |
+| ESLint                 | Linting                | ^9.39.2  |
+| Prettier               | Formatting             | ^3.7.4   |
+| Jest                   | Testing                | ^29.7.0  |
+| Husky                  | Git hooks              | ^9.1.7   |
+| lint-staged            | Pre-commit linting     | ^16.2.7  |
+| commitlint             | Commit message linting | ^20.2.0  |
+| EAS CLI                | Build & deploy         | latest   |
 
 ## 📜 Available Scripts
 
-| Script                  | Description                   |
-| ----------------------- | ----------------------------- |
-| `npm run dev`           | Run TypeScript directly       |
-| `npm run dev:watch`     | Run with hot reload           |
-| `npm run build`         | Compile to JavaScript         |
-| `npm start`             | Run built application         |
-| `npm run typecheck`     | Check TypeScript types        |
-| `npm run lint`          | Check code with ESLint        |
-| `npm run lint:fix`      | Auto-fix ESLint issues        |
-| `npm run format`        | Format with Prettier          |
-| `npm run format:check`  | Check formatting              |
-| `npm run validate`      | Run all quality checks        |
-| `npm test`              | Run tests                     |
-| `npm run test:watch`    | Tests in watch mode           |
-| `npm run test:coverage` | Generate coverage report      |
-| `npm run check`         | Interactive dependency update |
-| `npm run clean`         | Remove build artifacts        |
+| Script                  | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| `npm run dev`           | Run TypeScript directly                          |
+| `npm run dev:watch`     | Run with hot reload                              |
+| `npm run build`         | Compile to JavaScript                            |
+| `npm start`             | Run built application                            |
+| `npm run typecheck`     | Check TypeScript types                           |
+| `npm run lint`          | Check code with ESLint                           |
+| `npm run lint:fix`      | Auto-fix ESLint issues                           |
+| `npm run format`        | Format with Prettier                             |
+| `npm run format:check`  | Check formatting                                 |
+| `npm run validate`      | Run all quality checks (lint, format, typecheck) |
+| `npm test`              | Run tests                                        |
+| `npm run test:watch`    | Tests in watch mode                              |
+| `npm run test:coverage` | Generate coverage report                         |
+| `npm run check`         | Interactive dependency update                    |
+| `npm run clean`         | Remove build artifacts                           |
 
 ## 🎓 Design Principles
 
@@ -259,32 +356,35 @@ Automate repetitive tasks (testing, linting, deployment) to reduce human error.
 
 ### Specialized Templates
 
-This template will serve as the foundation for specialized templates:
+This template can serve as the foundation for specialized mobile templates:
 
-1. **Backend API Template**
-   - Add Express/Fastify
-   - Add database support (PostgreSQL, MongoDB, etc.)
-   - Add authentication/authorization
-   - Add API documentation (Swagger/OpenAPI)
+1. **E-commerce Mobile App Template**
+   - Add product listings and cart
+   - Add payment integration (Stripe, PayPal)
+   - Add order management
+   - Add push notifications
 
-2. **Frontend Template**
-   - Add React/Vue/Svelte
-   - Add bundler configuration
-   - Add styling solutions
-   - Add state management
+2. **Social Media App Template**
+   - Add user profiles and feeds
+   - Add real-time messaging
+   - Add media upload/sharing
+   - Add social features (likes, comments, follows)
 
-3. **Full-Stack Template**
-   - Combine backend and frontend
-   - Add monorepo structure
-   - Add shared types
+3. **Productivity App Template**
+   - Add task management
+   - Add calendar integration
+   - Add collaboration features
+   - Add offline sync
 
-### Docker Support
+### Expo & Firebase Enhancements
 
-Docker configuration is planned for a future branch:
+Planned enhancements for Expo and Firebase:
 
-- Multi-stage builds
-- Development and production images
-- Docker Compose for local development
+- Pre-configured Firebase services (Auth, Firestore, Storage)
+- Example screens and navigation setup
+- Push notification configuration
+- Offline data sync patterns
+- App store deployment guides
 
 ### Continuous Improvement
 
@@ -319,7 +419,7 @@ We consider this template successful if:
 
 ## 💭 Philosophy Summary
 
-> "A template should provide the foundation, not the building. It should enforce quality without restricting creativity. It should be simple to start with, yet powerful enough to grow into any project."
+> "A mobile template should provide the foundation, not the complete app. It should enforce quality without restricting creativity. It should be simple to start with, yet powerful enough to grow into any mobile application."
 
 ---
 

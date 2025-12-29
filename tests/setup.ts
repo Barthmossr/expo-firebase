@@ -1,7 +1,14 @@
-beforeAll(() => {
-  // Global setup before all tests
-})
-
-afterAll(() => {
-  // Global cleanup after all tests
-})
+jest.mock('@react-native-firebase/app')
+jest.mock('@react-native-firebase/analytics')
+jest.mock('@react-native-firebase/crashlytics')
+jest.mock('expo-constants')
+jest.mock('expo-status-bar')
+jest.mock('react-native-google-mobile-ads', () => ({
+  TestIds: {
+    ADAPTIVE_BANNER: 'test-banner-id',
+  },
+  BannerAd: 'BannerAd',
+  BannerAdSize: {
+    ANCHORED_ADAPTIVE_BANNER: 'ANCHORED_ADAPTIVE_BANNER',
+  },
+}))

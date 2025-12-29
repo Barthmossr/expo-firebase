@@ -7,7 +7,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default defineConfig([
   {
-    ignores: ['dist/**'],
+    ignores: ['dist/**', 'functions/lib/**', 'android/**', 'ios/**'],
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],

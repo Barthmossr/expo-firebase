@@ -1,6 +1,6 @@
-# Contributing to Node ts
+# Contributing to Expo Firebase
 
-Thank you for your interest in contributing to **Node ts**! This document provides guidelines and instructions for contributing to this project.
+Thank you for your interest in contributing to **Expo Firebase**! This document provides guidelines and instructions for contributing to this project.
 
 ## 📋 Table of Contents
 
@@ -28,7 +28,7 @@ This project adheres to the [Contributor Covenant Code of Conduct](https://www.c
 
 ### Prerequisites
 
-- Node.js v24.11.1 (use `.nvmrc` or `.node-version` file)
+- Node.js v24.12.0 (use `.nvmrc` or `.node-version` file)
 - npm (our official package manager)
 - Git
 
@@ -36,8 +36,8 @@ This project adheres to the [Contributor Covenant Code of Conduct](https://www.c
 
 ```bash
 # 1. Clone your fork
-git clone https://github.com/YOUR-USERNAME/node-ts.git
-cd node-ts
+git clone https://github.com/YOUR-USERNAME/expo-firebase.git
+cd expo-firebase
 
 # 2. Install dependencies
 npm install
@@ -330,7 +330,7 @@ When requesting features via GitHub Issues:
 If you have questions:
 
 1. Check existing [documentation](docs/)
-2. Search [existing issues](https://github.com/Barthmossr/node-ts/issues)
+2. Search [existing issues](https://github.com/Barthmossr/expo-firebase/issues)
 3. Open a new issue with the `question` label
 
 ## 🙏 Thank You!
