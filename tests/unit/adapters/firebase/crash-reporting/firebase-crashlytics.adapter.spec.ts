@@ -60,5 +60,16 @@ describe('createFirebaseCrashlyticsAdapter', () => {
 
       expect(mockSetEnabled).toHaveBeenCalledWith(mockCrashlyticsInstance, true)
     })
+
+    it('should call setCrashlyticsCollectionEnabled with false', async () => {
+      const adapter = createFirebaseCrashlyticsAdapter()
+
+      await adapter.setEnabled(false)
+
+      expect(mockSetEnabled).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        false,
+      )
+    })
   })
 })
