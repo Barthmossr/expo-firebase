@@ -39,4 +39,18 @@ describe('getFirebaseConfig', () => {
       'Firebase configuration not found in app.config.ts extra',
     )
   })
+
+  it('should throw error when apiKey is missing', () => {
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: {
+        firebase: { ...validConfig, apiKey: undefined },
+      },
+    } as typeof Constants.expoConfig
+
+    expect(() => getFirebaseConfig()).toThrow(
+      'Missing required Firebase config: apiKey',
+    )
+  })
 })
