@@ -31,5 +31,13 @@ describe('auth.service', () => {
       expect(mockCreateAdapter).toHaveBeenCalledTimes(1)
       expect(service).toBe(mockAdapter)
     })
+
+    it('should return same instance on subsequent calls', () => {
+      const first = getAuthService()
+      const second = getAuthService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(1)
+      expect(first).toBe(second)
+    })
   })
 })
