@@ -57,4 +57,11 @@ describe('useTelemetry', () => {
       expect(result.current.ready).toBe(true)
     })
   })
+
+  it('should call analytics setEnabled with config value', async () => {
+    const { result } = renderHook(() => useTelemetry())
+
+    await waitFor(() => expect(result.current.ready).toBe(true))
+    expect(mockAnalytics.setEnabled).toHaveBeenCalledWith(true)
+  })
 })
