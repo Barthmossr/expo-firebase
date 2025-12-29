@@ -36,4 +36,10 @@ describe('Banner', () => {
 
     expect(mockGetAdsService).toHaveBeenCalled()
   })
+
+  it('should call getBannerUnitId', () => {
+    render(<Banner />)
+
+    expect(mockAdsService.getBannerUnitId).toHaveBeenCalled()
+  })
 })
