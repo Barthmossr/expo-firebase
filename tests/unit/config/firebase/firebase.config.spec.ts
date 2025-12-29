@@ -123,4 +123,22 @@ describe('getFirebaseConfig', () => {
       'Missing required Firebase config: appId',
     )
   })
+
+  it('should return valid config when all required fields are present', () => {
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: { firebase: validConfig },
+    } as typeof Constants.expoConfig
+
+    const config = getFirebaseConfig()
+
+    expect(config.apiKey).toBe(validConfig.apiKey)
+    expect(config.authDomain).toBe(validConfig.authDomain)
+    expect(config.projectId).toBe(validConfig.projectId)
+    expect(config.storageBucket).toBe(validConfig.storageBucket)
+    expect(config.messagingSenderId).toBe(validConfig.messagingSenderId)
+    expect(config.appId).toBe(validConfig.appId)
+    expect(config.measurementId).toBe(validConfig.measurementId)
+  })
 })
