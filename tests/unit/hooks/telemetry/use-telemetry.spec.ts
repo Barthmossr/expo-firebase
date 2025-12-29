@@ -49,4 +49,12 @@ describe('useTelemetry', () => {
     expect(result.current.ready).toBe(false)
     await waitFor(() => expect(result.current.ready).toBe(true))
   })
+
+  it('should set ready to true after initialization', async () => {
+    const { result } = renderHook(() => useTelemetry())
+
+    await waitFor(() => {
+      expect(result.current.ready).toBe(true)
+    })
+  })
 })
