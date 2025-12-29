@@ -64,4 +64,11 @@ describe('useTelemetry', () => {
     await waitFor(() => expect(result.current.ready).toBe(true))
     expect(mockAnalytics.setEnabled).toHaveBeenCalledWith(true)
   })
+
+  it('should call crashReporting setEnabled with config value', async () => {
+    const { result } = renderHook(() => useTelemetry())
+
+    await waitFor(() => expect(result.current.ready).toBe(true))
+    expect(mockCrashReporting.setEnabled).toHaveBeenCalledWith(true)
+  })
 })
