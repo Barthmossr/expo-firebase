@@ -22,4 +22,13 @@ describe('getTelemetryConfig', () => {
     expect(config.analyticsEnabled).toBe(false)
     expect(config.crashlyticsEnabled).toBe(false)
   })
+
+  it('should return default values when extra is undefined', () => {
+    mockConstants.expoConfig = null
+
+    const config = getTelemetryConfig()
+
+    expect(config.analyticsEnabled).toBe(false)
+    expect(config.crashlyticsEnabled).toBe(false)
+  })
 })
