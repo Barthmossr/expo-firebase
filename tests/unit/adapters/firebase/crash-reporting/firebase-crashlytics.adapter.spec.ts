@@ -131,4 +131,18 @@ describe('createFirebaseCrashlyticsAdapter', () => {
       expect(mockSetUserId).toHaveBeenCalledWith(mockCrashlyticsInstance, '')
     })
   })
+
+  describe('setAttribute', () => {
+    it('should call setAttribute with key and value', () => {
+      const adapter = createFirebaseCrashlyticsAdapter()
+
+      adapter.setAttribute('key', 'value')
+
+      expect(mockSetAttribute).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        'key',
+        'value',
+      )
+    })
+  })
 })
