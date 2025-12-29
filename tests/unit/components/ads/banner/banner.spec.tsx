@@ -30,4 +30,10 @@ describe('Banner', () => {
 
     expect(UNSAFE_root).toBeTruthy()
   })
+
+  it('should call getAdsService', () => {
+    render(<Banner />)
+
+    expect(mockGetAdsService).toHaveBeenCalled()
+  })
 })
