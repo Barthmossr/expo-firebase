@@ -43,4 +43,14 @@ describe('crash-reporting.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetCrashReportingService', () => {
+    it('should create new adapter after reset', () => {
+      getCrashReportingService()
+      resetCrashReportingService()
+      getCrashReportingService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
