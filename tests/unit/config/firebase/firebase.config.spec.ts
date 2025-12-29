@@ -81,4 +81,18 @@ describe('getFirebaseConfig', () => {
       'Missing required Firebase config: projectId',
     )
   })
+
+  it('should throw error when storageBucket is missing', () => {
+    mockConstants.expoConfig = {
+      name: 'test',
+      slug: 'test',
+      extra: {
+        firebase: { ...validConfig, storageBucket: undefined },
+      },
+    } as typeof Constants.expoConfig
+
+    expect(() => getFirebaseConfig()).toThrow(
+      'Missing required Firebase config: storageBucket',
+    )
+  })
 })
