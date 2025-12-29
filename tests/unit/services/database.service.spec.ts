@@ -36,5 +36,13 @@ describe('database.service', () => {
       expect(mockCreateAdapter).toHaveBeenCalledTimes(1)
       expect(service).toBe(mockAdapter)
     })
+
+    it('should return same instance on subsequent calls', () => {
+      const first = getDatabaseService()
+      const second = getDatabaseService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(1)
+      expect(first).toBe(second)
+    })
   })
 })
