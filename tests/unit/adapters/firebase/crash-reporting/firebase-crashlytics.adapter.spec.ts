@@ -72,4 +72,17 @@ describe('createFirebaseCrashlyticsAdapter', () => {
       )
     })
   })
+
+  describe('log', () => {
+    it('should call log with message', () => {
+      const adapter = createFirebaseCrashlyticsAdapter()
+
+      adapter.log('test message')
+
+      expect(mockLog).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        'test message',
+      )
+    })
+  })
 })
