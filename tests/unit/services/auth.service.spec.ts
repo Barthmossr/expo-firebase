@@ -40,4 +40,14 @@ describe('auth.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetAuthService', () => {
+    it('should create new adapter after reset', () => {
+      getAuthService()
+      resetAuthService()
+      getAuthService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
