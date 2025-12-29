@@ -184,31 +184,114 @@ This template is focused on **React Native Expo with Firebase integration**. We 
 ```
 expo-firebase/
 ├── src/
-│   └── app/              # Application code
-│       └── main.ts       # Entry point
+│   ├── app/                    # Application entry point
+│   │   └── App.tsx
+│   ├── core/                   # Domain layer (ports/interfaces)
+│   │   └── ports/
+│   │       ├── analytics/      # Analytics port interface
+│   │       ├── crash-reporting/# Crash reporting port interface
+│   │       ├── auth/           # Authentication port interface
+│   │       ├── storage/        # File storage port interface
+│   │       ├── database/       # Database port interface
+│   │       ├── functions/      # Cloud functions port interface
+│   │       └── ads/            # Ads port interface
+│   ├── adapters/               # Infrastructure layer (implementations)
+│   │   ├── firebase/           # Firebase implementations
+│   │   │   ├── analytics/
+│   │   │   ├── crash-reporting/
+│   │   │   ├── auth/
+│   │   │   ├── storage/
+│   │   │   ├── database/
+│   │   │   └── functions/
+│   │   └── admob/              # AdMob implementation
+│   ├── services/               # Service factories (dependency injection)
+│   │   ├── analytics.service.ts
+│   │   ├── crash-reporting.service.ts
+│   │   ├── auth.service.ts
+│   │   ├── storage.service.ts
+│   │   ├── database.service.ts
+│   │   ├── functions.service.ts
+│   │   ├── ads.service.ts
+│   │   └── index.ts
+│   ├── hooks/                  # React hooks
+│   │   └── telemetry/
+│   ├── components/             # Reusable UI components
+│   │   └── ads/
+│   │       └── banner/
+│   ├── config/                 # Configuration modules
+│   │   └── telemetry/
+│   └── flows/                  # Feature modules (future)
+│       ├── auth/
+│       ├── profile/
+│       └── onboarding/
 ├── tests/
-│   ├── setup.ts          # Global test setup
-│   └── unit/
-│       └── app/
-│           └── main.test.ts  # Tests mirror src/ structure
+│   ├── setup.ts                # Global test setup
+│   ├── __mocks__/              # Manual mocks
+│   └── unit/                   # Unit tests mirror src/ structure
 ├── docs/
 │   ├── CONTRIBUTING.md
 │   ├── README.md
-│   └── guides/           # Detailed documentation
+│   ├── guides/                 # Detailed documentation
+│   └── services/               # Third-party service docs
 ├── scripts/
-│   └── setup.sh          # Setup and utility scripts
+│   └── setup.sh                # Setup and utility scripts
 ├── .github/
-│   └── workflows/        # CI/CD automation
-├── .vscode/              # Editor configuration
-└── dist/                 # Build output (git ignored)
+│   ├── workflows/              # CI/CD automation
+│   └── copilot-instructions.md # AI agent rules
+├── .vscode/                    # Editor configuration
+└── dist/                       # Build output (git ignored)
 ```
+
+### Architecture: Ports & Adapters (Hexagonal)
+
+This project follows the **Ports & Adapters** (Hexagonal) architecture pattern:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Application                          │
+│  ┌───────────┐  ┌────────────┐  ┌────────────────────────┐  │
+│  │   Hooks   │  │ Components │  │         Flows          │  │
+│  └─────┬─────┘  └──────┬─────┘  └───────────┬────────────┘  │
+│        │               │                    │               │
+│        └───────────────┼────────────────────┘               │
+│                        ▼                                    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                    Services                         │    │
+│  │           (Dependency Injection Layer)              │    │
+│  └─────────────────────┬───────────────────────────────┘    │
+│                        ▼                                    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                  Core (Ports)                       │    │
+│  │              Interfaces/Contracts                   │    │
+│  └─────────────────────┬───────────────────────────────┘    │
+│                        ▼                                    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                    Adapters                         │    │
+│  │    Firebase │ AdMob │ AWS │ Custom implementations  │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Benefits:**
+
+- **Backend Agnostic**: Swap Firebase for Supabase/AWS by creating new adapters
+- **Testable**: Mock services easily without touching real implementations
+- **Maintainable**: Clear separation of concerns
+- **Scalable**: Add new features without affecting existing code
+
+### Barrel Files (index.ts) Rule
+
+- Only create `index.ts` in **leaf folders** (folders with no subfolders)
+- Never create `index.ts` in parent folders
+- Always use specific imports: `@/components/ads/banner`, not `@/components`
 
 ### Why This Structure
 
-1. **Tests mirror src/**: Easy to find corresponding tests
-2. **Docs in dedicated folder**: Documentation organized separately
-3. **VS Code config included**: Consistent editor experience
-4. **Build output ignored**: Only source in version control
+1. **Ports define contracts**: Interfaces in `core/ports/` define what services must do
+2. **Adapters implement contracts**: `adapters/` contains actual implementations
+3. **Services inject dependencies**: `services/` factories return the right adapter
+4. **Tests mirror src/**: Easy to find corresponding tests
+5. **Docs in dedicated folder**: Documentation organized separately
 
 ## 🛠️ Tooling Stack
 

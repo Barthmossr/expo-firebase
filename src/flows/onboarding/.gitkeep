@@ -1,0 +1,10 @@
+# Onboarding Flow
+
+User onboarding and welcome screens.
+
+Structure:
+
+- screens/
+- hooks/
+- components/
+- onboarding.navigator.tsx

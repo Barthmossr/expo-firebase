@@ -136,6 +136,24 @@ All commits follow the [Conventional Commits](https://www.conventionalcommits.or
 
 **Learn more**: [Contributing Guidelines](CONTRIBUTING.md#commit-standards)
 
+### Ports & Adapters Architecture
+
+The project uses a hexagonal architecture pattern for backend-agnostic design:
+
+- **Ports** (`src/core/ports/`) - Interfaces defining contracts
+- **Adapters** (`src/adapters/`) - Implementations (Firebase, AdMob, etc.)
+- **Services** (`src/services/`) - Factories for dependency injection
+
+**Learn more**: [Project Overview](guides/project-overview.md#architecture-ports--adapters-hexagonal)
+
+### Barrel Files Rule
+
+- Only create `index.ts` in leaf folders (no subfolders)
+- Never create `index.ts` in parent folders
+- Use specific imports: `@/components/ads/banner`
+
+**Learn more**: [Project Overview](guides/project-overview.md#barrel-files-indexts-rule)
+
 ### Git Flow Branch Strategy
 
 - `main` - Production/deployment branch
@@ -177,6 +195,12 @@ All commits follow the [Conventional Commits](https://www.conventionalcommits.or
 
 **"What are the branch naming rules?"**
 → [Contributing Guidelines - Branch Strategy](CONTRIBUTING.md#branch-strategy)
+
+**"How is the project architecture organized?"**
+→ [Project Overview - Architecture](guides/project-overview.md#architecture-ports--adapters-hexagonal)
+
+**"Where should I put a new service adapter?"**
+→ [Project Overview - Folder Structure](guides/project-overview.md#-folder-structure)
 
 **"How do I configure ESLint?"**
 → [Configuration Guide - ESLint Configuration](guides/configuration.md#eslint-configuration)

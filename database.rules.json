@@ -1,0 +1,31 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid",
+        "profile": {
+          "displayName": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "photoURL": {
+            ".validate": "newData.isString() && newData.val().length <= 2048"
+          },
+          ".validate": "newData.hasChildren([])"
+        },
+        "settings": {
+          "notificationsEnabled": {
+            ".validate": "newData.isBoolean()"
+          },
+          "theme": {
+            ".validate": "newData.isString() && newData.val().length <= 20"
+          },
+          ".validate": "newData.hasChildren([])"
+        },
+        ".validate": "newData.hasChildren([])"
+      }
+    }
+  }
+}

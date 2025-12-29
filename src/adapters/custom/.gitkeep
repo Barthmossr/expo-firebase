@@ -1,0 +1,9 @@
+# Custom Adapters
+
+This folder will contain custom backend implementations.
+
+Planned adapters:
+
+- auth/ - Auth0, custom JWT
+- database/ - PostgreSQL, MongoDB
+- functions/ - Express API, GraphQL
