@@ -145,4 +145,18 @@ describe('createFirebaseCrashlyticsAdapter', () => {
       )
     })
   })
+
+  describe('forceCrash', () => {
+    it('should log and crash', () => {
+      const adapter = createFirebaseCrashlyticsAdapter()
+
+      adapter.forceCrash()
+
+      expect(mockLog).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        'debug_force_crash',
+      )
+      expect(mockCrash).toHaveBeenCalledWith(mockCrashlyticsInstance)
+    })
+  })
 })
