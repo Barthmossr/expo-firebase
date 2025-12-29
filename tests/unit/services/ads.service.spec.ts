@@ -34,4 +34,14 @@ describe('ads.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetAdsService', () => {
+    it('should create new adapter after reset', () => {
+      getAdsService()
+      resetAdsService()
+      getAdsService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
