@@ -45,4 +45,14 @@ describe('database.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetDatabaseService', () => {
+    it('should create new adapter after reset', () => {
+      getDatabaseService()
+      resetDatabaseService()
+      getDatabaseService()
+
+      expect(mockCreateAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
