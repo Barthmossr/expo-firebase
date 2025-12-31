@@ -36,5 +36,19 @@ describe('registerSchema', () => {
         )
       }
     })
+
+    it('should fail when name is too long', () => {
+      const result = registerSchema.safeParse({
+        ...validData,
+        displayName: 'A'.repeat(51),
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Name must be less than 50 characters',
+        )
+      }
+    })
   })
 })
