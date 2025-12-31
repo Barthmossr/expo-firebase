@@ -22,5 +22,19 @@ describe('registerSchema', () => {
         expect(result.error.issues[0]?.message).toBe('Name is required')
       }
     })
+
+    it('should fail when name is too short', () => {
+      const result = registerSchema.safeParse({
+        ...validData,
+        displayName: 'A',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Name must be at least 2 characters',
+        )
+      }
+    })
   })
 })
