@@ -13,4 +13,10 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('Please enter a valid email address')
   })
+
+  it('should return correct message for user-not-found', () => {
+    const message = getAuthErrorMessage('auth/user-not-found')
+
+    expect(message).toBe('No account found with this email')
+  })
 })
