@@ -35,4 +35,16 @@ describe('loginSchema', () => {
       )
     }
   })
+
+  it('should fail when password is empty', () => {
+    const result = loginSchema.safeParse({
+      email: 'test@example.com',
+      password: '',
+    })
+
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe('Password is required')
+    }
+  })
 })
