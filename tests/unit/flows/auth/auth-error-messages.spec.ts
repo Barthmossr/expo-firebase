@@ -37,4 +37,10 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('Too many attempts. Please try again later')
   })
+
+  it('should return default message for unknown error', () => {
+    const message = getAuthErrorMessage('auth/unknown')
+
+    expect(message).toBe('Something went wrong. Please try again')
+  })
 })
