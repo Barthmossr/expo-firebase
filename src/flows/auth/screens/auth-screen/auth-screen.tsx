@@ -11,17 +11,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
 import { useAuth } from '@/hooks/auth'
+import { ParticleBackground } from '@/components/ui/particle-background'
+import { Logo } from '@/components/ui/logo'
 import { LoginForm } from '../../components/login-form'
 import { RegisterForm } from '../../components/register-form'
 import { ForgotPasswordForm } from '../../components/forgot-password-form'
 import { GoogleSignInButton } from '../../components/google-sign-in-button'
 import type { AuthScreenProps, AuthView } from './auth-screen.types'
-
-const EMOJIS = {
-  login: '🎮',
-  register: '🚀',
-  'forgot-password': '🔑',
-} as const
 
 const TITLES = {
   login: 'Welcome Back!',
@@ -104,6 +100,7 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ParticleBackground particleCount={15} />
       <KeyboardAvoidingView
         style={styles.keyboardAvoid}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -114,7 +111,9 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <Text style={styles.emoji}>{EMOJIS[activeView]}</Text>
+            <View style={styles.logoContainer}>
+              <Logo size="large" />
+            </View>
             <Text style={styles.title}>{TITLES[activeView]}</Text>
             <Text style={styles.subtitle}>{SUBTITLES[activeView]}</Text>
           </View>
@@ -146,9 +145,8 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.xl,
     alignItems: 'center',
   },
-  emoji: {
-    fontSize: 48,
-    marginBottom: SPACING.md,
+  logoContainer: {
+    marginBottom: SPACING.lg,
   },
   title: {
     ...TYPOGRAPHY.h1,
