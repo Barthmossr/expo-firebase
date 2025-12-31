@@ -10,6 +10,10 @@ const config: Config = {
   testMatch: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@react-native-firebase/auth$':
+      '<rootDir>/tests/__mocks__/@react-native-firebase/auth.ts',
+    '^@react-native-google-signin/google-signin$':
+      '<rootDir>/tests/__mocks__/@react-native-google-signin/google-signin.ts',
   },
   setupFiles: ['jest-expo/src/preset/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],

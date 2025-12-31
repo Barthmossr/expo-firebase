@@ -61,12 +61,13 @@ const config: ExpoConfig = {
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
-  userInterfaceStyle: 'light',
+  userInterfaceStyle: 'dark',
+  scheme: 'expofirebase',
   newArchEnabled: true,
   splash: {
     image: './assets/splash-icon.png',
     resizeMode: 'contain',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#0D0D0D',
   },
   ios: {
     supportsTablet: true,
@@ -77,7 +78,7 @@ const config: ExpoConfig = {
     package: 'com.barthmossr.expofirebase',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#0D0D0D',
     },
     edgeToEdgeEnabled: true,
     googleServicesFile: './google-services.json',
@@ -86,8 +87,16 @@ const config: ExpoConfig = {
     favicon: './assets/favicon.png',
   },
   plugins: [
+    [
+      'expo-router',
+      {
+        root: './src/app',
+      },
+    ],
+    'expo-secure-store',
     '@react-native-firebase/app',
     '@react-native-firebase/crashlytics',
+    '@react-native-google-signin/google-signin',
     [
       'react-native-google-mobile-ads',
       {
@@ -111,6 +120,7 @@ const config: ExpoConfig = {
     firebase,
     admob,
     telemetry,
+    googleWebClientId: process.env.GOOGLE_WEB_CLIENT_ID ?? '',
   },
 }
 
