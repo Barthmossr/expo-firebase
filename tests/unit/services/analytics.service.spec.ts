@@ -1,7 +1,7 @@
 import {
   getAnalyticsService,
   resetAnalyticsService,
-} from '@/services/analytics.service'
+} from '@/services/analytics'
 import { createFirebaseAnalyticsAdapter } from '@/adapters/firebase/analytics'
 
 jest.mock('@/adapters/firebase/analytics')

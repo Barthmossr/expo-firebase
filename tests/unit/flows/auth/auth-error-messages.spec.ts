@@ -1,4 +1,4 @@
-import { getAuthErrorMessage } from '@/flows/auth/utils/auth-error-messages'
+import { getAuthErrorMessage } from '@/flows/auth/utils'
 import type { AuthErrorCode } from '@/core/ports/auth'
 
 describe('getAuthErrorMessage', () => {

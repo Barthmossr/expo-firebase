@@ -1,7 +1,4 @@
-import {
-  getStorageService,
-  resetStorageService,
-} from '@/services/storage.service'
+import { getStorageService, resetStorageService } from '@/services/storage'
 import { createFirebaseStorageAdapter } from '@/adapters/firebase/storage'
 
 jest.mock('@/adapters/firebase/storage')

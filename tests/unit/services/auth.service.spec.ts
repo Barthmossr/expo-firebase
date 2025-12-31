@@ -1,4 +1,4 @@
-import { getAuthService, resetAuthService } from '@/services/auth.service'
+import { getAuthService, resetAuthService } from '@/services/auth'
 import { createFirebaseAuthAdapter } from '@/adapters/firebase/auth'
 
 jest.mock('@/adapters/firebase/auth')

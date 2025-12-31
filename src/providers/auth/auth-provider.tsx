@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
-import { getAuthService } from '@/services'
+import { getAuthService } from '@/services/auth'
 import { initializeGoogleSignIn } from '@/config/auth'
 import type {
   AuthUser,
