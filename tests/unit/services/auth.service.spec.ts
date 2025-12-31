@@ -12,6 +12,7 @@ describe('auth.service', () => {
     signIn: jest.fn(),
     signOut: jest.fn(),
     signUp: jest.fn(),
+    signInWithGoogle: jest.fn(),
     getCurrentUser: jest.fn(),
     onAuthStateChanged: jest.fn(),
     sendPasswordResetEmail: jest.fn(),
