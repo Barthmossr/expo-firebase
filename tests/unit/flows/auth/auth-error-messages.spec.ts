@@ -25,4 +25,10 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('Incorrect password')
   })
+
+  it('should return correct message for invalid-credential', () => {
+    const message = getAuthErrorMessage('auth/invalid-credential')
+
+    expect(message).toBe('Invalid email or password')
+  })
 })
