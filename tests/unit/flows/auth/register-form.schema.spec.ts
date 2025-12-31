@@ -51,4 +51,20 @@ describe('registerSchema', () => {
       }
     })
   })
+
+  describe('password validation', () => {
+    it('should fail when password is too short', () => {
+      const result = registerSchema.safeParse({
+        ...validData,
+        password: 'Pass1',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Password must be at least 8 characters',
+        )
+      }
+    })
+  })
 })
