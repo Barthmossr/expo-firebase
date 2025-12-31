@@ -1,8 +1,13 @@
-import type { AuthUser, AuthCredentials } from './auth.types'
+import type {
+  AuthUser,
+  AuthCredentials,
+  RegisterCredentials,
+} from './auth.types'
 
 type AuthPort = {
   signIn: (credentials: AuthCredentials) => Promise<AuthUser>
-  signUp: (credentials: AuthCredentials) => Promise<AuthUser>
+  signUp: (credentials: RegisterCredentials) => Promise<AuthUser>
+  signInWithGoogle: () => Promise<AuthUser>
   signOut: () => Promise<void>
   getCurrentUser: () => AuthUser | null
   onAuthStateChanged: (callback: (user: AuthUser | null) => void) => () => void
