@@ -43,4 +43,10 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('Something went wrong. Please try again')
   })
+
+  it('should return default message for unrecognized error code', () => {
+    const message = getAuthErrorMessage('auth/unknown' as AuthErrorCode)
+
+    expect(message).toBe('Something went wrong. Please try again')
+  })
 })
