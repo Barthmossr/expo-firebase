@@ -7,4 +7,10 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('This email is already registered')
   })
+
+  it('should return correct message for invalid-email', () => {
+    const message = getAuthErrorMessage('auth/invalid-email')
+
+    expect(message).toBe('Please enter a valid email address')
+  })
 })
