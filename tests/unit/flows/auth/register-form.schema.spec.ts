@@ -66,5 +66,19 @@ describe('registerSchema', () => {
         )
       }
     })
+
+    it('should fail when password has no uppercase', () => {
+      const result = registerSchema.safeParse({
+        ...validData,
+        password: 'password1',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Password must contain at least one uppercase letter',
+        )
+      }
+    })
   })
 })
