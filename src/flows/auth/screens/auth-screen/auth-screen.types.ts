@@ -1,7 +1,7 @@
-import type { AuthTab } from '../../components/auth-tab-selector'
+type AuthView = 'login' | 'register' | 'forgot-password'
 
 type AuthScreenProps = {
-  initialTab?: AuthTab
+  initialView?: AuthView
 }
 
-export type { AuthScreenProps }
+export type { AuthScreenProps, AuthView }
