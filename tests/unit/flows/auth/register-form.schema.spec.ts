@@ -12,4 +12,15 @@ describe('registerSchema', () => {
 
     expect(result.success).toBe(true)
   })
+
+  describe('displayName validation', () => {
+    it('should fail when name is empty', () => {
+      const result = registerSchema.safeParse({ ...validData, displayName: '' })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe('Name is required')
+      }
+    })
+  })
 })
