@@ -31,4 +31,10 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('Invalid email or password')
   })
+
+  it('should return correct message for too-many-requests', () => {
+    const message = getAuthErrorMessage('auth/too-many-requests')
+
+    expect(message).toBe('Too many attempts. Please try again later')
+  })
 })
