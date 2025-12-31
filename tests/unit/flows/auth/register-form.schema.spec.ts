@@ -80,5 +80,19 @@ describe('registerSchema', () => {
         )
       }
     })
+
+    it('should fail when password has no number', () => {
+      const result = registerSchema.safeParse({
+        ...validData,
+        password: 'Password',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Password must contain at least one number',
+        )
+      }
+    })
   })
 })
