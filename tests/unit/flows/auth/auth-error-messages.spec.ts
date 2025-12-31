@@ -19,4 +19,10 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('No account found with this email')
   })
+
+  it('should return correct message for wrong-password', () => {
+    const message = getAuthErrorMessage('auth/wrong-password')
+
+    expect(message).toBe('Incorrect password')
+  })
 })
