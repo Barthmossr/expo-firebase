@@ -1,2 +1,9 @@
 export type { AuthPort } from './auth.port'
-export type { AuthUser, AuthCredentials, AuthState } from './auth.types'
+export type {
+  AuthUser,
+  AuthCredentials,
+  RegisterCredentials,
+  AuthState,
+  AuthErrorCode,
+  AuthError,
+} from './auth.types'

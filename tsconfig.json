@@ -8,7 +8,8 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@assets/*": ["assets/*"]
     },
     "resolveJsonModule": true,
     "allowImportingTsExtensions": false,
@@ -37,7 +38,7 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*", "tests/**/*", "app/**/*"],
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "compilerOptions": {

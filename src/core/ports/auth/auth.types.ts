@@ -11,10 +11,38 @@ type AuthCredentials = {
   password: string
 }
 
+type RegisterCredentials = AuthCredentials & {
+  displayName: string
+}
+
 type AuthState = {
   user: AuthUser | null
   isAuthenticated: boolean
   isLoading: boolean
 }
 
-export type { AuthUser, AuthCredentials, AuthState }
+type AuthErrorCode =
+  | 'auth/email-already-in-use'
+  | 'auth/invalid-email'
+  | 'auth/user-not-found'
+  | 'auth/wrong-password'
+  | 'auth/weak-password'
+  | 'auth/too-many-requests'
+  | 'auth/network-request-failed'
+  | 'auth/popup-closed-by-user'
+  | 'auth/invalid-credential'
+  | 'auth/unknown'
+
+type AuthError = {
+  code: AuthErrorCode
+  message: string
+}
+
+export type {
+  AuthUser,
+  AuthCredentials,
+  RegisterCredentials,
+  AuthState,
+  AuthErrorCode,
+  AuthError,
+}

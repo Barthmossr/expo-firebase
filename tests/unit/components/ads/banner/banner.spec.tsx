@@ -1,9 +1,9 @@
 import React from 'react'
 import { render } from '@testing-library/react-native'
 import { Banner } from '@/components/ads/banner'
-import { getAdsService } from '@/services'
+import { getAdsService } from '@/services/ads'
 
-jest.mock('@/services')
+jest.mock('@/services/ads')
 jest.mock('react-native-google-mobile-ads', () => ({
   BannerAd: 'BannerAd',
   BannerAdSize: {

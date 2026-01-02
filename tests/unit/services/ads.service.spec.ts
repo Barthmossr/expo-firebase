@@ -1,4 +1,4 @@
-import { getAdsService, resetAdsService } from '@/services/ads.service'
+import { getAdsService, resetAdsService } from '@/services/ads'
 import { createAdmobAdapter } from '@/adapters/admob'
 
 jest.mock('@/adapters/admob')

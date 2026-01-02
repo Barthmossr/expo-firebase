@@ -1,7 +1,7 @@
 import {
   getFunctionsService,
   resetFunctionsService,
-} from '@/services/functions.service'
+} from '@/services/functions'
 import { createCloudFunctionsAdapter } from '@/adapters/firebase/functions'
 
 jest.mock('@/adapters/firebase/functions')

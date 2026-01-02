@@ -1,7 +1,7 @@
 import {
   getCrashReportingService,
   resetCrashReportingService,
-} from '@/services/crash-reporting.service'
+} from '@/services/crash-reporting'
 import { createFirebaseCrashlyticsAdapter } from '@/adapters/firebase/crash-reporting'
 
 jest.mock('@/adapters/firebase/crash-reporting')

@@ -1,7 +1,4 @@
-import {
-  getDatabaseService,
-  resetDatabaseService,
-} from '@/services/database.service'
+import { getDatabaseService, resetDatabaseService } from '@/services/database'
 import { createFirestoreAdapter } from '@/adapters/firebase/database'
 
 jest.mock('@/adapters/firebase/database')

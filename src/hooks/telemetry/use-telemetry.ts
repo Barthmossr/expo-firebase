@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
-import { getAnalyticsService, getCrashReportingService } from '@/services'
+import { getAnalyticsService } from '@/services/analytics'
+import { getCrashReportingService } from '@/services/crash-reporting'
 import { getTelemetryConfig } from '@/config/telemetry'
 import type { UseTelemetryOutput } from './use-telemetry.types'
 
