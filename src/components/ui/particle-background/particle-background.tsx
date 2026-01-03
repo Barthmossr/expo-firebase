@@ -1,10 +1,11 @@
 import { useEffect, useRef, useMemo } from 'react'
-import { View, Animated, StyleSheet, Dimensions, Easing } from 'react-native'
+import { View, Animated, Dimensions, Easing } from 'react-native'
 import { COLORS } from '@/theme'
 import type {
   ParticleConfig,
   ParticleBackgroundProps,
 } from './particle-background.types'
+import { styles } from './particle-background.styles'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
@@ -95,15 +96,5 @@ const ParticleBackground = (
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
-  },
-  particle: {
-    position: 'absolute',
-  },
-})
 
 export { ParticleBackground }

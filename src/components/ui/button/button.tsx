@@ -1,6 +1,7 @@
-import { Pressable, Text, StyleSheet, ActivityIndicator } from 'react-native'
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '@/theme'
+import { Pressable, Text, ActivityIndicator } from 'react-native'
+import { COLORS } from '@/theme'
 import type { ButtonProps, ButtonVariant } from './button.types'
+import { styles } from './button.styles'
 
 const getBackgroundColor = (variant: ButtonVariant, pressed: boolean) => {
   const colors = {
@@ -49,20 +50,5 @@ const Button = (props: ButtonProps): React.ReactElement => {
     </Pressable>
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    width: '100%',
-    paddingVertical: SPACING.sm + 4,
-    paddingHorizontal: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 48,
-  },
-  text: {
-    ...TYPOGRAPHY.button,
-  },
-})
 
 export { Button }

@@ -1,13 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextInput } from '@/components/ui/text-input'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth'
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
 import { registerSchema, type RegisterFormData } from './register-form.schema'
 import type { RegisterFormProps } from './register-form.types'
 import { getAuthErrorMessage } from '../../utils/auth-error-messages'
+import { styles } from './register-form.styles'
 
 const RegisterForm = (_props: RegisterFormProps): React.ReactElement => {
   const { signUp, isLoading, error } = useAuth()
@@ -91,23 +91,5 @@ const RegisterForm = (_props: RegisterFormProps): React.ReactElement => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-  },
-  passwordHint: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.text.tertiary,
-    marginTop: -SPACING.sm,
-    marginBottom: SPACING.lg,
-  },
-  apiError: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.status.error,
-    marginBottom: SPACING.md,
-    textAlign: 'center',
-  },
-})
 
 export { RegisterForm }

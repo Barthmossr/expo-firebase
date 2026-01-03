@@ -3,13 +3,11 @@ import {
   View,
   Text,
   Pressable,
-  StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
 import { useAuth } from '@/hooks/auth'
 import { ParticleBackground } from '@/components/ui/particle-background'
 import { Logo } from '@/components/ui/logo'
@@ -18,6 +16,7 @@ import { RegisterForm } from '../../components/register-form'
 import { ForgotPasswordForm } from '../../components/forgot-password-form'
 import { GoogleSignInButton } from '../../components/google-sign-in-button'
 import type { AuthScreenProps, AuthView } from './auth-screen.types'
+import { styles } from './auth-screen.styles'
 
 const TITLES = {
   login: 'Welcome Back!',
@@ -127,66 +126,5 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.background.primary,
-  },
-  keyboardAvoid: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.xl,
-  },
-  header: {
-    marginBottom: SPACING.xl,
-    alignItems: 'center',
-  },
-  logoContainer: {
-    marginBottom: SPACING.lg,
-  },
-  title: {
-    ...TYPOGRAPHY.h1,
-    color: COLORS.text.primary,
-    marginBottom: SPACING.xs,
-    textAlign: 'center',
-  },
-  subtitle: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text.secondary,
-    textAlign: 'center',
-  },
-  formCard: {
-    backgroundColor: COLORS.background.secondary,
-    borderRadius: 16,
-    padding: SPACING.lg,
-    borderWidth: 1,
-    borderColor: COLORS.border.primary,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: SPACING.xl,
-    paddingVertical: SPACING.md,
-    backgroundColor: COLORS.background.secondary,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.border.primary,
-  },
-  switchText: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text.secondary,
-  },
-  switchAction: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.accent.secondary,
-    fontWeight: '600',
-    marginBottom: 1,
-  },
-})
 
 export { AuthScreen }

@@ -1,6 +1,7 @@
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
+import { View, Text, ActivityIndicator } from 'react-native'
+import { COLORS } from '@/theme'
 import type { LoadingIndicatorProps } from './loading-indicator.types'
+import { styles } from './loading-indicator.styles'
 
 const LoadingIndicator = (props: LoadingIndicatorProps): React.ReactElement => {
   const { size = 'large', text } = props
@@ -12,19 +13,5 @@ const LoadingIndicator = (props: LoadingIndicatorProps): React.ReactElement => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.background.primary,
-  },
-  text: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text.secondary,
-    marginTop: SPACING.md,
-  },
-})
 
 export { LoadingIndicator }

@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth'
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
 import type { GoogleSignInButtonProps } from './google-sign-in-button.types'
+import { styles } from './google-sign-in-button.styles'
 
 const GoogleSignInButton = (
   props: GoogleSignInButtonProps,
@@ -35,27 +35,5 @@ const GoogleSignInButton = (
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginTop: SPACING.md,
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: SPACING.lg,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.border.primary,
-  },
-  dividerText: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.text.tertiary,
-    marginHorizontal: SPACING.md,
-  },
-})
 
 export { GoogleSignInButton }

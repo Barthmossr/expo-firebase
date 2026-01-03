@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth'
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
+import { styles } from './home.styles'
 
 const HomeScreen = (): React.ReactElement => {
   const { user, signOut, isLoading } = useAuth()
@@ -39,40 +39,5 @@ const HomeScreen = (): React.ReactElement => {
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.background.primary,
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.xl,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    ...TYPOGRAPHY.h1,
-    color: COLORS.text.primary,
-    marginBottom: SPACING.xs,
-  },
-  subtitle: {
-    ...TYPOGRAPHY.h3,
-    color: COLORS.accent.primary,
-    marginBottom: SPACING.lg,
-  },
-  description: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text.secondary,
-    textAlign: 'center',
-  },
-  footer: {
-    marginTop: SPACING.xl,
-  },
-})
 
 export default HomeScreen

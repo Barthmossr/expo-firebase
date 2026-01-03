@@ -1,13 +1,13 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextInput } from '@/components/ui/text-input'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth'
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
 import { loginSchema, type LoginFormData } from './login-form.schema'
 import type { LoginFormProps } from './login-form.types'
 import { getAuthErrorMessage } from '../../utils/auth-error-messages'
+import { styles } from './login-form.styles'
 
 const LoginForm = ({
   onForgotPassword,
@@ -77,25 +77,5 @@ const LoginForm = ({
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: SPACING.lg,
-  },
-  forgotPasswordText: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.accent.primary,
-  },
-  apiError: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.status.error,
-    marginBottom: SPACING.md,
-    textAlign: 'center',
-  },
-})
 
 export { LoginForm }

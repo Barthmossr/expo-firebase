@@ -1,17 +1,17 @@
 import { useState } from 'react'
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextInput } from '@/components/ui/text-input'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth'
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme'
 import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
 } from './forgot-password-form.schema'
 import type { ForgotPasswordFormProps } from './forgot-password-form.types'
 import { getAuthErrorMessage } from '../../utils/auth-error-messages'
+import { styles } from './forgot-password-form.styles'
 
 const ForgotPasswordForm = (
   props: ForgotPasswordFormProps,
@@ -83,47 +83,5 @@ const ForgotPasswordForm = (
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-  },
-  title: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.text.primary,
-    marginBottom: SPACING.xs,
-  },
-  subtitle: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text.secondary,
-    marginBottom: SPACING.lg,
-  },
-  apiError: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.status.error,
-    marginBottom: SPACING.md,
-    textAlign: 'center',
-  },
-  backButton: {
-    alignSelf: 'center',
-    marginTop: SPACING.lg,
-  },
-  backButtonText: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.accent.primary,
-  },
-  successTitle: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.text.primary,
-    textAlign: 'center',
-    marginBottom: SPACING.sm,
-  },
-  successMessage: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.text.secondary,
-    textAlign: 'center',
-    marginBottom: SPACING.xl,
-  },
-})
 
 export { ForgotPasswordForm }
