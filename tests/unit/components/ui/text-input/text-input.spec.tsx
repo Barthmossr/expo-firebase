@@ -92,4 +92,20 @@ describe('TextInput', () => {
       expect(input.props['value']).toBe('test@example.com')
     })
   })
+
+  describe('secure text entry', () => {
+    it('should hide password by default when secureTextEntry is true', () => {
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          secureTextEntry
+          value="password123"
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['secureTextEntry']).toBe(true)
+    })
+  })
 })
