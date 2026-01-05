@@ -74,5 +74,18 @@ describe('auth.config', () => {
         offlineAccess: true,
       })
     })
+
+    it('should configure GoogleSignin with empty string when no clientId', () => {
+      ;(Constants.expoConfig as ExpoConfigExtra) = {
+        extra: {},
+      }
+
+      initializeGoogleSignIn()
+
+      expect(mockGoogleSignin.configure).toHaveBeenCalledWith({
+        webClientId: '',
+        offlineAccess: true,
+      })
+    })
   })
 })
