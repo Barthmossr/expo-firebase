@@ -57,4 +57,22 @@ describe('auth.config', () => {
       expect(config.googleWebClientId).toBe(webClientId)
     })
   })
+
+  describe('initializeGoogleSignIn', () => {
+    it('should configure GoogleSignin with correct settings', () => {
+      const webClientId = 'test-web-client-id.apps.googleusercontent.com'
+      ;(Constants.expoConfig as ExpoConfigExtra) = {
+        extra: {
+          googleWebClientId: webClientId,
+        },
+      }
+
+      initializeGoogleSignIn()
+
+      expect(mockGoogleSignin.configure).toHaveBeenCalledWith({
+        webClientId,
+        offlineAccess: true,
+      })
+    })
+  })
 })
