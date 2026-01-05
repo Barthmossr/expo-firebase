@@ -195,5 +195,15 @@ describe('TextInput', () => {
         fireEvent(getByTestId('text-input'), 'focus')
       }).not.toThrow()
     })
+
+    it('should work without onBlur callback', () => {
+      const { getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(() => {
+        fireEvent(getByTestId('text-input'), 'blur')
+      }).not.toThrow()
+    })
   })
 })
