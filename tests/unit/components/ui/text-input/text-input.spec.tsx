@@ -66,4 +66,17 @@ describe('TextInput', () => {
       expect(queryByText(/required|invalid|error/i)).toBeNull()
     })
   })
+
+  describe('value changes', () => {
+    it('should call onChangeText when text changes', () => {
+      const onChangeText = jest.fn()
+      const { getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={onChangeText} />,
+      )
+
+      fireEvent.changeText(getByTestId('text-input'), 'test@example.com')
+
+      expect(onChangeText).toHaveBeenCalledWith('test@example.com')
+    })
+  })
 })
