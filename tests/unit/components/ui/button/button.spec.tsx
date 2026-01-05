@@ -29,5 +29,13 @@ describe('Button', () => {
       const button = getByText('Click Me').parent?.parent
       expect(button).toBeDefined()
     })
+
+    it('should render secondary variant', () => {
+      const { getByText } = render(
+        <Button title="Click Me" onPress={jest.fn()} variant="secondary" />,
+      )
+
+      expect(getByText('Click Me')).toBeDefined()
+    })
   })
 })
