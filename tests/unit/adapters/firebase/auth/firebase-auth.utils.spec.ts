@@ -17,5 +17,13 @@ describe('firebase-auth.utils', () => {
 
       expect(result).toBe(user)
     })
+
+    it('should throw error when user is null', () => {
+      expect(() => ensureUserExists(null)).toThrow(
+        expect.objectContaining({
+          code: 'auth/unknown',
+        }),
+      )
+    })
   })
 })
