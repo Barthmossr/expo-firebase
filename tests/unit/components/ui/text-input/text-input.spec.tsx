@@ -24,5 +24,14 @@ describe('TextInput', () => {
       expect(getByText('Email')).toBeDefined()
       expect(getByTestId('text-input')).toBeDefined()
     })
+
+    it('should render without label', () => {
+      const { queryByText, getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(queryByText(/Email|Password|Name/)).toBeNull()
+      expect(getByTestId('text-input')).toBeDefined()
+    })
   })
 })
