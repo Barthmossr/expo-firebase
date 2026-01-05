@@ -58,5 +58,26 @@ describe('createFirebaseOTPAdapter', () => {
         password,
       })
     })
+
+    it('should use default region when not provided in config', async () => {
+      mockGetFirebaseConfig.mockReturnValue(
+        createMockFirebaseConfig({ projectId: testProjectId }),
+      )
+
+      const mockCallable = jest.fn().mockResolvedValue(undefined)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+
+      const adapter = createFirebaseOTPAdapter()
+
+      await adapter.sendVerificationCode({
+        email: randEmail(),
+        displayName: randFullName(),
+        password: randPassword(),
+      })
+
+      expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
+        `https://southamerica-east1-${testProjectId}.cloudfunctions.net/sendOTPEmail`,
+      )
+    })
   })
 })
