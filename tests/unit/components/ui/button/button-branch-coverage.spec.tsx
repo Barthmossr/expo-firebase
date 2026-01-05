@@ -6,4 +6,9 @@ describe('Button - getBackgroundColor Function Coverage', () => {
     const color = getBackgroundColor('primary', false)
     expect(color).toBe(COLORS.button.primary)
   })
+
+  it('should return primaryPressed color when pressed', () => {
+    const color = getBackgroundColor('primary', true)
+    expect(color).toBe(COLORS.button.primaryPressed)
+  })
 })
