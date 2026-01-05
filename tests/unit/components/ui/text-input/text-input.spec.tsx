@@ -223,5 +223,19 @@ describe('TextInput', () => {
       expect(input.props['autoCapitalize']).toBe('none')
       expect(input.props['autoCorrect']).toBe(false)
     })
+
+    it('should support keyboardType', () => {
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          keyboardType="email-address"
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['keyboardType']).toBe('email-address')
+    })
   })
 })
