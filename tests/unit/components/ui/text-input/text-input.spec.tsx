@@ -33,5 +33,17 @@ describe('TextInput', () => {
       expect(queryByText(/Email|Password|Name/)).toBeNull()
       expect(getByTestId('text-input')).toBeDefined()
     })
+
+    it('should render placeholder', () => {
+      const { getByPlaceholderText } = render(
+        <TextInput
+          placeholder="Enter email"
+          value=""
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      expect(getByPlaceholderText('Enter email')).toBeDefined()
+    })
   })
 })
