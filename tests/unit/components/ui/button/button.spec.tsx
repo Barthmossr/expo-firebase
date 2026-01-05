@@ -50,4 +50,17 @@ describe('Button', () => {
       expect(getByText('Sign in with Google')).toBeDefined()
     })
   })
+
+  describe('onPress', () => {
+    it('should call onPress when button is pressed', () => {
+      const onPress = jest.fn()
+      const { getByText } = render(
+        <Button title="Click Me" onPress={onPress} />,
+      )
+
+      fireEvent.press(getByText('Click Me'))
+
+      expect(onPress).toHaveBeenCalledTimes(1)
+    })
+  })
 })
