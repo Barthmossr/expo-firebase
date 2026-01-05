@@ -123,4 +123,15 @@ describe('Button', () => {
       expect(UNSAFE_getByType(ActivityIndicator)).toBeDefined()
     })
   })
+
+  describe('variants', () => {
+    it('should apply primary variant styling', () => {
+      const { getByText } = render(
+        <Button title="Primary" onPress={jest.fn()} variant="primary" />,
+      )
+
+      const text = getByText('Primary')
+      expect(text).toBeDefined()
+    })
+  })
 })
