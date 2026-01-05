@@ -144,5 +144,18 @@ describe('createFirebaseOTPAdapter', () => {
       expect(result).toEqual(verificationResult)
       expect(result.success).toBe(true)
     })
+
+    it('should throw error when verification fails', async () => {
+      const mockCallable = jest
+        .fn()
+        .mockRejectedValue(new Error('Invalid code'))
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+
+      const adapter = createFirebaseOTPAdapter()
+
+      await expect(
+        adapter.verifyCode({ email: randEmail(), code: '123456' }),
+      ).rejects.toThrow('Invalid code')
+    })
   })
 })
