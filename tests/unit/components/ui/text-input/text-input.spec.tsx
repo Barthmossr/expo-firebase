@@ -185,5 +185,15 @@ describe('TextInput', () => {
 
       expect(onBlur).toHaveBeenCalled()
     })
+
+    it('should work without onFocus callback', () => {
+      const { getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(() => {
+        fireEvent(getByTestId('text-input'), 'focus')
+      }).not.toThrow()
+    })
   })
 })
