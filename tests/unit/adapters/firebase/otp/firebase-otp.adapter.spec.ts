@@ -97,4 +97,30 @@ describe('createFirebaseOTPAdapter', () => {
       ).rejects.toThrow('Function failed')
     })
   })
+
+  describe('verifyCode', () => {
+    it('should call cloud function with email and code', async () => {
+      const email = randEmail()
+      const code = '123456'
+      const verificationResult = createMockOTPVerificationResult({
+        email,
+        password: randPassword(),
+        displayName: randFullName(),
+      })
+
+      const mockCallable = jest
+        .fn()
+        .mockResolvedValue({ data: verificationResult })
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+
+      const adapter = createFirebaseOTPAdapter()
+      const result = await adapter.verifyCode({ email, code })
+
+      expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
+        `https://southamerica-east1-${testProjectId}.cloudfunctions.net/verifyOTPEmail`,
+      )
+      expect(mockCallable).toHaveBeenCalledWith({ email, code })
+      expect(result).toEqual(verificationResult)
+    })
+  })
 })
