@@ -120,5 +120,27 @@ describe('TextInput', () => {
 
       expect(getByText('Show')).toBeDefined()
     })
+
+    it('should toggle password visibility when Show/Hide is pressed', () => {
+      const { getByText, getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          secureTextEntry
+          value="password123"
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['secureTextEntry']).toBe(true)
+
+      fireEvent.press(getByText('Show'))
+      expect(input.props['secureTextEntry']).toBe(false)
+      expect(getByText('Hide')).toBeDefined()
+
+      fireEvent.press(getByText('Hide'))
+      expect(input.props['secureTextEntry']).toBe(true)
+      expect(getByText('Show')).toBeDefined()
+    })
   })
 })
