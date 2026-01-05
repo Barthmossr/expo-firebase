@@ -92,5 +92,14 @@ describe('Button', () => {
       expect(button).toBeDefined()
       expect(button?.props['accessibilityState']?.disabled).toBe(true)
     })
+
+    it('should not be disabled by default', () => {
+      const { getByText } = render(
+        <Button title="Click Me" onPress={jest.fn()} />,
+      )
+
+      const button = getByText('Click Me').parent?.parent
+      expect(button?.props['accessibilityState']?.disabled).toBeFalsy()
+    })
   })
 })
