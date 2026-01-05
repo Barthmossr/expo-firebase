@@ -206,4 +206,22 @@ describe('TextInput', () => {
       }).not.toThrow()
     })
   })
+
+  describe('other props', () => {
+    it('should pass through additional props', () => {
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['autoCapitalize']).toBe('none')
+      expect(input.props['autoCorrect']).toBe(false)
+    })
+  })
 })
