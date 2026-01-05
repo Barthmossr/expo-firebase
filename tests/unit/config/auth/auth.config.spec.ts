@@ -33,5 +33,15 @@ describe('auth.config', () => {
 
       expect(config.googleWebClientId).toBe('')
     })
+
+    it('should return empty string when extra is undefined', () => {
+      ;(Constants.expoConfig as ExpoConfigExtra) = {
+        extra: undefined,
+      }
+
+      const config = getAuthConfig()
+
+      expect(config.googleWebClientId).toBe('')
+    })
   })
 })
