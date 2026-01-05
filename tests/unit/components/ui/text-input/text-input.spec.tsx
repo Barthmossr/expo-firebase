@@ -152,4 +152,22 @@ describe('TextInput', () => {
       expect(queryByText('Hide')).toBeNull()
     })
   })
+
+  describe('focus and blur', () => {
+    it('should call onFocus when input is focused', () => {
+      const onFocus = jest.fn()
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          onFocus={onFocus}
+        />,
+      )
+
+      fireEvent(getByTestId('text-input'), 'focus')
+
+      expect(onFocus).toHaveBeenCalled()
+    })
+  })
 })
