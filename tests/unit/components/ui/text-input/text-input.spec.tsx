@@ -169,5 +169,21 @@ describe('TextInput', () => {
 
       expect(onFocus).toHaveBeenCalled()
     })
+
+    it('should call onBlur when input loses focus', () => {
+      const onBlur = jest.fn()
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          onBlur={onBlur}
+        />,
+      )
+
+      fireEvent(getByTestId('text-input'), 'blur')
+
+      expect(onBlur).toHaveBeenCalled()
+    })
   })
 })
