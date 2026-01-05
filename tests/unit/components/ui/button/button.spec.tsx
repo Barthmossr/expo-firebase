@@ -113,5 +113,14 @@ describe('Button', () => {
       const ActivityIndicator = require('react-native').ActivityIndicator
       expect(UNSAFE_queryByType(ActivityIndicator)).toBeNull()
     })
+
+    it('should show loading indicator when loading', () => {
+      const { UNSAFE_getByType } = render(
+        <Button title="Click Me" onPress={jest.fn()} loading />,
+      )
+
+      const ActivityIndicator = require('react-native').ActivityIndicator
+      expect(UNSAFE_getByType(ActivityIndicator)).toBeDefined()
+    })
   })
 })
