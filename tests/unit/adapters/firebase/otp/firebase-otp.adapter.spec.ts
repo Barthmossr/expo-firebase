@@ -122,5 +122,27 @@ describe('createFirebaseOTPAdapter', () => {
       expect(mockCallable).toHaveBeenCalledWith({ email, code })
       expect(result).toEqual(verificationResult)
     })
+
+    it('should return verification result data', async () => {
+      const verificationResult = createMockOTPVerificationResult({
+        email: randEmail(),
+        password: randPassword(),
+        displayName: randFullName(),
+      })
+
+      const mockCallable = jest
+        .fn()
+        .mockResolvedValue({ data: verificationResult })
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+
+      const adapter = createFirebaseOTPAdapter()
+      const result = await adapter.verifyCode({
+        email: randEmail(),
+        code: '123456',
+      })
+
+      expect(result).toEqual(verificationResult)
+      expect(result.success).toBe(true)
+    })
   })
 })
