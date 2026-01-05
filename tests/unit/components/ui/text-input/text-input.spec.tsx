@@ -78,5 +78,18 @@ describe('TextInput', () => {
 
       expect(onChangeText).toHaveBeenCalledWith('test@example.com')
     })
+
+    it('should display value', () => {
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value="test@example.com"
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['value']).toBe('test@example.com')
+    })
   })
 })
