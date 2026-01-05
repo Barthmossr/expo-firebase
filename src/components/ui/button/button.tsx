@@ -4,14 +4,13 @@ import type { ButtonProps, ButtonVariant } from './button.types'
 import { styles } from './button.styles'
 
 const getBackgroundColor = (variant: ButtonVariant, pressed: boolean) => {
-  const colors = {
-    primary: pressed ? COLORS.button.primaryPressed : COLORS.button.primary,
-    secondary: pressed
-      ? COLORS.button.secondaryPressed
-      : COLORS.button.secondary,
-    google: pressed ? COLORS.button.googlePressed : COLORS.button.google,
+  if (variant === 'primary') {
+    return pressed ? COLORS.button.primaryPressed : COLORS.button.primary
   }
-  return colors[variant]
+  if (variant === 'secondary') {
+    return pressed ? COLORS.button.secondaryPressed : COLORS.button.secondary
+  }
+  return pressed ? COLORS.button.googlePressed : COLORS.button.google
 }
 
 const getTextColor = (variant: ButtonVariant) => {
@@ -51,4 +50,4 @@ const Button = (props: ButtonProps): React.ReactElement => {
   )
 }
 
-export { Button }
+export { Button, getBackgroundColor }
