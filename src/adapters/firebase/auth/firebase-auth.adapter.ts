@@ -6,7 +6,11 @@ import type {
   AuthCredentials,
   RegisterCredentials,
 } from '@/core/ports/auth'
-import { mapFirebaseUser, createAuthError } from './firebase-auth.utils'
+import {
+  mapFirebaseUser,
+  createAuthError,
+  ensureUserExists,
+} from './firebase-auth.utils'
 
 const createFirebaseAuthAdapter = (): AuthPort => {
   const signIn = async (credentials: AuthCredentials): Promise<AuthUser> => {
@@ -34,11 +38,14 @@ const createFirebaseAuthAdapter = (): AuthPort => {
         credentials.password,
       )
       await result.user.updateProfile({ displayName: credentials.displayName })
-      const user = mapFirebaseUser(result.user)
-      if (!user) {
-        throw createAuthError({ code: 'auth/unknown' })
+      const user = ensureUserExists(mapFirebaseUser(result.user))
+      return {
+        id: user.id,
+        email: user.email,
+        displayName: credentials.displayName,
+        photoUrl: user.photoUrl,
+        emailVerified: user.emailVerified,
       }
-      return { ...user, displayName: credentials.displayName }
     } catch (error) {
       throw createAuthError(error)
     }
@@ -123,11 +130,14 @@ const createFirebaseAuthAdapter = (): AuthPort => {
         password,
       )
       await result.user.updateProfile({ displayName })
-      const user = mapFirebaseUser(result.user)
-      if (!user) {
-        throw createAuthError({ code: 'auth/unknown' })
+      const user = ensureUserExists(mapFirebaseUser(result.user))
+      return {
+        id: user.id,
+        email: user.email,
+        displayName,
+        photoUrl: user.photoUrl,
+        emailVerified: user.emailVerified,
       }
-      return { ...user, displayName }
     } catch (error) {
       throw createAuthError(error)
     }

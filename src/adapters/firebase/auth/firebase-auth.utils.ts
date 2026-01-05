@@ -43,4 +43,16 @@ const createAuthError = (error: unknown): AuthError => {
   return { code, message }
 }
 
-export { mapFirebaseUser, mapFirebaseErrorCode, createAuthError }
+const ensureUserExists = (user: AuthUser | null): AuthUser => {
+  if (!user) {
+    throw createAuthError({ code: 'auth/unknown' })
+  }
+  return user
+}
+
+export {
+  mapFirebaseUser,
+  mapFirebaseErrorCode,
+  createAuthError,
+  ensureUserExists,
+}
