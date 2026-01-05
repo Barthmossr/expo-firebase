@@ -2,6 +2,7 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https'
 import * as admin from 'firebase-admin'
 import { generateOTP, hashString, createExpiryTimestamp } from './otp.utils'
 import type { SendOTPRequest } from './otp.types'
+import { REGION } from '../config/firebase.constants'
 
 const MAX_RESEND_PER_HOUR = 3
 const OTP_EXPIRY_MINUTES = 10
@@ -9,7 +10,7 @@ const RESEND_COOLDOWN_MINUTES = 1
 
 const sendOTPEmail = onCall(
   {
-    region: 'southamerica-east1',
+    region: REGION,
     memory: '128MiB',
     timeoutSeconds: 30,
   },

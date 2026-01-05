@@ -2,12 +2,13 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https'
 import * as admin from 'firebase-admin'
 import { compareHash, isOTPExpired } from './otp.utils'
 import type { VerifyOTPRequest, OTPVerificationResult } from './otp.types'
+import { REGION } from '../config/firebase.constants'
 
 const MAX_FAILED_ATTEMPTS = 5
 
 const verifyOTPEmail = onCall(
   {
-    region: 'southamerica-east1',
+    region: REGION,
     memory: '128MiB',
     timeoutSeconds: 30,
   },

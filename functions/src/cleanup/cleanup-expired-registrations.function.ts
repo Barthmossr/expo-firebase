@@ -1,10 +1,11 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 import * as admin from 'firebase-admin'
+import { REGION } from '../config/firebase.constants'
 
 const cleanupExpiredRegistrations = onSchedule(
   {
     schedule: 'every 1 hours',
-    region: 'southamerica-east1',
+    region: REGION,
     memory: '256MiB',
     timeoutSeconds: 120,
   },

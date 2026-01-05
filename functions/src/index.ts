@@ -5,10 +5,11 @@ import * as admin from 'firebase-admin'
 import { sendOTPEmail } from './otp/send-otp-email.function'
 import { verifyOTPEmail } from './otp/verify-otp-email.function'
 import { cleanupExpiredRegistrations } from './cleanup'
+import { REGION } from './config/firebase.constants'
 
 admin.initializeApp()
 
-setGlobalOptions({ region: 'southamerica-east1', maxInstances: 10 })
+setGlobalOptions({ region: REGION, maxInstances: 10 })
 
 export const health = onRequest(
   { cors: true, memory: '128MiB', timeoutSeconds: 10 },
