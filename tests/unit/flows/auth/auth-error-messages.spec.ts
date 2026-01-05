@@ -49,4 +49,12 @@ describe('getAuthErrorMessage', () => {
 
     expect(message).toBe('Something went wrong. Please try again')
   })
+
+  it('should return default message for code not in record', () => {
+    const message = getAuthErrorMessage(
+      'auth/some-random-code' as AuthErrorCode,
+    )
+
+    expect(message).toBe('Something went wrong. Please try again')
+  })
 })
