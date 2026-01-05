@@ -102,4 +102,16 @@ describe('Button', () => {
       expect(button?.props['accessibilityState']?.disabled).toBeFalsy()
     })
   })
+
+  describe('loading state', () => {
+    it('should not show loading by default', () => {
+      const { getByText, UNSAFE_queryByType } = render(
+        <Button title="Click Me" onPress={jest.fn()} />,
+      )
+
+      expect(getByText('Click Me')).toBeDefined()
+      const ActivityIndicator = require('react-native').ActivityIndicator
+      expect(UNSAFE_queryByType(ActivityIndicator)).toBeNull()
+    })
+  })
 })
