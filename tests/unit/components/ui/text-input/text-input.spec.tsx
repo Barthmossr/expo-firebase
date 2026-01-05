@@ -107,5 +107,18 @@ describe('TextInput', () => {
       const input = getByTestId('text-input')
       expect(input.props['secureTextEntry']).toBe(true)
     })
+
+    it('should show Show button when secureTextEntry is true', () => {
+      const { getByText } = render(
+        <TextInput
+          testID="text-input"
+          secureTextEntry
+          value="password123"
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      expect(getByText('Show')).toBeDefined()
+    })
   })
 })
