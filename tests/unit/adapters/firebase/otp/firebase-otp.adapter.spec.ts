@@ -79,5 +79,22 @@ describe('createFirebaseOTPAdapter', () => {
         `https://southamerica-east1-${testProjectId}.cloudfunctions.net/sendOTPEmail`,
       )
     })
+
+    it('should throw error when cloud function fails', async () => {
+      const mockCallable = jest
+        .fn()
+        .mockRejectedValue(new Error('Function failed'))
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+
+      const adapter = createFirebaseOTPAdapter()
+
+      await expect(
+        adapter.sendVerificationCode({
+          email: randEmail(),
+          displayName: randFullName(),
+          password: randPassword(),
+        }),
+      ).rejects.toThrow('Function failed')
+    })
   })
 })
