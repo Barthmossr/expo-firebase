@@ -158,4 +158,21 @@ describe('createFirebaseOTPAdapter', () => {
       ).rejects.toThrow('Invalid code')
     })
   })
+
+  describe('resendCode', () => {
+    it('should call cloud function with email and resend flag', async () => {
+      const mockCallable = jest.fn().mockResolvedValue(undefined)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+
+      const adapter = createFirebaseOTPAdapter()
+      const email = randEmail()
+
+      await adapter.resendCode({ email })
+
+      expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
+        `https://southamerica-east1-${testProjectId}.cloudfunctions.net/sendOTPEmail`,
+      )
+      expect(mockCallable).toHaveBeenCalledWith({ email, resend: true })
+    })
+  })
 })
