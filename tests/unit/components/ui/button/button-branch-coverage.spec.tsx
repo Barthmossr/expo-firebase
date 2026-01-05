@@ -26,4 +26,9 @@ describe('Button - getBackgroundColor Function Coverage', () => {
     const color = getBackgroundColor('google', false)
     expect(color).toBe(COLORS.button.google)
   })
+
+  it('should return googlePressed color when pressed', () => {
+    const color = getBackgroundColor('google', true)
+    expect(color).toBe(COLORS.button.googlePressed)
+  })
 })
