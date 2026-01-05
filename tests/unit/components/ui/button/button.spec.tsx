@@ -133,5 +133,14 @@ describe('Button', () => {
       const text = getByText('Primary')
       expect(text).toBeDefined()
     })
+
+    it('should apply secondary variant styling', () => {
+      const { getByText } = render(
+        <Button title="Secondary" onPress={jest.fn()} variant="secondary" />,
+      )
+
+      const text = getByText('Secondary')
+      expect(text).toBeDefined()
+    })
   })
 })
