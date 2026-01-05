@@ -142,5 +142,14 @@ describe('Button', () => {
       const text = getByText('Secondary')
       expect(text).toBeDefined()
     })
+
+    it('should apply google variant styling', () => {
+      const { getByText } = render(
+        <Button title="Google" onPress={jest.fn()} variant="google" />,
+      )
+
+      const text = getByText('Google')
+      expect(text).toBeDefined()
+    })
   })
 })
