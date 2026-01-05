@@ -112,6 +112,27 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     }
   }
 
+  const createUserAfterVerification = async (
+    email: string,
+    password: string,
+    displayName: string,
+  ): Promise<AuthUser> => {
+    try {
+      const result = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      )
+      await result.user.updateProfile({ displayName })
+      const user = mapFirebaseUser(result.user)
+      if (!user) {
+        throw createAuthError({ code: 'auth/unknown' })
+      }
+      return { ...user, displayName }
+    } catch (error) {
+      throw createAuthError(error)
+    }
+  }
+
   return {
     signIn,
     signUp,
@@ -121,6 +142,7 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     onAuthStateChanged,
     sendPasswordResetEmail,
     updateProfile,
+    createUserAfterVerification,
   }
 }
 
