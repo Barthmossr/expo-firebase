@@ -22,6 +22,14 @@ service cloud.firestore {
       allow read, write: if owner(userId)
     }
 
+    match /pending_registrations/{email} {
+      allow read, write: if false
+    }
+
+    match /mail/{docId} {
+      allow read, write: if false
+    }
+
     match /{document=**} {
       allow read, write: if false
     }
