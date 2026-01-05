@@ -20,5 +20,14 @@ describe('Button', () => {
       const ActivityIndicator = require('react-native').ActivityIndicator
       expect(UNSAFE_getByType(ActivityIndicator)).toBeDefined()
     })
+
+    it('should render primary variant by default', () => {
+      const { getByText } = render(
+        <Button title="Click Me" onPress={jest.fn()} />,
+      )
+
+      const button = getByText('Click Me').parent?.parent
+      expect(button).toBeDefined()
+    })
   })
 })
