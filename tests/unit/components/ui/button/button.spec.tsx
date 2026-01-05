@@ -62,5 +62,16 @@ describe('Button', () => {
 
       expect(onPress).toHaveBeenCalledTimes(1)
     })
+
+    it('should not call onPress when button is disabled', () => {
+      const onPress = jest.fn()
+      const { getByText } = render(
+        <Button title="Click Me" onPress={onPress} disabled />,
+      )
+
+      fireEvent.press(getByText('Click Me'))
+
+      expect(onPress).not.toHaveBeenCalled()
+    })
   })
 })
