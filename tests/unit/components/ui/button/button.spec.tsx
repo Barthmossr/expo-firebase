@@ -37,5 +37,17 @@ describe('Button', () => {
 
       expect(getByText('Click Me')).toBeDefined()
     })
+
+    it('should render google variant', () => {
+      const { getByText } = render(
+        <Button
+          title="Sign in with Google"
+          onPress={jest.fn()}
+          variant="google"
+        />,
+      )
+
+      expect(getByText('Sign in with Google')).toBeDefined()
+    })
   })
 })
