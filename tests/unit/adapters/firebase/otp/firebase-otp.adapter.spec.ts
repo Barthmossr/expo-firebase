@@ -174,5 +174,18 @@ describe('createFirebaseOTPAdapter', () => {
       )
       expect(mockCallable).toHaveBeenCalledWith({ email, resend: true })
     })
+
+    it('should throw error when resend fails', async () => {
+      const mockCallable = jest
+        .fn()
+        .mockRejectedValue(new Error('Resend failed'))
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+
+      const adapter = createFirebaseOTPAdapter()
+
+      await expect(adapter.resendCode({ email: randEmail() })).rejects.toThrow(
+        'Resend failed',
+      )
+    })
   })
 })
