@@ -45,5 +45,17 @@ describe('TextInput', () => {
 
       expect(getByPlaceholderText('Enter email')).toBeDefined()
     })
+
+    it('should render error message', () => {
+      const { getByText } = render(
+        <TextInput
+          error="Email is required"
+          value=""
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      expect(getByText('Email is required')).toBeDefined()
+    })
   })
 })
