@@ -1,5 +1,5 @@
 type RegisterFormProps = {
-  onSuccess?: () => void
+  onSuccess?: (email: string) => void
 }
 
 export type { RegisterFormProps }
