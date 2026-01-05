@@ -73,5 +73,12 @@ describe('Button', () => {
 
       expect(onPress).not.toHaveBeenCalled()
     })
+
+    it('should not call onPress when button is loading', () => {
+      const onPress = jest.fn()
+      render(<Button title="Click Me" onPress={onPress} loading />)
+
+      expect(onPress).not.toHaveBeenCalled()
+    })
   })
 })
