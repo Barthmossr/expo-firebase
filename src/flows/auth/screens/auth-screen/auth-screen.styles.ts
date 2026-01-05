@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   switchAction: {
     ...TYPOGRAPHY.body,
-    color: COLORS.accent.secondary,
+    color: COLORS.accent.primary,
     fontWeight: '600',
     marginBottom: 1,
   },

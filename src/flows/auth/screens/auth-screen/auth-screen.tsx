@@ -14,6 +14,7 @@ import { Logo } from '@/components/ui/logo'
 import { LoginForm } from '../../components/login-form'
 import { RegisterForm } from '../../components/register-form'
 import { ForgotPasswordForm } from '../../components/forgot-password-form'
+import { VerifyEmailForm } from '../../components/verify-email-form'
 import { GoogleSignInButton } from '../../components/google-sign-in-button'
 import type { AuthScreenProps, AuthView } from './auth-screen.types'
 import { styles } from './auth-screen.styles'
@@ -22,17 +23,20 @@ const TITLES = {
   login: 'Welcome Back!',
   register: 'Join the Adventure!',
   'forgot-password': 'Reset Password',
+  'verify-email': 'Verify Your Email',
 } as const
 
 const SUBTITLES = {
   login: 'Ready to continue your journey?',
   register: 'Create your account and start learning',
   'forgot-password': "No worries, we'll help you recover",
+  'verify-email': 'Almost there! Just one more step',
 } as const
 
 const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
   const { initialView = 'login' } = props
   const [activeView, setActiveView] = useState<AuthView>(initialView)
+  const [pendingEmail, setPendingEmail] = useState<string>('')
   const { clearError } = useAuth()
 
   const handleViewChange = useCallback(
@@ -51,21 +55,45 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
     handleViewChange('login')
   }
 
+  const handleRegistrationSubmit = useCallback(
+    (email: string) => {
+      setPendingEmail(email)
+      handleViewChange('verify-email')
+    },
+    [handleViewChange],
+  )
+
+  const handleBackToRegister = useCallback(() => {
+    handleViewChange('register')
+  }, [handleViewChange])
+
+  const handleVerificationSuccess = useCallback(() => {
+    setPendingEmail('')
+  }, [])
+
   const renderForm = () => {
     switch (activeView) {
       case 'login':
         return <LoginForm onForgotPassword={handleForgotPassword} />
       case 'register':
-        return <RegisterForm />
+        return <RegisterForm onSuccess={handleRegistrationSubmit} />
       case 'forgot-password':
         return <ForgotPasswordForm onBack={handleBackToLogin} />
+      case 'verify-email':
+        return (
+          <VerifyEmailForm
+            email={pendingEmail}
+            onBack={handleBackToRegister}
+            onVerificationSuccess={handleVerificationSuccess}
+          />
+        )
       default:
         return null
     }
   }
 
   const renderSwitchText = () => {
-    if (activeView === 'forgot-password') {
+    if (activeView === 'forgot-password' || activeView === 'verify-email') {
       return null
     }
 
@@ -95,7 +123,8 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
     )
   }
 
-  const showGoogleButton = activeView !== 'forgot-password'
+  const showGoogleButton =
+    activeView !== 'forgot-password' && activeView !== 'verify-email'
 
   return (
     <SafeAreaView style={styles.safeArea}>
