@@ -43,5 +43,18 @@ describe('auth.config', () => {
 
       expect(config.googleWebClientId).toBe('')
     })
+
+    it('should return googleWebClientId when provided', () => {
+      const webClientId = 'test-web-client-id.apps.googleusercontent.com'
+      ;(Constants.expoConfig as ExpoConfigExtra) = {
+        extra: {
+          googleWebClientId: webClientId,
+        },
+      }
+
+      const config = getAuthConfig()
+
+      expect(config.googleWebClientId).toBe(webClientId)
+    })
   })
 })
