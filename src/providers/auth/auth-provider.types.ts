@@ -15,6 +15,7 @@ type AuthContextValue = {
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
   sendPasswordResetEmail: (email: string) => Promise<void>
+  verifyEmailAndRegister: (email: string, code: string) => Promise<void>
   error: AuthError | null
   clearError: () => void
 }

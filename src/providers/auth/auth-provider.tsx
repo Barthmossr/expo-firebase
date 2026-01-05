@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
 import { getAuthService } from '@/services/auth'
+import { getOTPService } from '@/services/otp'
 import { initializeGoogleSignIn } from '@/config/auth'
 import type {
   AuthUser,
@@ -94,6 +95,45 @@ const AuthProvider = ({ children }: AuthProviderProps): React.ReactElement => {
     }
   }, [])
 
+  const verifyEmailAndRegister = useCallback(
+    async (email: string, code: string) => {
+      setError(null)
+      setIsLoading(true)
+      try {
+        const otpService = getOTPService()
+        const verificationResult = await otpService.verifyCode({
+          email,
+          code,
+        })
+
+        if (!verificationResult.success) {
+          throw new Error(verificationResult.error || 'Verification failed')
+        }
+
+        if (
+          !verificationResult.email ||
+          !verificationResult.password ||
+          !verificationResult.displayName
+        ) {
+          throw new Error('Invalid verification result')
+        }
+
+        const authService = getAuthService()
+        await authService.createUserAfterVerification(
+          verificationResult.email,
+          verificationResult.password,
+          verificationResult.displayName,
+        )
+      } catch (err) {
+        setError(err as AuthError)
+        throw err
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [],
+  )
+
   const value: AuthContextValue = {
     user,
     isAuthenticated: Boolean(user),
@@ -103,6 +143,7 @@ const AuthProvider = ({ children }: AuthProviderProps): React.ReactElement => {
     signInWithGoogle,
     signOut,
     sendPasswordResetEmail,
+    verifyEmailAndRegister,
     error,
     clearError,
   }
