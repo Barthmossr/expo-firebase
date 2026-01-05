@@ -57,5 +57,13 @@ describe('TextInput', () => {
 
       expect(getByText('Email is required')).toBeDefined()
     })
+
+    it('should not render error when no error', () => {
+      const { queryByText } = render(
+        <TextInput value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(queryByText(/required|invalid|error/i)).toBeNull()
+    })
   })
 })
