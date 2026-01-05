@@ -17,6 +17,7 @@ describe('auth.service', () => {
     onAuthStateChanged: jest.fn(),
     sendPasswordResetEmail: jest.fn(),
     updateProfile: jest.fn(),
+    createUserAfterVerification: jest.fn(),
   }
 
   beforeEach(() => {

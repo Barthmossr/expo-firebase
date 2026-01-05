@@ -13,6 +13,11 @@ type AuthPort = {
   onAuthStateChanged: (callback: (user: AuthUser | null) => void) => () => void
   sendPasswordResetEmail: (email: string) => Promise<void>
   updateProfile: (data: Partial<AuthUser>) => Promise<void>
+  createUserAfterVerification: (
+    email: string,
+    password: string,
+    displayName: string,
+  ) => Promise<AuthUser>
 }
 
 export type { AuthPort }
