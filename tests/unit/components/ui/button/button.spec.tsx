@@ -81,4 +81,16 @@ describe('Button', () => {
       expect(onPress).not.toHaveBeenCalled()
     })
   })
+
+  describe('disabled state', () => {
+    it('should render disabled button', () => {
+      const { getByText } = render(
+        <Button title="Click Me" onPress={jest.fn()} disabled />,
+      )
+
+      const button = getByText('Click Me').parent?.parent
+      expect(button).toBeDefined()
+      expect(button?.props['accessibilityState']?.disabled).toBe(true)
+    })
+  })
 })
