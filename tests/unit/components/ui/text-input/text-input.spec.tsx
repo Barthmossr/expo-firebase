@@ -142,5 +142,14 @@ describe('TextInput', () => {
       expect(input.props['secureTextEntry']).toBe(true)
       expect(getByText('Show')).toBeDefined()
     })
+
+    it('should not show Show/Hide button when secureTextEntry is false', () => {
+      const { queryByText } = render(
+        <TextInput testID="text-input" value="test" onChangeText={jest.fn()} />,
+      )
+
+      expect(queryByText('Show')).toBeNull()
+      expect(queryByText('Hide')).toBeNull()
+    })
   })
 })
