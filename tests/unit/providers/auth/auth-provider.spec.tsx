@@ -554,5 +554,31 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
     })
+
+    it('should handle verification failure', async () => {
+      const email = randEmail()
+      const code = '123456'
+
+      mockOTPService.verifyCode.mockResolvedValue({
+        success: false,
+        error: 'Invalid code',
+      })
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await expect(
+          result.current.verifyEmailAndRegister(email, code),
+        ).rejects.toThrow('Invalid code')
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toBeTruthy()
+      })
+    })
   })
 })
