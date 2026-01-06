@@ -294,5 +294,38 @@ describe('AuthProvider', () => {
       expect(mockAuthService.signInWithGoogle).toHaveBeenCalledTimes(1)
       expect(result.current.error).toBeNull()
     })
+
+    it('should set loading state during signInWithGoogle', async () => {
+      let resolveSignIn: () => void
+      const signInPromise = new Promise<void>((resolve) => {
+        resolveSignIn = resolve
+      })
+
+      mockAuthService.signInWithGoogle.mockReturnValue(signInPromise)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      let signInPromiseResult: Promise<void>
+      act(() => {
+        signInPromiseResult = result.current.signInWithGoogle()
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(true)
+      })
+
+      await act(async () => {
+        resolveSignIn!()
+        await signInPromiseResult!
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+    })
   })
 })
