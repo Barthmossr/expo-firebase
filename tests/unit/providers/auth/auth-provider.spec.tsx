@@ -68,5 +68,14 @@ describe('AuthProvider', () => {
 
       expect(mockInitializeGoogleSignIn).toHaveBeenCalledTimes(1)
     })
+
+    it('should set up auth state listener on mount', () => {
+      renderHook(() => useAuth(), { wrapper })
+
+      expect(mockAuthService.onAuthStateChanged).toHaveBeenCalledTimes(1)
+      expect(mockAuthService.onAuthStateChanged).toHaveBeenCalledWith(
+        expect.any(Function),
+      )
+    })
   })
 })
