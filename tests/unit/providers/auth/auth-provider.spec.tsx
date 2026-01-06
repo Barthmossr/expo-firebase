@@ -119,5 +119,16 @@ describe('AuthProvider', () => {
       expect(result.current.user).toBeNull()
       expect(result.current.isAuthenticated).toBe(false)
     })
+
+    it('should clean up auth listener on unmount', () => {
+      const unsubscribeMock = jest.fn()
+      mockAuthService.onAuthStateChanged.mockReturnValue(unsubscribeMock)
+
+      const { unmount } = renderHook(() => useAuth(), { wrapper })
+
+      unmount()
+
+      expect(unsubscribeMock).toHaveBeenCalledTimes(1)
+    })
   })
 })
