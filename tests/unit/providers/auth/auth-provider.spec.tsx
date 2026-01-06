@@ -722,5 +722,47 @@ describe('AuthProvider', () => {
         expect(result.current.error).toEqual(mockError)
       })
     })
+
+    it('should clear error before verification', async () => {
+      const email = randEmail()
+      const code = '123456'
+
+      mockOTPService.verifyCode.mockResolvedValueOnce({
+        success: false,
+        error: 'Invalid code',
+      })
+
+      mockOTPService.verifyCode.mockResolvedValueOnce({
+        success: true,
+        email,
+        password: randPassword(),
+        displayName: randFullName(),
+      })
+      mockAuthService.createUserAfterVerification.mockResolvedValue(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await expect(
+          result.current.verifyEmailAndRegister(email, code),
+        ).rejects.toThrow('Invalid code')
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toBeTruthy()
+      })
+
+      await act(async () => {
+        await result.current.verifyEmailAndRegister(email, code)
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
+    })
   })
 })
