@@ -248,5 +248,36 @@ describe('AuthProvider', () => {
       expect(mockAuthService.signUp).toHaveBeenCalledWith(credentials)
       expect(result.current.error).toBeNull()
     })
+
+    it('should handle signUp error and set error state', async () => {
+      const credentials = {
+        email: randEmail(),
+        password: randPassword(),
+        displayName: randFullName(),
+      }
+
+      const mockError: AuthError = {
+        code: 'auth/email-already-in-use',
+        message: 'Email already in use',
+      }
+
+      mockAuthService.signUp.mockRejectedValue(mockError)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await expect(result.current.signUp(credentials)).rejects.toEqual(
+          mockError,
+        )
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(mockError)
+      })
+    })
   })
 })
