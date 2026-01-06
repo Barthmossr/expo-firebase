@@ -29,5 +29,21 @@ describe('otp.service', () => {
       expect(mockCreateFirebaseOTPAdapter).toHaveBeenCalledTimes(1)
       expect(service).toBe(mockAdapter)
     })
+
+    it('should return same instance on subsequent calls', () => {
+      const mockAdapter = {
+        sendVerificationCode: jest.fn(),
+        verifyCode: jest.fn(),
+        resendCode: jest.fn(),
+      }
+
+      mockCreateFirebaseOTPAdapter.mockReturnValue(mockAdapter)
+
+      const service1 = getOTPService()
+      const service2 = getOTPService()
+
+      expect(mockCreateFirebaseOTPAdapter).toHaveBeenCalledTimes(1)
+      expect(service1).toBe(service2)
+    })
   })
 })
