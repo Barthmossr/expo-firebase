@@ -40,4 +40,27 @@ describe('RegisterForm', () => {
       expect(getByText('Create Account')).toBeDefined()
     })
   })
+
+  describe('form validation', () => {
+    it('should show error when name is empty', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, randEmail())
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'Password123')
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(getByText('Name is required')).toBeDefined()
+      })
+    })
+  })
 })
