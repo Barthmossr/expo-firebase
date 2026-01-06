@@ -76,4 +76,35 @@ describe('useAuth', () => {
     expect(result.current.user).toEqual(mockUser)
     expect(result.current.isAuthenticated).toBe(true)
   })
+
+  it('should return error when present', () => {
+    const mockError = {
+      code: 'auth/invalid-credential' as const,
+      message: 'Invalid credentials',
+    }
+
+    const mockContextValue: AuthContextValue = {
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      signIn: jest.fn(),
+      signUp: jest.fn(),
+      signInWithGoogle: jest.fn(),
+      signOut: jest.fn(),
+      sendPasswordResetEmail: jest.fn(),
+      verifyEmailAndRegister: jest.fn(),
+      error: mockError,
+      clearError: jest.fn(),
+    }
+
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <AuthContext.Provider value={mockContextValue}>
+        {children}
+      </AuthContext.Provider>
+    )
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+
+    expect(result.current.error).toEqual(mockError)
+  })
 })
