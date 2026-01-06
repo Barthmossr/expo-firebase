@@ -86,5 +86,26 @@ describe('RegisterForm', () => {
         expect(getByText('Name must be at least 2 characters')).toBeDefined()
       })
     })
+
+    it('should show error when email is empty', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, randFullName())
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'Password123')
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(getByText('Email is required')).toBeDefined()
+      })
+    })
   })
 })
