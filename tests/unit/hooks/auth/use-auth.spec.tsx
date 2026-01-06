@@ -15,4 +15,30 @@ describe('useAuth', () => {
 
     jest.restoreAllMocks()
   })
+
+  it('should return context value when used within AuthProvider', () => {
+    const mockContextValue: AuthContextValue = {
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      signIn: jest.fn(),
+      signUp: jest.fn(),
+      signInWithGoogle: jest.fn(),
+      signOut: jest.fn(),
+      sendPasswordResetEmail: jest.fn(),
+      verifyEmailAndRegister: jest.fn(),
+      error: null,
+      clearError: jest.fn(),
+    }
+
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <AuthContext.Provider value={mockContextValue}>
+        {children}
+      </AuthContext.Provider>
+    )
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+
+    expect(result.current).toEqual(mockContextValue)
+  })
 })
