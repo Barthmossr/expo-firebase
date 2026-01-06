@@ -415,4 +415,20 @@ describe('AuthProvider', () => {
       })
     })
   })
+
+  describe('sendPasswordResetEmail', () => {
+    it('should call auth service sendPasswordResetEmail', async () => {
+      const email = randEmail()
+      mockAuthService.sendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await act(async () => {
+        await result.current.sendPasswordResetEmail(email)
+      })
+
+      expect(mockAuthService.sendPasswordResetEmail).toHaveBeenCalledWith(email)
+      expect(result.current.error).toBeNull()
+    })
+  })
 })
