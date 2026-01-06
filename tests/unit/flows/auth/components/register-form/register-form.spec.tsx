@@ -359,4 +359,48 @@ describe('RegisterForm', () => {
       })
     })
   })
+
+  describe('loading state', () => {
+    it('should show loading button during submission', async () => {
+      const displayName = randFullName()
+      const email = randEmail()
+      const password = randPassword() + 'A1'
+
+      let resolveVerification: () => void
+      const verificationPromise = new Promise<void>((resolve) => {
+        resolveVerification = resolve
+      })
+      mockSendVerificationCode.mockReturnValue(verificationPromise)
+
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, displayName)
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, password)
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(mockSendVerificationCode).toHaveBeenCalled()
+      })
+
+      act(() => {
+        resolveVerification!()
+      })
+
+      await waitFor(() => {
+        expect(mockOnSuccess).toHaveBeenCalled()
+      })
+    })
+  })
 })
