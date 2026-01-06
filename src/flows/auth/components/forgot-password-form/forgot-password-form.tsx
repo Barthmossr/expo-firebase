@@ -28,9 +28,7 @@ const ForgotPasswordForm = (
     try {
       await sendPasswordResetEmail(data.email)
       setIsSuccess(true)
-    } catch {
-      // Error is handled by AuthProvider
-    }
+    } catch {}
   }
 
   if (isSuccess) {

@@ -13,9 +13,7 @@ const GoogleSignInButton = (
   const handlePress = async () => {
     try {
       await signInWithGoogle()
-    } catch {
-      // Error is handled by AuthProvider
-    }
+    } catch {}
   }
 
   return (

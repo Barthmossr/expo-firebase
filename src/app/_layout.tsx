@@ -5,9 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthProvider } from '@/providers/auth'
 
 const RootLayout = (): React.ReactElement => {
-  useEffect(() => {
-    // Hide splash screen after app is ready
-  }, [])
+  useEffect(() => {}, [])
 
   return (
     <SafeAreaProvider>

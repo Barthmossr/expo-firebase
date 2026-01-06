@@ -21,9 +21,7 @@ const LoginForm = ({
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data)
-    } catch {
-      // Error is handled by AuthProvider
-    }
+    } catch {}
   }
 
   return (
