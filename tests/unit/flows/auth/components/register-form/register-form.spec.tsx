@@ -283,5 +283,18 @@ describe('RegisterForm', () => {
         expect(mockSendVerificationCode).toHaveBeenCalled()
       })
     })
+
+    it('should not call sendVerificationCode when form is invalid', async () => {
+      const { getByText } = render(<RegisterForm onSuccess={mockOnSuccess} />)
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(mockSendVerificationCode).not.toHaveBeenCalled()
+      })
+    })
   })
 })
