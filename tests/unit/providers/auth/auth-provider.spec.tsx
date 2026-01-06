@@ -87,5 +87,21 @@ describe('AuthProvider', () => {
       expect(result.current.user).toBeNull()
       expect(result.current.isAuthenticated).toBe(false)
     })
+
+    it('should set user and stop loading when auth state changes', async () => {
+      mockAuthService.onAuthStateChanged.mockImplementation((callback) => {
+        callback(mockUser)
+        return () => {}
+      })
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(result.current.user).toEqual(mockUser)
+      expect(result.current.isAuthenticated).toBe(true)
+    })
   })
 })
