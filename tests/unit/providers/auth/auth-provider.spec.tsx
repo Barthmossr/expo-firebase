@@ -224,4 +224,29 @@ describe('AuthProvider', () => {
       })
     })
   })
+
+  describe('signUp', () => {
+    it('should call auth service signUp with credentials', async () => {
+      const credentials = {
+        email: randEmail(),
+        password: randPassword(),
+        displayName: randFullName(),
+      }
+
+      mockAuthService.signUp.mockResolvedValue(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await result.current.signUp(credentials)
+      })
+
+      expect(mockAuthService.signUp).toHaveBeenCalledWith(credentials)
+      expect(result.current.error).toBeNull()
+    })
+  })
 })
