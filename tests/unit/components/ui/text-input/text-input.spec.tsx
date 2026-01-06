@@ -1,4 +1,5 @@
 import { render, fireEvent } from '@testing-library/react-native'
+import { randEmail } from '@ngneat/falso'
 import { TextInput } from '@/components/ui/text-input'
 
 describe('TextInput', () => {
@@ -70,26 +71,28 @@ describe('TextInput', () => {
   describe('value changes', () => {
     it('should call onChangeText when text changes', () => {
       const onChangeText = jest.fn()
+      const testEmail = randEmail()
       const { getByTestId } = render(
         <TextInput testID="text-input" value="" onChangeText={onChangeText} />,
       )
 
-      fireEvent.changeText(getByTestId('text-input'), 'test@example.com')
+      fireEvent.changeText(getByTestId('text-input'), testEmail)
 
-      expect(onChangeText).toHaveBeenCalledWith('test@example.com')
+      expect(onChangeText).toHaveBeenCalledWith(testEmail)
     })
 
     it('should display value', () => {
+      const testEmail = randEmail()
       const { getByTestId } = render(
         <TextInput
           testID="text-input"
-          value="test@example.com"
+          value={testEmail}
           onChangeText={jest.fn()}
         />,
       )
 
       const input = getByTestId('text-input')
-      expect(input.props['value']).toBe('test@example.com')
+      expect(input.props['value']).toBe(testEmail)
     })
   })
 

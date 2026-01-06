@@ -1,9 +1,10 @@
+import { randEmail } from '@ngneat/falso'
 import { forgotPasswordSchema } from '@/flows/auth/components/forgot-password-form'
 
 describe('forgotPasswordSchema', () => {
   it('should validate correct email', () => {
     const result = forgotPasswordSchema.safeParse({
-      email: 'test@example.com',
+      email: randEmail(),
     })
 
     expect(result.success).toBe(true)

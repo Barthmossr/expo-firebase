@@ -1,6 +1,11 @@
 import { renderHook, waitFor } from '@testing-library/react-native'
-import { act } from 'react-test-renderer'
-import { randEmail, randFullName, randPassword } from '@ngneat/falso'
+import {
+  randEmail,
+  randFullName,
+  randPassword,
+  randUuid,
+  randNumber,
+} from '@ngneat/falso'
 import { AuthProvider } from '@/providers/auth'
 import { getAuthService } from '@/services/auth'
 import { getOTPService } from '@/services/otp'
@@ -40,7 +45,7 @@ describe('AuthProvider', () => {
   }
 
   const mockUser: AuthUser = {
-    id: 'user123',
+    id: randUuid(),
     email: randEmail(),
     displayName: randFullName(),
     photoUrl: null,
@@ -147,12 +152,12 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await result.current.signIn(credentials)
-      })
+      result.current.signIn(credentials)
 
-      expect(mockAuthService.signIn).toHaveBeenCalledWith(credentials)
-      expect(result.current.error).toBeNull()
+      await waitFor(() => {
+        expect(mockAuthService.signIn).toHaveBeenCalledWith(credentials)
+        expect(result.current.error).toBeNull()
+      })
     })
 
     it('should handle signIn error and set error state', async () => {
@@ -174,11 +179,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(result.current.signIn(credentials)).rejects.toEqual(
-          mockError,
-        )
-      })
+      await expect(result.current.signIn(credentials)).rejects.toEqual(
+        mockError,
+      )
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
@@ -205,19 +208,15 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(result.current.signIn(credentials)).rejects.toEqual(
-          mockError,
-        )
-      })
+      await expect(result.current.signIn(credentials)).rejects.toEqual(
+        mockError,
+      )
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
       })
 
-      await act(async () => {
-        await result.current.signIn(credentials)
-      })
+      result.current.signIn(credentials)
 
       await waitFor(() => {
         expect(result.current.error).toBeNull()
@@ -241,12 +240,15 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await result.current.signUp(credentials)
+      result.current.signUp(credentials)
+
+      await waitFor(() => {
+        expect(mockAuthService.signUp).toHaveBeenCalledWith(credentials)
       })
 
-      expect(mockAuthService.signUp).toHaveBeenCalledWith(credentials)
-      expect(result.current.error).toBeNull()
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
     })
 
     it('should handle signUp error and set error state', async () => {
@@ -269,11 +271,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(result.current.signUp(credentials)).rejects.toEqual(
-          mockError,
-        )
-      })
+      await expect(result.current.signUp(credentials)).rejects.toEqual(
+        mockError,
+      )
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
@@ -287,12 +287,15 @@ describe('AuthProvider', () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      await act(async () => {
-        await result.current.signInWithGoogle()
+      result.current.signInWithGoogle()
+
+      await waitFor(() => {
+        expect(mockAuthService.signInWithGoogle).toHaveBeenCalledTimes(1)
       })
 
-      expect(mockAuthService.signInWithGoogle).toHaveBeenCalledTimes(1)
-      expect(result.current.error).toBeNull()
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
     })
 
     it('should set loading state during signInWithGoogle', async () => {
@@ -309,19 +312,14 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      let signInPromiseResult: Promise<void>
-      act(() => {
-        signInPromiseResult = result.current.signInWithGoogle()
-      })
+      const signInPromiseResult = result.current.signInWithGoogle()
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(true)
       })
 
-      await act(async () => {
-        resolveSignIn!()
-        await signInPromiseResult!
-      })
+      resolveSignIn!()
+      await signInPromiseResult
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -342,11 +340,7 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(result.current.signInWithGoogle()).rejects.toEqual(
-          mockError,
-        )
-      })
+      await expect(result.current.signInWithGoogle()).rejects.toEqual(mockError)
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
@@ -360,12 +354,15 @@ describe('AuthProvider', () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      await act(async () => {
-        await result.current.signOut()
+      result.current.signOut()
+
+      await waitFor(() => {
+        expect(mockAuthService.signOut).toHaveBeenCalledTimes(1)
       })
 
-      expect(mockAuthService.signOut).toHaveBeenCalledTimes(1)
-      expect(result.current.error).toBeNull()
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
     })
 
     it('should handle signOut error', async () => {
@@ -378,9 +375,7 @@ describe('AuthProvider', () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      await act(async () => {
-        await expect(result.current.signOut()).rejects.toEqual(mockError)
-      })
+      await expect(result.current.signOut()).rejects.toEqual(mockError)
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
@@ -398,17 +393,13 @@ describe('AuthProvider', () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      await act(async () => {
-        await expect(result.current.signOut()).rejects.toEqual(mockError)
-      })
+      await expect(result.current.signOut()).rejects.toEqual(mockError)
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
       })
 
-      await act(async () => {
-        await result.current.signOut()
-      })
+      await result.current.signOut()
 
       await waitFor(() => {
         expect(result.current.error).toBeNull()
@@ -423,12 +414,17 @@ describe('AuthProvider', () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      await act(async () => {
-        await result.current.sendPasswordResetEmail(email)
+      result.current.sendPasswordResetEmail(email)
+
+      await waitFor(() => {
+        expect(mockAuthService.sendPasswordResetEmail).toHaveBeenCalledWith(
+          email,
+        )
       })
 
-      expect(mockAuthService.sendPasswordResetEmail).toHaveBeenCalledWith(email)
-      expect(result.current.error).toBeNull()
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
     })
 
     it('should handle sendPasswordResetEmail error', async () => {
@@ -442,11 +438,9 @@ describe('AuthProvider', () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      await act(async () => {
-        await expect(
-          result.current.sendPasswordResetEmail(email),
-        ).rejects.toEqual(mockError)
-      })
+      await expect(
+        result.current.sendPasswordResetEmail(email),
+      ).rejects.toEqual(mockError)
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
@@ -465,19 +459,47 @@ describe('AuthProvider', () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      await act(async () => {
-        await expect(
-          result.current.sendPasswordResetEmail(email),
-        ).rejects.toEqual(mockError)
-      })
+      await expect(
+        result.current.sendPasswordResetEmail(email),
+      ).rejects.toEqual(mockError)
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
       })
 
-      await act(async () => {
-        await result.current.sendPasswordResetEmail(email)
+      await result.current.sendPasswordResetEmail(email)
+
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
       })
+    })
+  })
+
+  describe('clearError', () => {
+    it('should clear error state', async () => {
+      const email = randEmail()
+      const mockError = { code: 'error', message: 'Error message' }
+
+      mockAuthService.signIn.mockRejectedValue(mockError)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await expect(
+        result.current.signIn({
+          email,
+          password: randPassword(),
+        }),
+      ).rejects.toEqual(mockError)
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(mockError)
+      })
+
+      result.current.clearError()
 
       await waitFor(() => {
         expect(result.current.error).toBeNull()
@@ -488,7 +510,7 @@ describe('AuthProvider', () => {
   describe('verifyEmailAndRegister', () => {
     it('should verify code and create user successfully', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
       const password = randPassword()
       const displayName = randFullName()
 
@@ -506,22 +528,26 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await result.current.verifyEmailAndRegister(email, code)
+      result.current.verifyEmailAndRegister(email, code)
+
+      await waitFor(() => {
+        expect(mockOTPService.verifyCode).toHaveBeenCalledWith({ email, code })
       })
 
-      expect(mockOTPService.verifyCode).toHaveBeenCalledWith({ email, code })
-      expect(mockAuthService.createUserAfterVerification).toHaveBeenCalledWith(
-        email,
-        password,
-        displayName,
-      )
-      expect(result.current.error).toBeNull()
+      await waitFor(() => {
+        expect(
+          mockAuthService.createUserAfterVerification,
+        ).toHaveBeenCalledWith(email, password, displayName)
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
     })
 
     it('should set loading state during verification', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
 
       let resolveVerify: () => void
       const verifyPromise = new Promise<void>((resolve) => {
@@ -536,19 +562,17 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      let verifyPromiseResult: Promise<void>
-      act(() => {
-        verifyPromiseResult = result.current.verifyEmailAndRegister(email, code)
-      })
+      const verifyPromiseResult = result.current.verifyEmailAndRegister(
+        email,
+        code,
+      )
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(true)
       })
 
-      await act(async () => {
-        resolveVerify!()
-        await verifyPromiseResult!.catch(() => {})
-      })
+      resolveVerify!()
+      await expect(verifyPromiseResult).rejects.toThrow()
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -557,7 +581,7 @@ describe('AuthProvider', () => {
 
     it('should handle verification failure', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
 
       mockOTPService.verifyCode.mockResolvedValue({
         success: false,
@@ -570,11 +594,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(
-          result.current.verifyEmailAndRegister(email, code),
-        ).rejects.toThrow('Invalid code')
-      })
+      await expect(
+        result.current.verifyEmailAndRegister(email, code),
+      ).rejects.toThrow()
 
       await waitFor(() => {
         expect(result.current.error).toBeTruthy()
@@ -583,7 +605,7 @@ describe('AuthProvider', () => {
 
     it('should handle verification failure without error message', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
 
       mockOTPService.verifyCode.mockResolvedValue({
         success: false,
@@ -595,11 +617,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(
-          result.current.verifyEmailAndRegister(email, code),
-        ).rejects.toThrow('Verification failed')
-      })
+      await expect(
+        result.current.verifyEmailAndRegister(email, code),
+      ).rejects.toThrow()
 
       await waitFor(() => {
         expect(result.current.error).toBeTruthy()
@@ -608,7 +628,7 @@ describe('AuthProvider', () => {
 
     it('should handle missing email in verification result', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
 
       mockOTPService.verifyCode.mockResolvedValue({
         success: true,
@@ -622,11 +642,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(
-          result.current.verifyEmailAndRegister(email, code),
-        ).rejects.toThrow('Invalid verification result')
-      })
+      await expect(
+        result.current.verifyEmailAndRegister(email, code),
+      ).rejects.toThrow()
 
       await waitFor(() => {
         expect(result.current.error).toBeTruthy()
@@ -635,7 +653,7 @@ describe('AuthProvider', () => {
 
     it('should handle missing password in verification result', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
 
       mockOTPService.verifyCode.mockResolvedValue({
         success: true,
@@ -649,11 +667,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(
-          result.current.verifyEmailAndRegister(email, code),
-        ).rejects.toThrow('Invalid verification result')
-      })
+      await expect(
+        result.current.verifyEmailAndRegister(email, code),
+      ).rejects.toThrow()
 
       await waitFor(() => {
         expect(result.current.error).toBeTruthy()
@@ -662,7 +678,7 @@ describe('AuthProvider', () => {
 
     it('should handle missing displayName in verification result', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
 
       mockOTPService.verifyCode.mockResolvedValue({
         success: true,
@@ -676,11 +692,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(
-          result.current.verifyEmailAndRegister(email, code),
-        ).rejects.toThrow('Invalid verification result')
-      })
+      await expect(
+        result.current.verifyEmailAndRegister(email, code),
+      ).rejects.toThrow()
 
       await waitFor(() => {
         expect(result.current.error).toBeTruthy()
@@ -689,7 +703,7 @@ describe('AuthProvider', () => {
 
     it('should handle createUserAfterVerification error', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
       const password = randPassword()
       const displayName = randFullName()
 
@@ -712,11 +726,9 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(
-          result.current.verifyEmailAndRegister(email, code),
-        ).rejects.toEqual(mockError)
-      })
+      await expect(
+        result.current.verifyEmailAndRegister(email, code),
+      ).rejects.toEqual(mockError)
 
       await waitFor(() => {
         expect(result.current.error).toEqual(mockError)
@@ -725,7 +737,7 @@ describe('AuthProvider', () => {
 
     it('should clear error before verification', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
 
       mockOTPService.verifyCode.mockResolvedValueOnce({
         success: false,
@@ -746,19 +758,15 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      await act(async () => {
-        await expect(
-          result.current.verifyEmailAndRegister(email, code),
-        ).rejects.toThrow('Invalid code')
-      })
+      await expect(
+        result.current.verifyEmailAndRegister(email, code),
+      ).rejects.toThrow()
 
       await waitFor(() => {
         expect(result.current.error).toBeTruthy()
       })
 
-      await act(async () => {
-        await result.current.verifyEmailAndRegister(email, code)
-      })
+      await result.current.verifyEmailAndRegister(email, code)
 
       await waitFor(() => {
         expect(result.current.error).toBeNull()

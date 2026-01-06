@@ -1,10 +1,11 @@
+import { randEmail, randPassword } from '@ngneat/falso'
 import { loginSchema } from '@/flows/auth/components/login-form'
 
 describe('loginSchema', () => {
   it('should validate correct email and password', () => {
     const result = loginSchema.safeParse({
-      email: 'test@example.com',
-      password: 'password123',
+      email: randEmail(),
+      password: randPassword(),
     })
 
     expect(result.success).toBe(true)
@@ -38,7 +39,7 @@ describe('loginSchema', () => {
 
   it('should fail when password is empty', () => {
     const result = loginSchema.safeParse({
-      email: 'test@example.com',
+      email: randEmail(),
       password: '',
     })
 

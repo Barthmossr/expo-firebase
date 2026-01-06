@@ -1,21 +1,29 @@
+import { randEmail, randFullName, randPassword } from '@ngneat/falso'
 import { registerSchema } from '@/flows/auth/components/register-form'
 
 describe('registerSchema', () => {
-  const validData = {
-    displayName: 'John Doe',
-    email: 'test@example.com',
-    password: 'Password1',
-  }
+  const getValidData = (): {
+    displayName: string
+    email: string
+    password: string
+  } => ({
+    displayName: randFullName(),
+    email: randEmail(),
+    password: `${randPassword()}1A`,
+  })
 
   it('should validate correct registration data', () => {
-    const result = registerSchema.safeParse(validData)
+    const result = registerSchema.safeParse(getValidData())
 
     expect(result.success).toBe(true)
   })
 
   describe('displayName validation', () => {
     it('should fail when name is empty', () => {
-      const result = registerSchema.safeParse({ ...validData, displayName: '' })
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        displayName: '',
+      })
 
       expect(result.success).toBe(false)
       if (!result.success) {
@@ -25,7 +33,7 @@ describe('registerSchema', () => {
 
     it('should fail when name is too short', () => {
       const result = registerSchema.safeParse({
-        ...validData,
+        ...getValidData(),
         displayName: 'A',
       })
 
@@ -39,7 +47,7 @@ describe('registerSchema', () => {
 
     it('should fail when name is too long', () => {
       const result = registerSchema.safeParse({
-        ...validData,
+        ...getValidData(),
         displayName: 'A'.repeat(51),
       })
 
@@ -55,7 +63,7 @@ describe('registerSchema', () => {
   describe('password validation', () => {
     it('should fail when password is too short', () => {
       const result = registerSchema.safeParse({
-        ...validData,
+        ...getValidData(),
         password: 'Pass1',
       })
 
@@ -69,7 +77,7 @@ describe('registerSchema', () => {
 
     it('should fail when password has no uppercase', () => {
       const result = registerSchema.safeParse({
-        ...validData,
+        ...getValidData(),
         password: 'password1',
       })
 
@@ -83,7 +91,7 @@ describe('registerSchema', () => {
 
     it('should fail when password has no number', () => {
       const result = registerSchema.safeParse({
-        ...validData,
+        ...getValidData(),
         password: 'Password',
       })
 

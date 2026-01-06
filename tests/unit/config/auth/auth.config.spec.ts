@@ -1,3 +1,4 @@
+import { randUuid } from '@ngneat/falso'
 import Constants from 'expo-constants'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { getAuthConfig, initializeGoogleSignIn } from '@/config/auth'
@@ -45,7 +46,7 @@ describe('auth.config', () => {
     })
 
     it('should return googleWebClientId when provided', () => {
-      const webClientId = 'test-web-client-id.apps.googleusercontent.com'
+      const webClientId = `${randUuid()}.apps.googleusercontent.com`
       ;(Constants.expoConfig as ExpoConfigExtra) = {
         extra: {
           googleWebClientId: webClientId,
@@ -60,7 +61,7 @@ describe('auth.config', () => {
 
   describe('initializeGoogleSignIn', () => {
     it('should configure GoogleSignin with correct settings', () => {
-      const webClientId = 'test-web-client-id.apps.googleusercontent.com'
+      const webClientId = `${randUuid()}.apps.googleusercontent.com`
       ;(Constants.expoConfig as ExpoConfigExtra) = {
         extra: {
           googleWebClientId: webClientId,

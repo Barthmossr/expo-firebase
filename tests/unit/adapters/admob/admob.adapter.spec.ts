@@ -1,13 +1,17 @@
 import { Platform } from 'react-native'
 import Constants from 'expo-constants'
 import { createAdmobAdapter } from '@/adapters/admob'
+import { MOCK_TEST_BANNER_ID } from './__mocks__'
 
 jest.mock('expo-constants')
-jest.mock('react-native-google-mobile-ads', () => ({
-  TestIds: {
-    ADAPTIVE_BANNER: 'test-banner-id',
-  },
-}))
+jest.mock('react-native-google-mobile-ads', () => {
+  const { MOCK_TEST_BANNER_ID } = jest.requireActual('./__mocks__/admob.mocks')
+  return {
+    TestIds: {
+      ADAPTIVE_BANNER: MOCK_TEST_BANNER_ID,
+    },
+  }
+})
 
 const mockConstants = Constants as jest.Mocked<typeof Constants>
 
@@ -66,7 +70,7 @@ describe('createAdmobAdapter', () => {
       const adapter = createAdmobAdapter()
       const unitId = adapter.getBannerUnitId()
 
-      expect(unitId).toBe('test-banner-id')
+      expect(unitId).toBe(MOCK_TEST_BANNER_ID)
     })
 
     it('should return test id when extra is undefined', () => {
@@ -76,7 +80,7 @@ describe('createAdmobAdapter', () => {
       const adapter = createAdmobAdapter()
       const unitId = adapter.getBannerUnitId()
 
-      expect(unitId).toBe('test-banner-id')
+      expect(unitId).toBe(MOCK_TEST_BANNER_ID)
     })
 
     it('should return test id when platform unit id is missing', () => {
@@ -94,7 +98,7 @@ describe('createAdmobAdapter', () => {
       const adapter = createAdmobAdapter()
       const unitId = adapter.getBannerUnitId()
 
-      expect(unitId).toBe('test-banner-id')
+      expect(unitId).toBe(MOCK_TEST_BANNER_ID)
     })
   })
 })

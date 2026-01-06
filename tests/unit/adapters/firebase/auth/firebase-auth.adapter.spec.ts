@@ -1,4 +1,10 @@
-import { randEmail, randFullName, randPassword, randUuid } from '@ngneat/falso'
+import {
+  randEmail,
+  randFullName,
+  randPassword,
+  randUrl,
+  randUuid,
+} from '@ngneat/falso'
 import { createFirebaseAuthAdapter } from '@/adapters/firebase/auth'
 import auth from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
@@ -237,7 +243,7 @@ describe('createFirebaseAuthAdapter', () => {
         uid: randUuid(),
         email: randEmail(),
         displayName: randFullName(),
-        photoURL: 'https://example.com/photo.jpg',
+        photoURL: randUrl(),
         emailVerified: true,
       }
 
@@ -458,7 +464,7 @@ describe('createFirebaseAuthAdapter', () => {
     })
 
     it('should update photo URL', async () => {
-      const photoUrl = 'https://example.com/photo.jpg'
+      const photoUrl = randUrl()
       const mockUser = {
         uid: randUuid(),
         email: randEmail(),
@@ -480,7 +486,7 @@ describe('createFirebaseAuthAdapter', () => {
 
     it('should update both display name and photo URL', async () => {
       const displayName = randFullName()
-      const photoUrl = 'https://example.com/photo.jpg'
+      const photoUrl = randUrl()
       const mockUser = {
         uid: randUuid(),
         email: randEmail(),
