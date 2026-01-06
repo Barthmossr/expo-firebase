@@ -327,5 +327,30 @@ describe('AuthProvider', () => {
         expect(result.current.isLoading).toBe(false)
       })
     })
+
+    it('should handle signInWithGoogle error', async () => {
+      const mockError: AuthError = {
+        code: 'auth/popup-closed-by-user',
+        message: 'Popup closed by user',
+      }
+
+      mockAuthService.signInWithGoogle.mockRejectedValue(mockError)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await expect(result.current.signInWithGoogle()).rejects.toEqual(
+          mockError,
+        )
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(mockError)
+      })
+    })
   })
 })
