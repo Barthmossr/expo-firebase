@@ -62,5 +62,29 @@ describe('RegisterForm', () => {
         expect(getByText('Name is required')).toBeDefined()
       })
     })
+
+    it('should show error when name is too short', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, 'A')
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, randEmail())
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'Password123')
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(getByText('Name must be at least 2 characters')).toBeDefined()
+      })
+    })
   })
 })
