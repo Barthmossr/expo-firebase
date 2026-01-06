@@ -33,5 +33,11 @@ describe('RegisterForm', () => {
       expect(getByPlaceholderText('Enter your email')).toBeDefined()
       expect(getByPlaceholderText('Enter your password')).toBeDefined()
     })
+
+    it('should render register button', () => {
+      const { getByText } = render(<RegisterForm onSuccess={mockOnSuccess} />)
+
+      expect(getByText('Create Account')).toBeDefined()
+    })
   })
 })
