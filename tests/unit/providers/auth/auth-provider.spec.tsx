@@ -353,4 +353,19 @@ describe('AuthProvider', () => {
       })
     })
   })
+
+  describe('signOut', () => {
+    it('should call auth service signOut', async () => {
+      mockAuthService.signOut.mockResolvedValue(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await act(async () => {
+        await result.current.signOut()
+      })
+
+      expect(mockAuthService.signOut).toHaveBeenCalledTimes(1)
+      expect(result.current.error).toBeNull()
+    })
+  })
 })
