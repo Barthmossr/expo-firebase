@@ -430,5 +430,27 @@ describe('AuthProvider', () => {
       expect(mockAuthService.sendPasswordResetEmail).toHaveBeenCalledWith(email)
       expect(result.current.error).toBeNull()
     })
+
+    it('should handle sendPasswordResetEmail error', async () => {
+      const email = randEmail()
+      const mockError: AuthError = {
+        code: 'auth/user-not-found',
+        message: 'User not found',
+      }
+
+      mockAuthService.sendPasswordResetEmail.mockRejectedValue(mockError)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await act(async () => {
+        await expect(
+          result.current.sendPasswordResetEmail(email),
+        ).rejects.toEqual(mockError)
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(mockError)
+      })
+    })
   })
 })
