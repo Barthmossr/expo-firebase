@@ -184,5 +184,44 @@ describe('AuthProvider', () => {
         expect(result.current.error).toEqual(mockError)
       })
     })
+
+    it('should clear error before signIn', async () => {
+      const credentials = {
+        email: randEmail(),
+        password: randPassword(),
+      }
+
+      const mockError: AuthError = {
+        code: 'auth/invalid-credential',
+        message: 'Invalid credentials',
+      }
+
+      mockAuthService.signIn.mockRejectedValueOnce(mockError)
+      mockAuthService.signIn.mockResolvedValueOnce(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await expect(result.current.signIn(credentials)).rejects.toEqual(
+          mockError,
+        )
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(mockError)
+      })
+
+      await act(async () => {
+        await result.current.signIn(credentials)
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
+    })
   })
 })
