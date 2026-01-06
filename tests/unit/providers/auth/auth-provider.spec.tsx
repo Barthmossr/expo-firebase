@@ -484,4 +484,39 @@ describe('AuthProvider', () => {
       })
     })
   })
+
+  describe('verifyEmailAndRegister', () => {
+    it('should verify code and create user successfully', async () => {
+      const email = randEmail()
+      const code = '123456'
+      const password = randPassword()
+      const displayName = randFullName()
+
+      mockOTPService.verifyCode.mockResolvedValue({
+        success: true,
+        email,
+        password,
+        displayName,
+      })
+      mockAuthService.createUserAfterVerification.mockResolvedValue(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await result.current.verifyEmailAndRegister(email, code)
+      })
+
+      expect(mockOTPService.verifyCode).toHaveBeenCalledWith({ email, code })
+      expect(mockAuthService.createUserAfterVerification).toHaveBeenCalledWith(
+        email,
+        password,
+        displayName,
+      )
+      expect(result.current.error).toBeNull()
+    })
+  })
 })
