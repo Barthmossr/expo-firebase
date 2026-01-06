@@ -107,5 +107,29 @@ describe('RegisterForm', () => {
         expect(getByText('Email is required')).toBeDefined()
       })
     })
+
+    it('should show error when email is invalid', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, randFullName())
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, 'invalid-email')
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'Password123')
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(getByText('Please enter a valid email address')).toBeDefined()
+      })
+    })
   })
 })
