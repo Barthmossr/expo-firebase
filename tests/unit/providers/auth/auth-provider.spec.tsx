@@ -280,4 +280,19 @@ describe('AuthProvider', () => {
       })
     })
   })
+
+  describe('signInWithGoogle', () => {
+    it('should call auth service signInWithGoogle', async () => {
+      mockAuthService.signInWithGoogle.mockResolvedValue(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await act(async () => {
+        await result.current.signInWithGoogle()
+      })
+
+      expect(mockAuthService.signInWithGoogle).toHaveBeenCalledTimes(1)
+      expect(result.current.error).toBeNull()
+    })
+  })
 })
