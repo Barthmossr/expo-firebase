@@ -659,5 +659,32 @@ describe('AuthProvider', () => {
         expect(result.current.error).toBeTruthy()
       })
     })
+
+    it('should handle missing displayName in verification result', async () => {
+      const email = randEmail()
+      const code = '123456'
+
+      mockOTPService.verifyCode.mockResolvedValue({
+        success: true,
+        email,
+        password: randPassword(),
+      })
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await expect(
+          result.current.verifyEmailAndRegister(email, code),
+        ).rejects.toThrow('Invalid verification result')
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toBeTruthy()
+      })
+    })
   })
 })
