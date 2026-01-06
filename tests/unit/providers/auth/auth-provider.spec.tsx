@@ -686,5 +686,41 @@ describe('AuthProvider', () => {
         expect(result.current.error).toBeTruthy()
       })
     })
+
+    it('should handle createUserAfterVerification error', async () => {
+      const email = randEmail()
+      const code = '123456'
+      const password = randPassword()
+      const displayName = randFullName()
+
+      const mockError: AuthError = {
+        code: 'auth/email-already-in-use',
+        message: 'Email already in use',
+      }
+
+      mockOTPService.verifyCode.mockResolvedValue({
+        success: true,
+        email,
+        password,
+        displayName,
+      })
+      mockAuthService.createUserAfterVerification.mockRejectedValue(mockError)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await expect(
+          result.current.verifyEmailAndRegister(email, code),
+        ).rejects.toEqual(mockError)
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(mockError)
+      })
+    })
   })
 })
