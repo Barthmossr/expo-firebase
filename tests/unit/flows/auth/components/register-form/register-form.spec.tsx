@@ -1,5 +1,4 @@
 import { render, fireEvent, waitFor } from '@testing-library/react-native'
-import { act } from 'react-test-renderer'
 import { randEmail, randFullName, randPassword } from '@ngneat/falso'
 import { RegisterForm } from '@/flows/auth/components/register-form'
 import { getOTPService } from '@/services/otp'
@@ -54,9 +53,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, 'Password123')
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(getByText('Name is required')).toBeDefined()
@@ -78,9 +75,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, 'Password123')
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(getByText('Name must be at least 2 characters')).toBeDefined()
@@ -99,9 +94,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, 'Password123')
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(getByText('Email is required')).toBeDefined()
@@ -123,9 +116,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, 'Password123')
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(getByText('Please enter a valid email address')).toBeDefined()
@@ -147,9 +138,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, 'Pass1')
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(
@@ -173,9 +162,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, 'password123')
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(
@@ -199,9 +186,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, 'Passwordonly')
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(
@@ -233,9 +218,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, password)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(mockSendVerificationCode).toHaveBeenCalledWith({
@@ -271,9 +254,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, password)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(mockOnSuccess).toHaveBeenCalledWith(email)
@@ -288,9 +269,7 @@ describe('RegisterForm', () => {
       const { getByText } = render(<RegisterForm onSuccess={mockOnSuccess} />)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(mockSendVerificationCode).not.toHaveBeenCalled()
@@ -320,9 +299,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, password)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(getByText('Failed to send verification code')).toBeDefined()
@@ -350,9 +327,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, password)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(getByText('Failed to send verification code')).toBeDefined()
@@ -386,17 +361,13 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, password)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(mockSendVerificationCode).toHaveBeenCalled()
       })
 
-      act(() => {
-        resolveVerification!()
-      })
+      resolveVerification!()
 
       await waitFor(() => {
         expect(mockOnSuccess).toHaveBeenCalled()
@@ -424,9 +395,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, password)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(getByText('Test error')).toBeDefined()
@@ -456,9 +425,7 @@ describe('RegisterForm', () => {
       fireEvent.changeText(passwordInput, password)
 
       const registerButton = getByText('Create Account')
-      act(() => {
-        fireEvent.press(registerButton)
-      })
+      fireEvent.press(registerButton)
 
       await waitFor(() => {
         expect(mockSendVerificationCode).toHaveBeenCalled()
