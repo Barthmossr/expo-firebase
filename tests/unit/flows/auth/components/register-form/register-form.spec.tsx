@@ -157,5 +157,31 @@ describe('RegisterForm', () => {
         ).toBeDefined()
       })
     })
+
+    it('should show error when password has no uppercase', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, randFullName())
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, randEmail())
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'password123')
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(
+          getByText('Password must contain at least one uppercase letter'),
+        ).toBeDefined()
+      })
+    })
   })
 })
