@@ -77,5 +77,15 @@ describe('AuthProvider', () => {
         expect.any(Function),
       )
     })
+
+    it('should start with loading state true and user null', () => {
+      mockAuthService.onAuthStateChanged.mockReturnValue(() => {})
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      expect(result.current.isLoading).toBe(true)
+      expect(result.current.user).toBeNull()
+      expect(result.current.isAuthenticated).toBe(false)
+    })
   })
 })
