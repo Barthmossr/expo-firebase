@@ -296,5 +296,37 @@ describe('RegisterForm', () => {
         expect(mockSendVerificationCode).not.toHaveBeenCalled()
       })
     })
+
+    it('should handle sendVerificationCode error', async () => {
+      const displayName = randFullName()
+      const email = randEmail()
+      const password = randPassword() + 'A1'
+
+      mockSendVerificationCode.mockRejectedValue(
+        new Error('Failed to send verification code'),
+      )
+
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, displayName)
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, password)
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(getByText('Failed to send verification code')).toBeDefined()
+      })
+    })
   })
 })
