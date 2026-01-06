@@ -367,5 +367,24 @@ describe('AuthProvider', () => {
       expect(mockAuthService.signOut).toHaveBeenCalledTimes(1)
       expect(result.current.error).toBeNull()
     })
+
+    it('should handle signOut error', async () => {
+      const mockError: AuthError = {
+        code: 'auth/network-request-failed',
+        message: 'Network request failed',
+      }
+
+      mockAuthService.signOut.mockRejectedValue(mockError)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await act(async () => {
+        await expect(result.current.signOut()).rejects.toEqual(mockError)
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(mockError)
+      })
+    })
   })
 })
