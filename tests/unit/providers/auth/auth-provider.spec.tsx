@@ -518,5 +518,41 @@ describe('AuthProvider', () => {
       )
       expect(result.current.error).toBeNull()
     })
+
+    it('should set loading state during verification', async () => {
+      const email = randEmail()
+      const code = '123456'
+
+      let resolveVerify: () => void
+      const verifyPromise = new Promise<void>((resolve) => {
+        resolveVerify = resolve
+      })
+
+      mockOTPService.verifyCode.mockReturnValue(verifyPromise as never)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      let verifyPromiseResult: Promise<void>
+      act(() => {
+        verifyPromiseResult = result.current.verifyEmailAndRegister(email, code)
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(true)
+      })
+
+      await act(async () => {
+        resolveVerify!()
+        await verifyPromiseResult!.catch(() => {})
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+    })
   })
 })
