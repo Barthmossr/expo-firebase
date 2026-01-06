@@ -46,4 +46,33 @@ describe('otp.service', () => {
       expect(service1).toBe(service2)
     })
   })
+
+  describe('resetOTPService', () => {
+    it('should create new adapter after reset', () => {
+      const mockAdapter1 = {
+        sendVerificationCode: jest.fn(),
+        verifyCode: jest.fn(),
+        resendCode: jest.fn(),
+      }
+
+      const mockAdapter2 = {
+        sendVerificationCode: jest.fn(),
+        verifyCode: jest.fn(),
+        resendCode: jest.fn(),
+      }
+
+      mockCreateFirebaseOTPAdapter
+        .mockReturnValueOnce(mockAdapter1)
+        .mockReturnValueOnce(mockAdapter2)
+
+      const service1 = getOTPService()
+      resetOTPService()
+      const service2 = getOTPService()
+
+      expect(mockCreateFirebaseOTPAdapter).toHaveBeenCalledTimes(2)
+      expect(service1).toBe(mockAdapter1)
+      expect(service2).toBe(mockAdapter2)
+      expect(service1).not.toBe(service2)
+    })
+  })
 })
