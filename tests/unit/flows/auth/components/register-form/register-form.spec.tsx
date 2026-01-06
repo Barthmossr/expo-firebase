@@ -249,5 +249,39 @@ describe('RegisterForm', () => {
         expect(mockSendVerificationCode).toHaveBeenCalled()
       })
     })
+
+    it('should call onSuccess with email after successful registration', async () => {
+      const displayName = randFullName()
+      const email = randEmail()
+      const password = randPassword() + 'A1'
+
+      mockSendVerificationCode.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, displayName)
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, password)
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(mockOnSuccess).toHaveBeenCalledWith(email)
+      })
+
+      await waitFor(() => {
+        expect(mockSendVerificationCode).toHaveBeenCalled()
+      })
+    })
   })
 })
