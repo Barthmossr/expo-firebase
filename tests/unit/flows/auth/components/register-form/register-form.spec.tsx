@@ -435,4 +435,38 @@ describe('RegisterForm', () => {
       expect(registerButton.parent?.parent?.props['disabled']).toBeFalsy()
     })
   })
+
+  describe('optional onSuccess callback', () => {
+    it('should work without onSuccess callback', async () => {
+      const displayName = randFullName()
+      const email = randEmail()
+      const password = randPassword() + 'A1'
+
+      mockSendVerificationCode.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText } = render(<RegisterForm />)
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, displayName)
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, password)
+
+      const registerButton = getByText('Create Account')
+      act(() => {
+        fireEvent.press(registerButton)
+      })
+
+      await waitFor(() => {
+        expect(mockSendVerificationCode).toHaveBeenCalled()
+      })
+
+      await waitFor(() => {
+        expect(mockSendVerificationCode).toHaveBeenCalledTimes(1)
+      })
+    })
+  })
 })
