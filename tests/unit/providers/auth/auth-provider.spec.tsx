@@ -131,4 +131,28 @@ describe('AuthProvider', () => {
       expect(unsubscribeMock).toHaveBeenCalledTimes(1)
     })
   })
+
+  describe('signIn', () => {
+    it('should call auth service signIn with credentials', async () => {
+      const credentials = {
+        email: randEmail(),
+        password: randPassword(),
+      }
+
+      mockAuthService.signIn.mockResolvedValue(undefined)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        await result.current.signIn(credentials)
+      })
+
+      expect(mockAuthService.signIn).toHaveBeenCalledWith(credentials)
+      expect(result.current.error).toBeNull()
+    })
+  })
 })
