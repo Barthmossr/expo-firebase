@@ -238,4 +238,17 @@ describe('ForgotPasswordForm', () => {
       expect(getByText('No account found with this email')).toBeDefined()
     })
   })
+
+  describe('back to login', () => {
+    it('should call onBack when back link is pressed', () => {
+      const { getAllByText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const backLinks = getAllByText('Back to Login')
+      fireEvent.press(backLinks[0]!)
+
+      expect(mockOnBack).toHaveBeenCalledTimes(1)
+    })
+  })
 })
