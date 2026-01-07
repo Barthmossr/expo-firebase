@@ -79,4 +79,26 @@ describe('ForgotPasswordForm', () => {
       })
     })
   })
+
+  describe('form submission', () => {
+    it('should call sendPasswordResetEmail with correct email', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).toHaveBeenCalledWith(email)
+      })
+    })
+  })
 })
