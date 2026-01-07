@@ -127,5 +127,18 @@ describe('LoginForm', () => {
         })
       })
     })
+
+    it('should not call signIn when form is invalid', async () => {
+      const { getByText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      const loginButton = getByText('Login')
+      fireEvent.press(loginButton)
+
+      await waitFor(() => {
+        expect(mockSignIn).not.toHaveBeenCalled()
+      })
+    })
   })
 })
