@@ -62,5 +62,21 @@ describe('ForgotPasswordForm', () => {
         expect(getByText('Email is required')).toBeDefined()
       })
     })
+
+    it('should show error when email is invalid', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, 'invalid-email')
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Please enter a valid email address')).toBeDefined()
+      })
+    })
   })
 })
