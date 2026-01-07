@@ -222,4 +222,20 @@ describe('ForgotPasswordForm', () => {
       expect(activityIndicators.length).toBeGreaterThan(0)
     })
   })
+
+  describe('error display', () => {
+    it('should display auth error message', () => {
+      mockUseAuth.mockReturnValue({
+        ...createMockAuthContext(),
+        error: {
+          code: 'auth/user-not-found',
+          message: 'User not found',
+        },
+      })
+
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      expect(getByText('No account found with this email')).toBeDefined()
+    })
+  })
 })
