@@ -37,5 +37,13 @@ describe('LoginForm', () => {
 
       expect(getByText('Login')).toBeDefined()
     })
+
+    it('should render forgot password link', () => {
+      const { getByText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      expect(getByText('Forgot password?')).toBeDefined()
+    })
   })
 })
