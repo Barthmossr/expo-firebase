@@ -181,4 +181,22 @@ describe('LoginForm', () => {
       expect(activityIndicators.length).toBeGreaterThan(0)
     })
   })
+
+  describe('error display', () => {
+    it('should display auth error message', () => {
+      mockUseAuth.mockReturnValue({
+        ...createMockAuthContext(),
+        error: {
+          code: 'auth/invalid-credential',
+          message: 'Invalid credentials',
+        },
+      })
+
+      const { getByText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      expect(getByText('Invalid email or password')).toBeDefined()
+    })
+  })
 })
