@@ -157,5 +157,28 @@ describe('ForgotPasswordForm', () => {
         getByText('We sent a password reset link to your email address.'),
       ).toBeDefined()
     })
+
+    it('should show back to login button in success state', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText, getAllByText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Check your email')).toBeDefined()
+      })
+
+      const backButtons = getAllByText('Back to Login')
+      expect(backButtons.length).toBeGreaterThan(0)
+    })
   })
 })
