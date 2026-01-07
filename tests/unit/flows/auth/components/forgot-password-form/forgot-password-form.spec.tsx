@@ -180,5 +180,30 @@ describe('ForgotPasswordForm', () => {
       const backButtons = getAllByText('Back to Login')
       expect(backButtons.length).toBeGreaterThan(0)
     })
+
+    it('should call onBack when back button is pressed in success state', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText, getAllByText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Check your email')).toBeDefined()
+      })
+
+      const backButtons = getAllByText('Back to Login')
+      fireEvent.press(backButtons[0]!)
+
+      expect(mockOnBack).toHaveBeenCalledTimes(1)
+    })
   })
 })
