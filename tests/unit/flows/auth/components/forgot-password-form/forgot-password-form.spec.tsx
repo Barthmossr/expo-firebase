@@ -50,4 +50,17 @@ describe('ForgotPasswordForm', () => {
       ).toBeDefined()
     })
   })
+
+  describe('form validation', () => {
+    it('should show error when email is empty', async () => {
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Email is required')).toBeDefined()
+      })
+    })
+  })
 })
