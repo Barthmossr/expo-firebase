@@ -199,4 +199,17 @@ describe('LoginForm', () => {
       expect(getByText('Invalid email or password')).toBeDefined()
     })
   })
+
+  describe('forgot password', () => {
+    it('should call onForgotPassword when link is pressed', () => {
+      const { getByText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      const forgotPasswordLink = getByText('Forgot password?')
+      fireEvent.press(forgotPasswordLink)
+
+      expect(mockOnForgotPassword).toHaveBeenCalledTimes(1)
+    })
+  })
 })
