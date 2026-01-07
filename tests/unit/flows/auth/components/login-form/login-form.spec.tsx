@@ -1,0 +1,33 @@
+import { render, fireEvent, waitFor } from '@testing-library/react-native'
+import { randEmail, randPassword } from '@ngneat/falso'
+import { LoginForm } from '@/flows/auth/components/login-form'
+import { useAuth } from '@/hooks/auth'
+import { createMockAuthContext } from '../../__mocks__/auth.mocks'
+
+jest.mock('@/hooks/auth')
+
+const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
+
+describe('LoginForm', () => {
+  const mockSignIn = jest.fn()
+  const mockOnForgotPassword = jest.fn()
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockUseAuth.mockReturnValue({
+      ...createMockAuthContext(),
+      signIn: mockSignIn,
+    })
+  })
+
+  describe('rendering', () => {
+    it('should render email and password fields', () => {
+      const { getByPlaceholderText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      expect(getByPlaceholderText('Enter your email')).toBeDefined()
+      expect(getByPlaceholderText('Enter your password')).toBeDefined()
+    })
+  })
+})
