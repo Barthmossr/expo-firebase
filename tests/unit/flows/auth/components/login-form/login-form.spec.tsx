@@ -140,5 +140,29 @@ describe('LoginForm', () => {
         expect(mockSignIn).not.toHaveBeenCalled()
       })
     })
+
+    it('should handle signIn error', async () => {
+      const email = randEmail()
+      const password = randPassword()
+
+      mockSignIn.mockRejectedValue(new Error('Invalid credentials'))
+
+      const { getByText, getByPlaceholderText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, password)
+
+      const loginButton = getByText('Login')
+      fireEvent.press(loginButton)
+
+      await waitFor(() => {
+        expect(mockSignIn).toHaveBeenCalled()
+      })
+    })
   })
 })
