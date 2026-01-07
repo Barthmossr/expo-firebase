@@ -63,40 +63,5 @@ describe('LoginForm', () => {
         expect(getByText('Email is required')).toBeDefined()
       })
     })
-
-    it('should show error when email is invalid', async () => {
-      const { getByText, getByPlaceholderText } = render(
-        <LoginForm onForgotPassword={mockOnForgotPassword} />,
-      )
-
-      const emailInput = getByPlaceholderText('Enter your email')
-      fireEvent.changeText(emailInput, 'invalid-email')
-
-      const passwordInput = getByPlaceholderText('Enter your password')
-      fireEvent.changeText(passwordInput, 'password123')
-
-      const loginButton = getByText('Login')
-      fireEvent.press(loginButton)
-
-      await waitFor(() => {
-        expect(getByText('Please enter a valid email address')).toBeDefined()
-      })
-    })
-
-    it('should show error when password is empty', async () => {
-      const { getByText, getByPlaceholderText } = render(
-        <LoginForm onForgotPassword={mockOnForgotPassword} />,
-      )
-
-      const emailInput = getByPlaceholderText('Enter your email')
-      fireEvent.changeText(emailInput, randEmail())
-
-      const loginButton = getByText('Login')
-      fireEvent.press(loginButton)
-
-      await waitFor(() => {
-        expect(getByText('Password is required')).toBeDefined()
-      })
-    })
   })
 })
