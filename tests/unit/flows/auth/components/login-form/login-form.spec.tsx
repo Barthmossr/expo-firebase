@@ -165,4 +165,20 @@ describe('LoginForm', () => {
       })
     })
   })
+
+  describe('loading state', () => {
+    it('should show loading button when isLoading is true', () => {
+      mockUseAuth.mockReturnValue({
+        ...createMockAuthContext(),
+        isLoading: true,
+      })
+
+      const { UNSAFE_getAllByType } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      const activityIndicators = UNSAFE_getAllByType('ActivityIndicator' as any)
+      expect(activityIndicators.length).toBeGreaterThan(0)
+    })
+  })
 })
