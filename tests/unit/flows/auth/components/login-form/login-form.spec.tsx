@@ -99,4 +99,33 @@ describe('LoginForm', () => {
       })
     })
   })
+
+  describe('form submission', () => {
+    it('should call signIn with correct credentials', async () => {
+      const email = randEmail()
+      const password = randPassword()
+
+      mockSignIn.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, password)
+
+      const loginButton = getByText('Login')
+      fireEvent.press(loginButton)
+
+      await waitFor(() => {
+        expect(mockSignIn).toHaveBeenCalledWith({
+          email,
+          password,
+        })
+      })
+    })
+  })
 })
