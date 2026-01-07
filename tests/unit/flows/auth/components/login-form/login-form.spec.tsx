@@ -29,5 +29,13 @@ describe('LoginForm', () => {
       expect(getByPlaceholderText('Enter your email')).toBeDefined()
       expect(getByPlaceholderText('Enter your password')).toBeDefined()
     })
+
+    it('should render login button', () => {
+      const { getByText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      expect(getByText('Login')).toBeDefined()
+    })
   })
 })
