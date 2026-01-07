@@ -46,4 +46,22 @@ describe('LoginForm', () => {
       expect(getByText('Forgot password?')).toBeDefined()
     })
   })
+
+  describe('form validation', () => {
+    it('should show error when email is empty', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <LoginForm onForgotPassword={mockOnForgotPassword} />,
+      )
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'password123')
+
+      const loginButton = getByText('Login')
+      fireEvent.press(loginButton)
+
+      await waitFor(() => {
+        expect(getByText('Email is required')).toBeDefined()
+      })
+    })
+  })
 })
