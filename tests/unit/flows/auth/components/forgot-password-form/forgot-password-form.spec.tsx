@@ -40,5 +40,14 @@ describe('ForgotPasswordForm', () => {
 
       expect(getByText('Back to Login')).toBeDefined()
     })
+
+    it('should render title and subtitle', () => {
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      expect(getByText('Reset Password')).toBeDefined()
+      expect(
+        getByText('Enter your email and we will send you a reset link.'),
+      ).toBeDefined()
+    })
   })
 })
