@@ -1,7 +1,10 @@
 import React from 'react'
+import { randUuid } from '@ngneat/falso'
 import { render } from '@testing-library/react-native'
 import { Banner } from '@/components/ads/banner'
 import { getAdsService } from '@/services/ads'
+
+const testBannerId = randUuid()
 
 jest.mock('@/services/ads')
 jest.mock('react-native-google-mobile-ads', () => ({
@@ -17,7 +20,7 @@ const mockGetAdsService = getAdsService as jest.MockedFunction<
 
 describe('Banner', () => {
   const mockAdsService = {
-    getBannerUnitId: jest.fn().mockReturnValue('test-banner-id'),
+    getBannerUnitId: jest.fn().mockReturnValue(testBannerId),
   }
 
   beforeEach(() => {

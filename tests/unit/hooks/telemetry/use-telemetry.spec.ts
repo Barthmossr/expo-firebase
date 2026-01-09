@@ -3,6 +3,7 @@ import { useTelemetry } from '@/hooks/telemetry'
 import { getAnalyticsService } from '@/services/analytics'
 import { getCrashReportingService } from '@/services/crash-reporting'
 import { getTelemetryConfig } from '@/config/telemetry'
+import { createMockTelemetryConfig } from './__mocks__/telemetry.mocks'
 
 jest.mock('@/services/analytics')
 jest.mock('@/services/crash-reporting')
@@ -40,10 +41,7 @@ describe('useTelemetry', () => {
     jest.clearAllMocks()
     mockGetAnalyticsService.mockReturnValue(mockAnalytics)
     mockGetCrashReportingService.mockReturnValue(mockCrashReporting)
-    mockGetTelemetryConfig.mockReturnValue({
-      analyticsEnabled: true,
-      crashlyticsEnabled: true,
-    })
+    mockGetTelemetryConfig.mockReturnValue(createMockTelemetryConfig())
   })
 
   it('should initialize with ready as false', async () => {

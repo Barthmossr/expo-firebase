@@ -10,9 +10,7 @@ const HomeScreen = (): React.ReactElement => {
   const handleSignOut = async () => {
     try {
       await signOut()
-    } catch {
-      // Error is handled by AuthProvider
-    }
+    } catch {}
   }
 
   return (

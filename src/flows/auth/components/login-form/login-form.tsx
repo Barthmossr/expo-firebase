@@ -22,7 +22,7 @@ const LoginForm = ({
     try {
       await signIn(data)
     } catch {
-      // Error is handled by AuthProvider
+      // Error handled by AuthProvider
     }
   }
 

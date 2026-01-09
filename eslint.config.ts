@@ -30,4 +30,10 @@ export default defineConfig([
       '@typescript-eslint/explicit-function-return-type': 'error',
     },
   },
+  {
+    files: ['tests/setup.ts'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
 ])

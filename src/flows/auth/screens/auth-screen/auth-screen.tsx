@@ -15,6 +15,7 @@ import { LoginForm } from '../../components/login-form'
 import { RegisterForm } from '../../components/register-form'
 import { ForgotPasswordForm } from '../../components/forgot-password-form'
 import { VerifyEmailForm } from '../../components/verify-email-form'
+import { ResetPasswordForm } from '../../components/reset-password-form'
 import { GoogleSignInButton } from '../../components/google-sign-in-button'
 import type { AuthScreenProps, AuthView } from './auth-screen.types'
 import { styles } from './auth-screen.styles'
@@ -24,6 +25,7 @@ const TITLES = {
   register: 'Join the Adventure!',
   'forgot-password': 'Reset Password',
   'verify-email': 'Verify Your Email',
+  'reset-password': 'Create New Password',
 } as const
 
 const SUBTITLES = {
@@ -31,12 +33,13 @@ const SUBTITLES = {
   register: 'Create your account and start learning',
   'forgot-password': "No worries, we'll help you recover",
   'verify-email': 'Almost there! Just one more step',
+  'reset-password': 'Choose a strong password for your account',
 } as const
 
 const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
-  const { initialView = 'login' } = props
+  const { initialView = 'login', resetCode, resetEmail } = props
   const [activeView, setActiveView] = useState<AuthView>(initialView)
-  const [pendingEmail, setPendingEmail] = useState<string>('')
+  const [pendingEmail, setPendingEmail] = useState<string>(resetEmail ?? '')
   const { clearError } = useAuth()
 
   const handleViewChange = useCallback(
@@ -71,6 +74,10 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
     setPendingEmail('')
   }, [])
 
+  const handleResetPasswordSuccess = useCallback(() => {
+    handleViewChange('login')
+  }, [handleViewChange])
+
   const renderForm = () => {
     switch (activeView) {
       case 'login':
@@ -87,13 +94,27 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
             onVerificationSuccess={handleVerificationSuccess}
           />
         )
+      case 'reset-password':
+        if (!resetCode || !pendingEmail) return null
+        return (
+          <ResetPasswordForm
+            code={resetCode}
+            email={pendingEmail}
+            onSuccess={handleResetPasswordSuccess}
+            onCancel={handleBackToLogin}
+          />
+        )
       default:
         return null
     }
   }
 
   const renderSwitchText = () => {
-    if (activeView === 'forgot-password' || activeView === 'verify-email') {
+    if (
+      activeView === 'forgot-password' ||
+      activeView === 'verify-email' ||
+      activeView === 'reset-password'
+    ) {
       return null
     }
 
@@ -124,7 +145,9 @@ const AuthScreen = (props: AuthScreenProps): React.ReactElement => {
   }
 
   const showGoogleButton =
-    activeView !== 'forgot-password' && activeView !== 'verify-email'
+    activeView !== 'forgot-password' &&
+    activeView !== 'verify-email' &&
+    activeView !== 'reset-password'
 
   return (
     <SafeAreaView style={styles.safeArea}>

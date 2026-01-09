@@ -1,9 +1,18 @@
 import functions from '@react-native-firebase/functions'
-import { randEmail, randFullName, randPassword } from '@ngneat/falso'
+import {
+  randEmail,
+  randFullName,
+  randNumber,
+  randPassword,
+} from '@ngneat/falso'
 import { createFirebaseOTPAdapter } from '@/adapters/firebase/otp'
 import { getFirebaseConfig } from '@/config/firebase'
 import { createMockFirebaseConfig } from '../../../config/firebase/__mocks__/firebase.mocks'
-import { createMockOTPVerificationResult } from './__mocks__/otp.mocks'
+import {
+  createMockOTPVerificationResult,
+  MOCK_TEST_PROJECT_ID,
+  MOCK_TEST_REGION,
+} from './__mocks__'
 
 jest.mock('@react-native-firebase/functions', () => {
   return jest.fn()
@@ -17,14 +26,13 @@ const mockFunctions = functions as jest.MockedFunction<typeof functions>
 
 describe('createFirebaseOTPAdapter', () => {
   const mockHttpsCallableFromUrl = jest.fn()
-  const testProjectId = 'test-project'
 
   beforeEach(() => {
     jest.clearAllMocks()
     mockGetFirebaseConfig.mockReturnValue(
       createMockFirebaseConfig({
-        projectId: testProjectId,
-        region: 'southamerica-east1',
+        projectId: MOCK_TEST_PROJECT_ID,
+        region: MOCK_TEST_REGION,
       }),
     )
 
@@ -50,7 +58,7 @@ describe('createFirebaseOTPAdapter', () => {
       })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
-        `https://southamerica-east1-${testProjectId}.cloudfunctions.net/sendOTPEmail`,
+        `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/sendOTPEmail`,
       )
       expect(mockCallable).toHaveBeenCalledWith({
         email,
@@ -61,7 +69,7 @@ describe('createFirebaseOTPAdapter', () => {
 
     it('should use default region when not provided in config', async () => {
       mockGetFirebaseConfig.mockReturnValue(
-        createMockFirebaseConfig({ projectId: testProjectId }),
+        createMockFirebaseConfig({ projectId: MOCK_TEST_PROJECT_ID }),
       )
 
       const mockCallable = jest.fn().mockResolvedValue(undefined)
@@ -76,7 +84,7 @@ describe('createFirebaseOTPAdapter', () => {
       })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
-        `https://southamerica-east1-${testProjectId}.cloudfunctions.net/sendOTPEmail`,
+        `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/sendOTPEmail`,
       )
     })
 
@@ -101,7 +109,7 @@ describe('createFirebaseOTPAdapter', () => {
   describe('verifyCode', () => {
     it('should call cloud function with email and code', async () => {
       const email = randEmail()
-      const code = '123456'
+      const code = randNumber({ min: 100000, max: 999999 }).toString()
       const verificationResult = createMockOTPVerificationResult({
         email,
         password: randPassword(),
@@ -117,7 +125,7 @@ describe('createFirebaseOTPAdapter', () => {
       const result = await adapter.verifyCode({ email, code })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
-        `https://southamerica-east1-${testProjectId}.cloudfunctions.net/verifyOTPEmail`,
+        `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/verifyOTPEmail`,
       )
       expect(mockCallable).toHaveBeenCalledWith({ email, code })
       expect(result).toEqual(verificationResult)
@@ -138,7 +146,7 @@ describe('createFirebaseOTPAdapter', () => {
       const adapter = createFirebaseOTPAdapter()
       const result = await adapter.verifyCode({
         email: randEmail(),
-        code: '123456',
+        code: randNumber({ min: 100000, max: 999999 }).toString(),
       })
 
       expect(result).toEqual(verificationResult)
@@ -154,7 +162,10 @@ describe('createFirebaseOTPAdapter', () => {
       const adapter = createFirebaseOTPAdapter()
 
       await expect(
-        adapter.verifyCode({ email: randEmail(), code: '123456' }),
+        adapter.verifyCode({
+          email: randEmail(),
+          code: randNumber({ min: 100000, max: 999999 }).toString(),
+        }),
       ).rejects.toThrow('Invalid code')
     })
   })
@@ -170,7 +181,7 @@ describe('createFirebaseOTPAdapter', () => {
       await adapter.resendCode({ email })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
-        `https://southamerica-east1-${testProjectId}.cloudfunctions.net/sendOTPEmail`,
+        `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/sendOTPEmail`,
       )
       expect(mockCallable).toHaveBeenCalledWith({ email, resend: true })
     })

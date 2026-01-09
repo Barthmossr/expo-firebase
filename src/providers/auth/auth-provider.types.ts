@@ -4,6 +4,7 @@ import type {
   AuthCredentials,
   RegisterCredentials,
   AuthError,
+  SignInMethodsResult,
 } from '@/core/ports/auth'
 
 type AuthContextValue = {
@@ -16,6 +17,7 @@ type AuthContextValue = {
   signOut: () => Promise<void>
   sendPasswordResetEmail: (email: string) => Promise<void>
   verifyEmailAndRegister: (email: string, code: string) => Promise<void>
+  fetchSignInMethodsForEmail: (email: string) => Promise<SignInMethodsResult>
   error: AuthError | null
   clearError: () => void
 }

@@ -1,4 +1,10 @@
-import { randEmail, randFullName, randPassword, randUuid } from '@ngneat/falso'
+import {
+  randEmail,
+  randFullName,
+  randPassword,
+  randUrl,
+  randUuid,
+} from '@ngneat/falso'
 import { createFirebaseAuthAdapter } from '@/adapters/firebase/auth'
 import auth from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
@@ -7,6 +13,13 @@ import type { FirebaseAuthTypes } from '@react-native-firebase/auth'
 
 jest.mock('@react-native-firebase/auth')
 jest.mock('@react-native-google-signin/google-signin')
+jest.mock('expo-constants', () => ({
+  expoConfig: {
+    ios: { bundleIdentifier: 'com.test.app' },
+    android: { package: 'com.test.app' },
+    extra: { firebase: { projectId: 'test-project' } },
+  },
+}))
 
 const mockAuth = auth as jest.MockedFunction<typeof auth>
 const mockGoogleSignin = GoogleSignin as jest.Mocked<typeof GoogleSignin>
@@ -19,7 +32,10 @@ describe('createFirebaseAuthAdapter', () => {
     signInWithCredential: jest.Mock
     signOut: jest.Mock
     sendPasswordResetEmail: jest.Mock
+    confirmPasswordReset: jest.Mock
+    verifyPasswordResetCode: jest.Mock
     onAuthStateChanged: jest.Mock
+    fetchSignInMethodsForEmail: jest.Mock
     currentUser: Partial<FirebaseAuthTypes.User> | null
   }
   let mockGoogleAuthProviderCredential: jest.Mock
@@ -33,7 +49,10 @@ describe('createFirebaseAuthAdapter', () => {
       signInWithCredential: jest.fn(),
       signOut: jest.fn(),
       sendPasswordResetEmail: jest.fn(),
+      confirmPasswordReset: jest.fn(),
+      verifyPasswordResetCode: jest.fn(),
       onAuthStateChanged: jest.fn(),
+      fetchSignInMethodsForEmail: jest.fn(),
       currentUser: null,
     }
 
@@ -56,7 +75,10 @@ describe('createFirebaseAuthAdapter', () => {
     expect(typeof adapter.getCurrentUser).toBe('function')
     expect(typeof adapter.onAuthStateChanged).toBe('function')
     expect(typeof adapter.sendPasswordResetEmail).toBe('function')
+    expect(typeof adapter.confirmPasswordReset).toBe('function')
+    expect(typeof adapter.verifyPasswordResetCode).toBe('function')
     expect(typeof adapter.updateProfile).toBe('function')
+    expect(typeof adapter.fetchSignInMethodsForEmail).toBe('function')
     expect(typeof adapter.createUserAfterVerification).toBe('function')
   })
 
@@ -237,7 +259,7 @@ describe('createFirebaseAuthAdapter', () => {
         uid: randUuid(),
         email: randEmail(),
         displayName: randFullName(),
-        photoURL: 'https://example.com/photo.jpg',
+        photoURL: randUrl(),
         emailVerified: true,
       }
 
@@ -418,6 +440,11 @@ describe('createFirebaseAuthAdapter', () => {
 
       expect(mockAuthInstance.sendPasswordResetEmail).toHaveBeenCalledWith(
         email,
+        expect.objectContaining({
+          handleCodeInApp: true,
+          iOS: expect.any(Object),
+          android: expect.any(Object),
+        }),
       )
     })
 
@@ -432,6 +459,175 @@ describe('createFirebaseAuthAdapter', () => {
           code: 'auth/user-not-found',
         },
       )
+    })
+  })
+
+  describe('confirmPasswordReset', () => {
+    it('should confirm password reset with code and new password', async () => {
+      const code = randUuid()
+      const newPassword = randPassword()
+
+      mockAuthInstance.confirmPasswordReset.mockResolvedValue(undefined)
+
+      await adapter.confirmPasswordReset(code, newPassword)
+
+      expect(mockAuthInstance.confirmPasswordReset).toHaveBeenCalledWith(
+        code,
+        newPassword,
+      )
+    })
+
+    it('should handle invalid code error', async () => {
+      const code = 'invalid-code'
+      const newPassword = randPassword()
+
+      mockAuthInstance.confirmPasswordReset.mockRejectedValue({
+        code: 'auth/invalid-action-code',
+      })
+
+      await expect(
+        adapter.confirmPasswordReset(code, newPassword),
+      ).rejects.toMatchObject({
+        code: 'auth/invalid-action-code',
+      })
+    })
+
+    it('should handle expired code error', async () => {
+      const code = 'expired-code'
+      const newPassword = randPassword()
+
+      mockAuthInstance.confirmPasswordReset.mockRejectedValue({
+        code: 'auth/expired-action-code',
+      })
+
+      await expect(
+        adapter.confirmPasswordReset(code, newPassword),
+      ).rejects.toMatchObject({
+        code: 'auth/expired-action-code',
+      })
+    })
+  })
+
+  describe('verifyPasswordResetCode', () => {
+    it('should verify password reset code and return email', async () => {
+      const code = randUuid()
+      const email = randEmail()
+
+      mockAuthInstance.verifyPasswordResetCode.mockResolvedValue(email)
+
+      const result = await adapter.verifyPasswordResetCode(code)
+
+      expect(result).toBe(email)
+      expect(mockAuthInstance.verifyPasswordResetCode).toHaveBeenCalledWith(
+        code,
+      )
+    })
+
+    it('should handle invalid code error', async () => {
+      const code = 'invalid-code'
+
+      mockAuthInstance.verifyPasswordResetCode.mockRejectedValue({
+        code: 'auth/invalid-action-code',
+      })
+
+      await expect(adapter.verifyPasswordResetCode(code)).rejects.toMatchObject(
+        {
+          code: 'auth/invalid-action-code',
+        },
+      )
+    })
+
+    it('should handle expired code error', async () => {
+      const code = 'expired-code'
+
+      mockAuthInstance.verifyPasswordResetCode.mockRejectedValue({
+        code: 'auth/expired-action-code',
+      })
+
+      await expect(adapter.verifyPasswordResetCode(code)).rejects.toMatchObject(
+        {
+          code: 'auth/expired-action-code',
+        },
+      )
+    })
+  })
+
+  describe('fetchSignInMethodsForEmail', () => {
+    it('should fetch sign-in methods for email', async () => {
+      const email = randEmail()
+      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([
+        'password',
+      ])
+
+      const result = await adapter.fetchSignInMethodsForEmail(email)
+
+      expect(mockAuthInstance.fetchSignInMethodsForEmail).toHaveBeenCalledWith(
+        email,
+      )
+      expect(result).toEqual({
+        methods: ['password'],
+        hasPassword: true,
+        hasOAuth: false,
+      })
+    })
+
+    it('should detect OAuth provider', async () => {
+      const email = randEmail()
+      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([
+        'google.com',
+      ])
+
+      const result = await adapter.fetchSignInMethodsForEmail(email)
+
+      expect(result).toEqual({
+        methods: ['google.com'],
+        hasPassword: false,
+        hasOAuth: true,
+      })
+    })
+
+    it('should detect both password and OAuth', async () => {
+      const email = randEmail()
+      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([
+        'password',
+        'google.com',
+      ])
+
+      const result = await adapter.fetchSignInMethodsForEmail(email)
+
+      expect(result).toEqual({
+        methods: ['password', 'google.com'],
+        hasPassword: true,
+        hasOAuth: true,
+      })
+    })
+
+    it('should return empty methods for non-existent user', async () => {
+      const email = randEmail()
+      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([])
+
+      const result = await adapter.fetchSignInMethodsForEmail(email)
+
+      expect(result).toEqual({
+        methods: [],
+        hasPassword: false,
+        hasOAuth: false,
+      })
+    })
+
+    it('should return empty result on fetch error', async () => {
+      const email = randEmail()
+      mockAuthInstance.fetchSignInMethodsForEmail.mockRejectedValue({
+        code: 'auth/invalid-email',
+      })
+
+      const result = await adapter.fetchSignInMethodsForEmail(email)
+
+      expect(result).toEqual({
+        methods: [],
+        hasPassword: false,
+        hasOAuth: false,
+      })
     })
   })
 
@@ -458,7 +654,7 @@ describe('createFirebaseAuthAdapter', () => {
     })
 
     it('should update photo URL', async () => {
-      const photoUrl = 'https://example.com/photo.jpg'
+      const photoUrl = randUrl()
       const mockUser = {
         uid: randUuid(),
         email: randEmail(),
@@ -480,7 +676,7 @@ describe('createFirebaseAuthAdapter', () => {
 
     it('should update both display name and photo URL', async () => {
       const displayName = randFullName()
-      const photoUrl = 'https://example.com/photo.jpg'
+      const photoUrl = randUrl()
       const mockUser = {
         uid: randUuid(),
         email: randEmail(),

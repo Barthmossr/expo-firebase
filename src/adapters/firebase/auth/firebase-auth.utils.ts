@@ -28,6 +28,8 @@ const mapFirebaseErrorCode = (code: string): AuthErrorCode => {
     'auth/network-request-failed',
     'auth/popup-closed-by-user',
     'auth/invalid-credential',
+    'auth/invalid-action-code',
+    'auth/expired-action-code',
   ]
 
   return knownCodes.includes(code as AuthErrorCode)
