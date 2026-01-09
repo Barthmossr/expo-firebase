@@ -11,6 +11,9 @@ const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
   'auth/popup-closed-by-user': 'Sign-in was cancelled',
   'auth/invalid-credential':
     'Invalid email or password. If you signed up with Google, use the "Continue with Google" button below.',
+  'auth/invalid-action-code': 'Invalid or expired reset code',
+  'auth/expired-action-code':
+    'Reset code has expired. Please request a new one',
   'auth/unknown': 'Something went wrong. Please try again',
 }
 

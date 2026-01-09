@@ -27,6 +27,7 @@ describe('useAuth', () => {
       signOut: jest.fn(),
       sendPasswordResetEmail: jest.fn(),
       verifyEmailAndRegister: jest.fn(),
+      fetchSignInMethodsForEmail: jest.fn(),
       error: null,
       clearError: jest.fn(),
     }
@@ -61,6 +62,7 @@ describe('useAuth', () => {
       signOut: jest.fn(),
       sendPasswordResetEmail: jest.fn(),
       verifyEmailAndRegister: jest.fn(),
+      fetchSignInMethodsForEmail: jest.fn(),
       error: null,
       clearError: jest.fn(),
     }
@@ -93,6 +95,7 @@ describe('useAuth', () => {
       signOut: jest.fn(),
       sendPasswordResetEmail: jest.fn(),
       verifyEmailAndRegister: jest.fn(),
+      fetchSignInMethodsForEmail: jest.fn(),
       error: mockError,
       clearError: jest.fn(),
     }
