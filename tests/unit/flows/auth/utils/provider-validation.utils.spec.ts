@@ -120,5 +120,22 @@ describe('provider-validation.utils', () => {
         message: null,
       })
     })
+
+    it('should block reset for OAuth-only users', () => {
+      const signInMethods: SignInMethodsResult = {
+        methods: ['google.com'],
+        hasPassword: false,
+        hasOAuth: true,
+      }
+
+      const result = validatePasswordReset(signInMethods)
+
+      expect(result).toEqual({
+        canUsePassword: false,
+        shouldUseOAuth: true,
+        message:
+          'This account uses Google Sign-In and does not have a password. Please use "Sign in with Google".',
+      })
+    })
   })
 })
