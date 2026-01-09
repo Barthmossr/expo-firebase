@@ -41,4 +41,19 @@ describe('getActionCodeSettings', () => {
       },
     })
   })
+
+  it('should throw error when iOS bundleIdentifier is missing', () => {
+    const packageName = `com.${randProductName().toLowerCase()}.app`
+    const projectId = randUuid()
+
+    mockConstants.expoConfig = {
+      ios: {},
+      android: { package: packageName },
+      extra: { firebase: { projectId } },
+    } as unknown as typeof mockConstants.expoConfig
+
+    expect(() => getActionCodeSettings()).toThrow(
+      'iOS bundleIdentifier is required in app.config.ts',
+    )
+  })
 })
