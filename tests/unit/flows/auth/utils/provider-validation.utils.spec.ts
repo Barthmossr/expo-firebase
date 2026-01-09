@@ -53,5 +53,22 @@ describe('provider-validation.utils', () => {
         message: null,
       })
     })
+
+    it('should block password login for OAuth-only users', () => {
+      const signInMethods: SignInMethodsResult = {
+        methods: ['google.com'],
+        hasPassword: false,
+        hasOAuth: true,
+      }
+
+      const result = validatePasswordProvider(signInMethods)
+
+      expect(result).toEqual({
+        canUsePassword: false,
+        shouldUseOAuth: true,
+        message:
+          'This account uses Google Sign-In. Please use "Sign in with Google" button.',
+      })
+    })
   })
 })
