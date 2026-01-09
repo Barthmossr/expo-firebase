@@ -137,5 +137,21 @@ describe('provider-validation.utils', () => {
           'This account uses Google Sign-In and does not have a password. Please use "Sign in with Google".',
       })
     })
+
+    it('should block reset when user has no password', () => {
+      const signInMethods: SignInMethodsResult = {
+        methods: ['phone'],
+        hasPassword: false,
+        hasOAuth: false,
+      }
+
+      const result = validatePasswordReset(signInMethods)
+
+      expect(result).toEqual({
+        canUsePassword: false,
+        shouldUseOAuth: false,
+        message: 'This account does not have a password set.',
+      })
+    })
   })
 })
