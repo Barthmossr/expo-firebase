@@ -21,5 +21,21 @@ describe('provider-validation.utils', () => {
         message: null,
       })
     })
+
+    it('should allow password login when user has password provider', () => {
+      const signInMethods: SignInMethodsResult = {
+        methods: ['password'],
+        hasPassword: true,
+        hasOAuth: false,
+      }
+
+      const result = validatePasswordProvider(signInMethods)
+
+      expect(result).toEqual({
+        canUsePassword: true,
+        shouldUseOAuth: false,
+        message: null,
+      })
+    })
   })
 })
