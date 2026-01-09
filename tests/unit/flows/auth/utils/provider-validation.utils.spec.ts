@@ -104,5 +104,21 @@ describe('provider-validation.utils', () => {
         message: null,
       })
     })
+
+    it('should allow reset when user has both providers', () => {
+      const signInMethods: SignInMethodsResult = {
+        methods: ['password', 'google.com'],
+        hasPassword: true,
+        hasOAuth: true,
+      }
+
+      const result = validatePasswordReset(signInMethods)
+
+      expect(result).toEqual({
+        canUsePassword: true,
+        shouldUseOAuth: false,
+        message: null,
+      })
+    })
   })
 })
