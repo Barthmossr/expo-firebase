@@ -71,4 +71,22 @@ describe('provider-validation.utils', () => {
       })
     })
   })
+
+  describe('validatePasswordReset', () => {
+    it('should block reset when user does not exist', () => {
+      const signInMethods: SignInMethodsResult = {
+        methods: [],
+        hasPassword: false,
+        hasOAuth: false,
+      }
+
+      const result = validatePasswordReset(signInMethods)
+
+      expect(result).toEqual({
+        canUsePassword: false,
+        shouldUseOAuth: false,
+        message: 'No account found with this email address.',
+      })
+    })
+  })
 })
