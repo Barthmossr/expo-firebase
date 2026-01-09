@@ -173,7 +173,7 @@ const createFirebaseAuthAdapter = (): AuthPort => {
       const methods = await auth().fetchSignInMethodsForEmail(email)
       const typedMethods = methods as SignInMethod[]
       const hasPassword = typedMethods.includes('password')
-      const hasOAuth = typedMethods.includes('google.com')
+      const hasOAuth = typedMethods.some((method) => method === 'google.com')
 
       return {
         methods: typedMethods,
