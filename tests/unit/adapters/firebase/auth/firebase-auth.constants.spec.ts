@@ -71,4 +71,19 @@ describe('getActionCodeSettings', () => {
       'Android package is required in app.config.ts',
     )
   })
+
+  it('should throw error when Firebase projectId is missing', () => {
+    const bundleId = `com.${randProductName().toLowerCase()}.app`
+    const packageName = `com.${randProductName().toLowerCase()}.app`
+
+    mockConstants.expoConfig = {
+      ios: { bundleIdentifier: bundleId },
+      android: { package: packageName },
+      extra: { firebase: {} },
+    } as unknown as typeof mockConstants.expoConfig
+
+    expect(() => getActionCodeSettings()).toThrow(
+      'Firebase projectId is required in app.config.ts extra.firebase.projectId',
+    )
+  })
 })
