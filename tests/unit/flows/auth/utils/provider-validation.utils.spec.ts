@@ -6,7 +6,7 @@ import type { SignInMethodsResult } from '@/core/ports/auth'
 
 describe('provider-validation.utils', () => {
   describe('validatePasswordProvider', () => {
-    it('should allow password login when user does not exist', () => {
+    it('should allow password attempt when sign-in methods are empty', () => {
       const signInMethods: SignInMethodsResult = {
         methods: [],
         hasPassword: false,
