@@ -6,4 +6,6 @@ export type {
   AuthState,
   AuthErrorCode,
   AuthError,
+  SignInMethod,
+  SignInMethodsResult,
 } from './auth.types'

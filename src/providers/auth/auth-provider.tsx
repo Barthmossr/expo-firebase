@@ -7,6 +7,7 @@ import type {
   AuthCredentials,
   RegisterCredentials,
   AuthError,
+  SignInMethodsResult,
 } from '@/core/ports/auth'
 import type { AuthContextValue, AuthProviderProps } from './auth-provider.types'
 
@@ -134,6 +135,19 @@ const AuthProvider = ({ children }: AuthProviderProps): React.ReactElement => {
     [],
   )
 
+  const fetchSignInMethodsForEmail = useCallback(
+    async (email: string): Promise<SignInMethodsResult> => {
+      try {
+        const authService = getAuthService()
+        return await authService.fetchSignInMethodsForEmail(email)
+      } catch (err) {
+        setError(err as AuthError)
+        throw err
+      }
+    },
+    [],
+  )
+
   const value: AuthContextValue = {
     user,
     isAuthenticated: Boolean(user),
@@ -144,6 +158,7 @@ const AuthProvider = ({ children }: AuthProviderProps): React.ReactElement => {
     signOut,
     sendPasswordResetEmail,
     verifyEmailAndRegister,
+    fetchSignInMethodsForEmail,
     error,
     clearError,
   }

@@ -11,6 +11,7 @@ const createMockAuthContext = (): AuthContextValue => ({
   signOut: jest.fn(),
   sendPasswordResetEmail: jest.fn(),
   verifyEmailAndRegister: jest.fn(),
+  fetchSignInMethodsForEmail: jest.fn(),
   clearError: jest.fn(),
 })
 

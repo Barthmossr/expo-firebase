@@ -9,7 +9,8 @@ const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
   'auth/too-many-requests': 'Too many attempts. Please try again later',
   'auth/network-request-failed': 'Network error. Check your connection',
   'auth/popup-closed-by-user': 'Sign-in was cancelled',
-  'auth/invalid-credential': 'Invalid email or password',
+  'auth/invalid-credential':
+    'Invalid email or password. If you signed up with Google, use the "Continue with Google" button below.',
   'auth/unknown': 'Something went wrong. Please try again',
 }
 

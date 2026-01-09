@@ -5,12 +5,15 @@ import type {
   AuthUser,
   AuthCredentials,
   RegisterCredentials,
+  SignInMethodsResult,
+  SignInMethod,
 } from '@/core/ports/auth'
 import {
   mapFirebaseUser,
   createAuthError,
   ensureUserExists,
 } from './firebase-auth.utils'
+import { getActionCodeSettings } from './firebase-auth.constants'
 
 const createFirebaseAuthAdapter = (): AuthPort => {
   const signIn = async (credentials: AuthCredentials): Promise<AuthUser> => {
@@ -98,7 +101,27 @@ const createFirebaseAuthAdapter = (): AuthPort => {
 
   const sendPasswordResetEmail = async (email: string): Promise<void> => {
     try {
-      await auth().sendPasswordResetEmail(email)
+      await auth().sendPasswordResetEmail(email, getActionCodeSettings())
+    } catch (error) {
+      throw createAuthError(error)
+    }
+  }
+
+  const confirmPasswordReset = async (
+    code: string,
+    newPassword: string,
+  ): Promise<void> => {
+    try {
+      await auth().confirmPasswordReset(code, newPassword)
+    } catch (error) {
+      throw createAuthError(error)
+    }
+  }
+
+  const verifyPasswordResetCode = async (code: string): Promise<string> => {
+    try {
+      const email = await auth().verifyPasswordResetCode(code)
+      return email
     } catch (error) {
       throw createAuthError(error)
     }
@@ -143,6 +166,29 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     }
   }
 
+  const fetchSignInMethodsForEmail = async (
+    email: string,
+  ): Promise<SignInMethodsResult> => {
+    try {
+      const methods = await auth().fetchSignInMethodsForEmail(email)
+      const typedMethods = methods as SignInMethod[]
+      const hasPassword = typedMethods.includes('password')
+      const hasOAuth = typedMethods.includes('google.com')
+
+      return {
+        methods: typedMethods,
+        hasPassword,
+        hasOAuth,
+      }
+    } catch {
+      return {
+        methods: [],
+        hasPassword: false,
+        hasOAuth: false,
+      }
+    }
+  }
+
   return {
     signIn,
     signUp,
@@ -151,8 +197,11 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     getCurrentUser,
     onAuthStateChanged,
     sendPasswordResetEmail,
+    confirmPasswordReset,
+    verifyPasswordResetCode,
     updateProfile,
     createUserAfterVerification,
+    fetchSignInMethodsForEmail,
   }
 }
 

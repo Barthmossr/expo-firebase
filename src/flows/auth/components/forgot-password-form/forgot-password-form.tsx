@@ -19,6 +19,7 @@ const ForgotPasswordForm = (
   const { onBack } = props
   const { sendPasswordResetEmail, isLoading, error } = useAuth()
   const [isSuccess, setIsSuccess] = useState(false)
+  const [providerMessage, setProviderMessage] = useState<string | null>(null)
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: '' },
@@ -26,9 +27,17 @@ const ForgotPasswordForm = (
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
+      setProviderMessage(null)
       await sendPasswordResetEmail(data.email)
       setIsSuccess(true)
-    } catch {}
+    } catch (err) {
+      const error = err as { code?: string }
+      if (error.code === 'auth/user-not-found') {
+        setProviderMessage(
+          'No account found. If you signed up with Google, you cannot reset a password.',
+        )
+      }
+    }
   }
 
   if (isSuccess) {
@@ -68,6 +77,9 @@ const ForgotPasswordForm = (
       />
       {error && (
         <Text style={styles.apiError}>{getAuthErrorMessage(error.code)}</Text>
+      )}
+      {providerMessage && (
+        <Text style={styles.apiError}>{providerMessage}</Text>
       )}
       <Button
         title="Send Reset Link"
