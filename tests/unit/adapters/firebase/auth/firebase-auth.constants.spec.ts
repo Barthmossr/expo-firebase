@@ -86,4 +86,21 @@ describe('getActionCodeSettings', () => {
       'Firebase projectId is required in app.config.ts extra.firebase.projectId',
     )
   })
+
+  it('should cache settings after first call', () => {
+    const bundleId = `com.${randProductName().toLowerCase()}.app`
+    const packageName = `com.${randProductName().toLowerCase()}.app`
+    const projectId = randUuid()
+
+    mockConstants.expoConfig = {
+      ios: { bundleIdentifier: bundleId },
+      android: { package: packageName },
+      extra: { firebase: { projectId } },
+    } as unknown as typeof mockConstants.expoConfig
+
+    const settings1 = getActionCodeSettings()
+    const settings2 = getActionCodeSettings()
+
+    expect(settings1).toBe(settings2)
+  })
 })
