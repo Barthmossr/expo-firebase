@@ -29,7 +29,9 @@ describe('getAuthErrorMessage', () => {
   it('should return correct message for invalid-credential', () => {
     const message = getAuthErrorMessage('auth/invalid-credential')
 
-    expect(message).toBe('Invalid email or password')
+    expect(message).toBe(
+      'Invalid email or password. If you signed up with Google, use the "Continue with Google" button below.',
+    )
   })
 
   it('should return correct message for too-many-requests', () => {

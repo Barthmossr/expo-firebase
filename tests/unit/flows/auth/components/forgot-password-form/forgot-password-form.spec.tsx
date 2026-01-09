@@ -10,13 +10,20 @@ const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
 
 describe('ForgotPasswordForm', () => {
   const mockSendPasswordResetEmail = jest.fn()
+  const mockFetchSignInMethodsForEmail = jest.fn()
   const mockOnBack = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockFetchSignInMethodsForEmail.mockResolvedValue({
+      methods: ['password'],
+      hasPassword: true,
+      hasOAuth: false,
+    })
     mockUseAuth.mockReturnValue({
       ...createMockAuthContext(),
       sendPasswordResetEmail: mockSendPasswordResetEmail,
+      fetchSignInMethodsForEmail: mockFetchSignInMethodsForEmail,
     })
   })
 
@@ -116,6 +123,72 @@ describe('ForgotPasswordForm', () => {
       const email = randEmail()
 
       mockSendPasswordResetEmail.mockRejectedValue(new Error('User not found'))
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).toHaveBeenCalled()
+      })
+    })
+
+    it('should show OAuth message for user-not-found error', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockRejectedValue({
+        code: 'auth/user-not-found',
+      })
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(
+          getByText(
+            /No account found.*If you signed up with Google.*cannot reset a password/,
+          ),
+        ).toBeTruthy()
+      })
+    })
+
+    it('should handle error without code property', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockRejectedValue('Network error')
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).toHaveBeenCalled()
+      })
+    })
+
+    it('should handle object error without code property', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockRejectedValue({ message: 'Network error' })
 
       const { getByText, getByPlaceholderText } = render(
         <ForgotPasswordForm onBack={mockOnBack} />,

@@ -36,6 +36,7 @@ describe('AuthProvider', () => {
     sendPasswordResetEmail: jest.fn(),
     createUserAfterVerification: jest.fn(),
     onAuthStateChanged: jest.fn(),
+    fetchSignInMethodsForEmail: jest.fn(),
   }
 
   const mockOTPService = {
@@ -770,6 +771,51 @@ describe('AuthProvider', () => {
 
       await waitFor(() => {
         expect(result.current.error).toBeNull()
+      })
+    })
+  })
+
+  describe('fetchSignInMethodsForEmail', () => {
+    it('should call auth service fetchSignInMethodsForEmail', async () => {
+      const email = randEmail()
+      const mockResult = {
+        methods: ['password'],
+        hasPassword: true,
+        hasOAuth: false,
+      }
+      mockAuthService.fetchSignInMethodsForEmail.mockResolvedValue(mockResult)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      const signInMethods =
+        await result.current.fetchSignInMethodsForEmail(email)
+
+      await waitFor(() => {
+        expect(mockAuthService.fetchSignInMethodsForEmail).toHaveBeenCalledWith(
+          email,
+        )
+      })
+
+      expect(signInMethods).toEqual(mockResult)
+    })
+
+    it('should handle fetchSignInMethodsForEmail error gracefully', async () => {
+      const email = randEmail()
+      const error = { code: 'auth/network-error' }
+      mockAuthService.fetchSignInMethodsForEmail.mockRejectedValue(error)
+
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await expect(
+        result.current.fetchSignInMethodsForEmail(email),
+      ).rejects.toEqual(error)
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(error)
       })
     })
   })

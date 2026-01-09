@@ -10,13 +10,20 @@ const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
 
 describe('LoginForm', () => {
   const mockSignIn = jest.fn()
+  const mockFetchSignInMethodsForEmail = jest.fn()
   const mockOnForgotPassword = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockFetchSignInMethodsForEmail.mockResolvedValue({
+      methods: ['password'],
+      hasPassword: true,
+      hasOAuth: false,
+    })
     mockUseAuth.mockReturnValue({
       ...createMockAuthContext(),
       signIn: mockSignIn,
+      fetchSignInMethodsForEmail: mockFetchSignInMethodsForEmail,
     })
   })
 
@@ -183,7 +190,7 @@ describe('LoginForm', () => {
   })
 
   describe('error display', () => {
-    it('should display auth error message', () => {
+    it('should display auth error message with Google Sign-In hint', () => {
       mockUseAuth.mockReturnValue({
         ...createMockAuthContext(),
         error: {
@@ -196,7 +203,11 @@ describe('LoginForm', () => {
         <LoginForm onForgotPassword={mockOnForgotPassword} />,
       )
 
-      expect(getByText('Invalid email or password')).toBeDefined()
+      expect(
+        getByText(
+          'Invalid email or password. If you signed up with Google, use the "Continue with Google" button below.',
+        ),
+      ).toBeDefined()
     })
   })
 
