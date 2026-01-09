@@ -88,5 +88,21 @@ describe('provider-validation.utils', () => {
         message: 'No account found with this email address.',
       })
     })
+
+    it('should allow reset when user has password provider', () => {
+      const signInMethods: SignInMethodsResult = {
+        methods: ['password'],
+        hasPassword: true,
+        hasOAuth: false,
+      }
+
+      const result = validatePasswordReset(signInMethods)
+
+      expect(result).toEqual({
+        canUsePassword: true,
+        shouldUseOAuth: false,
+        message: null,
+      })
+    })
   })
 })
