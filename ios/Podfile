@@ -27,7 +27,10 @@ target 'expofirebase' do
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
   else
     config_command = [
-      'npx',
+      'node',
+      '--no-warnings',
+      '--eval',
+      'require(\'expo/bin/autolinking\')',
       'expo-modules-autolinking',
       'react-native-config',
       '--json',
@@ -57,16 +60,13 @@ target 'expofirebase' do
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
 
-    # Fix for non-modular header errors with React Native Firebase when using static frameworks
     installer.pods_project.targets.each do |target|
+      name = target.name
+      next unless name.start_with?('React-') || name.start_with?('RCT') || name.start_with?('RNFB')
+
       target.build_configurations.each do |config|
         config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
-
-        # Disable modular headers for React Native Firebase pods
-        if target.name.start_with?('RNFB') || target.name.start_with?('RNGoogleMobileAds')
-          config.build_settings['DEFINES_MODULE'] = 'NO'
-          config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
-        end
+        config.build_settings['DEFINES_MODULE'] = 'NO' if name.start_with?('RNFB')
       end
     end
   end
