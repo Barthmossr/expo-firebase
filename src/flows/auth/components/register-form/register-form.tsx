@@ -13,7 +13,12 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
   const { onSuccess } = props
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { displayName: '', email: '', password: '' },
+    defaultValues: {
+      displayName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   })
 
   const [isLoading, setIsLoading] = useState(false)
@@ -85,6 +90,23 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
           <TextInput
             label="Password"
             placeholder="Enter your password"
+            secureTextEntry
+            autoCapitalize="none"
+            autoComplete="new-password"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={fieldState.error?.message}
+          />
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="confirmPassword"
+        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+          <TextInput
+            label="Confirm Password"
+            placeholder="Confirm your password"
             secureTextEntry
             autoCapitalize="none"
             autoComplete="new-password"
