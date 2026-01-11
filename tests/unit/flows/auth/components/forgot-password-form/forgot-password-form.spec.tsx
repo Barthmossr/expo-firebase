@@ -1,0 +1,327 @@
+import { render, fireEvent, waitFor } from '@testing-library/react-native'
+import { randEmail } from '@ngneat/falso'
+import { ForgotPasswordForm } from '@/flows/auth/components/forgot-password-form'
+import { useAuth } from '@/hooks/auth'
+import { createMockAuthContext } from '../../__mocks__/auth.mocks'
+
+jest.mock('@/hooks/auth')
+
+const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
+
+describe('ForgotPasswordForm', () => {
+  const mockSendPasswordResetEmail = jest.fn()
+  const mockFetchSignInMethodsForEmail = jest.fn()
+  const mockOnBack = jest.fn()
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockFetchSignInMethodsForEmail.mockResolvedValue({
+      methods: ['password'],
+      hasPassword: true,
+      hasOAuth: false,
+    })
+    mockUseAuth.mockReturnValue({
+      ...createMockAuthContext(),
+      sendPasswordResetEmail: mockSendPasswordResetEmail,
+      fetchSignInMethodsForEmail: mockFetchSignInMethodsForEmail,
+    })
+  })
+
+  describe('rendering', () => {
+    it('should render email field', () => {
+      const { getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      expect(getByPlaceholderText('Enter your email')).toBeDefined()
+    })
+
+    it('should render reset password button', () => {
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      expect(getByText('Send Reset Link')).toBeDefined()
+    })
+
+    it('should render back to login link', () => {
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      expect(getByText('Back to Login')).toBeDefined()
+    })
+
+    it('should render title and subtitle', () => {
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      expect(getByText('Reset Password')).toBeDefined()
+      expect(
+        getByText('Enter your email and we will send you a reset link.'),
+      ).toBeDefined()
+    })
+  })
+
+  describe('form validation', () => {
+    it('should show error when email is empty', async () => {
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Email is required')).toBeDefined()
+      })
+    })
+
+    it('should show error when email is invalid', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, 'invalid-email')
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Please enter a valid email address')).toBeDefined()
+      })
+    })
+  })
+
+  describe('form submission', () => {
+    it('should call sendPasswordResetEmail with correct email', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).toHaveBeenCalledWith(email)
+      })
+    })
+
+    it('should not call sendPasswordResetEmail when form is invalid', async () => {
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).not.toHaveBeenCalled()
+      })
+    })
+
+    it('should handle sendPasswordResetEmail error', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockRejectedValue(new Error('User not found'))
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).toHaveBeenCalled()
+      })
+    })
+
+    it('should show OAuth message for user-not-found error', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockRejectedValue({
+        code: 'auth/user-not-found',
+      })
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(
+          getByText(
+            /No account found.*If you signed up with Google.*cannot reset a password/,
+          ),
+        ).toBeTruthy()
+      })
+    })
+
+    it('should handle error without code property', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockRejectedValue('Network error')
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).toHaveBeenCalled()
+      })
+    })
+
+    it('should handle object error without code property', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockRejectedValue({ message: 'Network error' })
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(mockSendPasswordResetEmail).toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe('success state', () => {
+    it('should show success message after successful submission', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Check your email')).toBeDefined()
+      })
+
+      expect(
+        getByText('We sent a password reset link to your email address.'),
+      ).toBeDefined()
+    })
+
+    it('should show back to login button in success state', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText, getAllByText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Check your email')).toBeDefined()
+      })
+
+      const backButtons = getAllByText('Back to Login')
+      expect(backButtons.length).toBeGreaterThan(0)
+    })
+
+    it('should call onBack when back button is pressed in success state', async () => {
+      const email = randEmail()
+
+      mockSendPasswordResetEmail.mockResolvedValue(undefined)
+
+      const { getByText, getByPlaceholderText, getAllByText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, email)
+
+      const resetButton = getByText('Send Reset Link')
+      fireEvent.press(resetButton)
+
+      await waitFor(() => {
+        expect(getByText('Check your email')).toBeDefined()
+      })
+
+      const backButtons = getAllByText('Back to Login')
+      fireEvent.press(backButtons[0]!)
+
+      expect(mockOnBack).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('loading state', () => {
+    it('should show loading button when isLoading is true', () => {
+      mockUseAuth.mockReturnValue({
+        ...createMockAuthContext(),
+        isLoading: true,
+      })
+
+      const { UNSAFE_getAllByType } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const activityIndicators = UNSAFE_getAllByType('ActivityIndicator' as any)
+      expect(activityIndicators.length).toBeGreaterThan(0)
+    })
+  })
+
+  describe('error display', () => {
+    it('should display auth error message', () => {
+      mockUseAuth.mockReturnValue({
+        ...createMockAuthContext(),
+        error: {
+          code: 'auth/user-not-found',
+          message: 'User not found',
+        },
+      })
+
+      const { getByText } = render(<ForgotPasswordForm onBack={mockOnBack} />)
+
+      expect(getByText('No account found with this email')).toBeDefined()
+    })
+  })
+
+  describe('back to login', () => {
+    it('should call onBack when back link is pressed', () => {
+      const { getAllByText } = render(
+        <ForgotPasswordForm onBack={mockOnBack} />,
+      )
+
+      const backLinks = getAllByText('Back to Login')
+      fireEvent.press(backLinks[0]!)
+
+      expect(mockOnBack).toHaveBeenCalledTimes(1)
+    })
+  })
+})

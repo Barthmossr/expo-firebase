@@ -191,6 +191,7 @@ expo-firebase/
 │   │       ├── analytics/      # Analytics port interface
 │   │       ├── crash-reporting/# Crash reporting port interface
 │   │       ├── auth/           # Authentication port interface
+│   │       ├── otp/            # OTP verification port interface
 │   │       ├── storage/        # File storage port interface
 │   │       ├── database/       # Database port interface
 │   │       ├── functions/      # Cloud functions port interface
@@ -200,6 +201,7 @@ expo-firebase/
 │   │   │   ├── analytics/
 │   │   │   ├── crash-reporting/
 │   │   │   ├── auth/
+│   │   │   ├── otp/            # OTP adapter (Cloud Functions)
 │   │   │   ├── storage/
 │   │   │   ├── database/
 │   │   │   └── functions/
@@ -208,6 +210,7 @@ expo-firebase/
 │   │   ├── analytics.service.ts
 │   │   ├── crash-reporting.service.ts
 │   │   ├── auth.service.ts
+│   │   ├── otp.service.ts       # OTP service factory
 │   │   ├── storage.service.ts
 │   │   ├── database.service.ts
 │   │   ├── functions.service.ts
@@ -216,14 +219,32 @@ expo-firebase/
 │   ├── hooks/                  # React hooks
 │   │   └── telemetry/
 │   ├── components/             # Reusable UI components
-│   │   └── ads/
-│   │       └── banner/
+│   │   ├── ads/
+│   │   │   └── banner/
+│   │   └── ui/                 # UI components
+│   │       └── otp-input/      # OTP input component
 │   ├── config/                 # Configuration modules
 │   │   └── telemetry/
-│   └── flows/                  # Feature modules (future)
-│       ├── auth/
+│   └── flows/                  # Feature modules
+│       ├── auth/               # Authentication flow
+│       │   ├── components/
+│       │   │   ├── login-form/
+│       │   │   ├── register-form/
+│       │   │   └── verify-email-form/ # OTP verification
+│       │   └── screens/
 │       ├── profile/
 │       └── onboarding/
+├── functions/                  # Firebase Cloud Functions
+│   ├── src/
+│   │   ├── index.ts            # Functions entry point
+│   │   ├── otp/                # OTP verification functions
+│   │   │   ├── send-otp-email.function.ts
+│   │   │   ├── verify-otp-email.function.ts
+│   │   │   ├── otp.utils.ts
+│   │   │   └── otp.types.ts
+│   │   └── cleanup/            # Scheduled cleanup
+│   ├── package.json
+│   └── tsconfig.json
 ├── tests/
 │   ├── setup.ts                # Global test setup
 │   ├── __mocks__/              # Manual mocks
@@ -232,7 +253,13 @@ expo-firebase/
 │   ├── CONTRIBUTING.md
 │   ├── README.md
 │   ├── guides/                 # Detailed documentation
+│   │   ├── cost-optimization.md  # Cloud Functions costs
+│   │   └── ...
 │   └── services/               # Third-party service docs
+│       ├── sendgrid/
+│       │   └── setup.md        # Email verification setup
+│       ├── firebase/
+│       └── admob/
 ├── scripts/
 │   └── setup.sh                # Setup and utility scripts
 ├── .github/

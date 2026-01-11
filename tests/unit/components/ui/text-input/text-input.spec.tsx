@@ -1,0 +1,244 @@
+import { render, fireEvent } from '@testing-library/react-native'
+import { randEmail } from '@ngneat/falso'
+import { TextInput } from '@/components/ui/text-input'
+
+describe('TextInput', () => {
+  describe('rendering', () => {
+    it('should render text input', () => {
+      const { getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(getByTestId('text-input')).toBeDefined()
+    })
+
+    it('should render with label', () => {
+      const { getByText, getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          label="Email"
+          value=""
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      expect(getByText('Email')).toBeDefined()
+      expect(getByTestId('text-input')).toBeDefined()
+    })
+
+    it('should render without label', () => {
+      const { queryByText, getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(queryByText(/Email|Password|Name/)).toBeNull()
+      expect(getByTestId('text-input')).toBeDefined()
+    })
+
+    it('should render placeholder', () => {
+      const { getByPlaceholderText } = render(
+        <TextInput
+          placeholder="Enter email"
+          value=""
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      expect(getByPlaceholderText('Enter email')).toBeDefined()
+    })
+
+    it('should render error message', () => {
+      const { getByText } = render(
+        <TextInput
+          error="Email is required"
+          value=""
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      expect(getByText('Email is required')).toBeDefined()
+    })
+
+    it('should not render error when no error', () => {
+      const { queryByText } = render(
+        <TextInput value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(queryByText(/required|invalid|error/i)).toBeNull()
+    })
+  })
+
+  describe('value changes', () => {
+    it('should call onChangeText when text changes', () => {
+      const onChangeText = jest.fn()
+      const testEmail = randEmail()
+      const { getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={onChangeText} />,
+      )
+
+      fireEvent.changeText(getByTestId('text-input'), testEmail)
+
+      expect(onChangeText).toHaveBeenCalledWith(testEmail)
+    })
+
+    it('should display value', () => {
+      const testEmail = randEmail()
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value={testEmail}
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['value']).toBe(testEmail)
+    })
+  })
+
+  describe('secure text entry', () => {
+    it('should hide password by default when secureTextEntry is true', () => {
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          secureTextEntry
+          value="password123"
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['secureTextEntry']).toBe(true)
+    })
+
+    it('should show Show button when secureTextEntry is true', () => {
+      const { getByText } = render(
+        <TextInput
+          testID="text-input"
+          secureTextEntry
+          value="password123"
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      expect(getByText('Show')).toBeDefined()
+    })
+
+    it('should toggle password visibility when Show/Hide is pressed', () => {
+      const { getByText, getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          secureTextEntry
+          value="password123"
+          onChangeText={jest.fn()}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['secureTextEntry']).toBe(true)
+
+      fireEvent.press(getByText('Show'))
+      expect(input.props['secureTextEntry']).toBe(false)
+      expect(getByText('Hide')).toBeDefined()
+
+      fireEvent.press(getByText('Hide'))
+      expect(input.props['secureTextEntry']).toBe(true)
+      expect(getByText('Show')).toBeDefined()
+    })
+
+    it('should not show Show/Hide button when secureTextEntry is false', () => {
+      const { queryByText } = render(
+        <TextInput testID="text-input" value="test" onChangeText={jest.fn()} />,
+      )
+
+      expect(queryByText('Show')).toBeNull()
+      expect(queryByText('Hide')).toBeNull()
+    })
+  })
+
+  describe('focus and blur', () => {
+    it('should call onFocus when input is focused', () => {
+      const onFocus = jest.fn()
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          onFocus={onFocus}
+        />,
+      )
+
+      fireEvent(getByTestId('text-input'), 'focus')
+
+      expect(onFocus).toHaveBeenCalled()
+    })
+
+    it('should call onBlur when input loses focus', () => {
+      const onBlur = jest.fn()
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          onBlur={onBlur}
+        />,
+      )
+
+      fireEvent(getByTestId('text-input'), 'blur')
+
+      expect(onBlur).toHaveBeenCalled()
+    })
+
+    it('should work without onFocus callback', () => {
+      const { getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(() => {
+        fireEvent(getByTestId('text-input'), 'focus')
+      }).not.toThrow()
+    })
+
+    it('should work without onBlur callback', () => {
+      const { getByTestId } = render(
+        <TextInput testID="text-input" value="" onChangeText={jest.fn()} />,
+      )
+
+      expect(() => {
+        fireEvent(getByTestId('text-input'), 'blur')
+      }).not.toThrow()
+    })
+  })
+
+  describe('other props', () => {
+    it('should pass through additional props', () => {
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['autoCapitalize']).toBe('none')
+      expect(input.props['autoCorrect']).toBe(false)
+    })
+
+    it('should support keyboardType', () => {
+      const { getByTestId } = render(
+        <TextInput
+          testID="text-input"
+          value=""
+          onChangeText={jest.fn()}
+          keyboardType="email-address"
+        />,
+      )
+
+      const input = getByTestId('text-input')
+      expect(input.props['keyboardType']).toBe('email-address')
+    })
+  })
+})

@@ -6,6 +6,7 @@ type FirebaseConfig = {
   messagingSenderId: string
   appId: string
   measurementId?: string
+  region?: string
 }
 
 export type { FirebaseConfig }

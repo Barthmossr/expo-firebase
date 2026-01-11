@@ -34,11 +34,33 @@ Essential guides for day-to-day development:
    - Environment variables and editor settings
    - Customize the template for your needs
 
+### Services & Integrations
+
+Guides for external services:
+
+4. **[Firebase Setup](services/firebase/setup.md)** 🔥
+   - Firebase project configuration
+   - Enabled services and regions
+   - Platform integration (iOS & Android)
+
+5. **[Email Verification Setup](services/sendgrid/setup.md)** 📧
+   - Complete OTP email verification system
+   - SendGrid configuration
+   - Firebase Extension setup
+   - Cloud Functions deployment
+   - Testing and troubleshooting
+
+6. **[Cost Optimization Guide](guides/cost-optimization.md)** 💰
+   - Cloud Functions cost reduction strategies
+   - Memory and timeout optimization
+   - Firestore query optimization
+   - Monitoring and best practices
+
 ### Tools & Libraries
 
 Understanding the tools we use:
 
-4. **[Libraries](guides/libraries.md)** 📦
+7. **[Libraries](guides/libraries.md)** 📦
    - Why each library was chosen
    - Alternatives we considered
    - Configuration explanations
@@ -48,7 +70,7 @@ Understanding the tools we use:
 
 Building and deploying the app:
 
-5. **[CI/CD Guide](guides/ci-cd.md)** 🚀
+8. **[CI/CD Guide](guides/ci-cd.md)** 🚀
    - Branch strategy (develop, stage, main)
    - EAS Build and Update workflows
    - First release process
@@ -59,7 +81,7 @@ Building and deploying the app:
 
 If you want to contribute:
 
-6. **[Contributing Guidelines](./CONTRIBUTING.md)** 🤝
+9. **[Contributing Guidelines](./CONTRIBUTING.md)** 🤝
    - Branch strategy and workflow
    - Commit message standards
    - Pull request process
@@ -73,7 +95,9 @@ If you want to contribute:
 
 1. Read [Project Overview](guides/project-overview.md)
 2. Follow [Development Guide](guides/development.md)
-3. Refer to [Configuration Guide](guides/configuration.md) as needed
+3. Setup [Firebase](services/firebase/setup.md)
+4. Configure [Email Verification](services/sendgrid/setup.md) if needed
+5. Refer to [Configuration Guide](guides/configuration.md) as needed
 
 **I'm contributing to this template:**
 
@@ -95,16 +119,19 @@ If you want to contribute:
 
 ### By Topic
 
-| Topic                       | Document                                       |
-| --------------------------- | ---------------------------------------------- |
-| **Why decisions were made** | [Project Overview](guides/project-overview.md) |
-| **Setup and workflow**      | [Development Guide](guides/development.md)     |
-| **Configuration files**     | [Configuration Guide](guides/configuration.md) |
-| **Tool choices**            | [Libraries](guides/libraries.md)               |
-| **CI/CD pipelines**         | [CI/CD Guide](guides/ci-cd.md)                 |
-| **Branch strategy**         | [Contributing Guidelines](CONTRIBUTING.md)     |
-| **Commit standards**        | [Contributing Guidelines](CONTRIBUTING.md)     |
-| **Testing strategy**        | [Development Guide](guides/development.md)     |
+| Topic                       | Document                                         |
+| --------------------------- | ------------------------------------------------ |
+| **Why decisions were made** | [Project Overview](guides/project-overview.md)   |
+| **Setup and workflow**      | [Development Guide](guides/development.md)       |
+| **Configuration files**     | [Configuration Guide](guides/configuration.md)   |
+| **Tool choices**            | [Libraries](guides/libraries.md)                 |
+| **CI/CD pipelines**         | [CI/CD Guide](guides/ci-cd.md)                   |
+| **Branch strategy**         | [Contributing Guidelines](CONTRIBUTING.md)       |
+| **Commit standards**        | [Contributing Guidelines](CONTRIBUTING.md)       |
+| **Testing strategy**        | [Development Guide](guides/development.md)       |
+| **Firebase services**       | [Firebase Setup](services/firebase/setup.md)     |
+| **Email verification**      | [Email Verification](services/sendgrid/setup.md) |
+| **Cost optimization**       | [Cost Optimization](guides/cost-optimization.md) |
 
 ## 📖 Reading Order
 
