@@ -6,11 +6,17 @@ describe('registerSchema', () => {
     displayName: string
     email: string
     password: string
-  } => ({
-    displayName: randFullName(),
-    email: randEmail(),
-    password: `${randPassword()}1A`,
-  })
+    confirmPassword: string
+  } => {
+    const password = `${randPassword()}1A`
+
+    return {
+      displayName: randFullName(),
+      email: randEmail(),
+      password,
+      confirmPassword: password,
+    }
+  }
 
   it('should validate correct registration data', () => {
     const result = registerSchema.safeParse(getValidData())
@@ -65,6 +71,7 @@ describe('registerSchema', () => {
       const result = registerSchema.safeParse({
         ...getValidData(),
         password: 'Pass1',
+        confirmPassword: 'Pass1',
       })
 
       expect(result.success).toBe(false)
@@ -79,6 +86,7 @@ describe('registerSchema', () => {
       const result = registerSchema.safeParse({
         ...getValidData(),
         password: 'password1',
+        confirmPassword: 'password1',
       })
 
       expect(result.success).toBe(false)
@@ -93,6 +101,7 @@ describe('registerSchema', () => {
       const result = registerSchema.safeParse({
         ...getValidData(),
         password: 'Password',
+        confirmPassword: 'Password',
       })
 
       expect(result.success).toBe(false)
@@ -100,6 +109,34 @@ describe('registerSchema', () => {
         expect(result.error.issues[0]?.message).toBe(
           'Password must contain at least one number',
         )
+      }
+    })
+  })
+
+  describe('confirmPassword validation', () => {
+    it('should fail when confirmPassword is empty', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        confirmPassword: '',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Confirm password is required',
+        )
+      }
+    })
+
+    it('should fail when passwords do not match', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        confirmPassword: 'Different1A',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe('Passwords must match')
       }
     })
   })

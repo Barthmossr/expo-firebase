@@ -23,7 +23,7 @@ describe('RegisterForm', () => {
   })
 
   describe('rendering', () => {
-    it('should render name, email and password fields', () => {
+    it('should render name, email, password and confirm password fields', () => {
       const { getByPlaceholderText } = render(
         <RegisterForm onSuccess={mockOnSuccess} />,
       )
@@ -31,6 +31,7 @@ describe('RegisterForm', () => {
       expect(getByPlaceholderText('Enter your name')).toBeDefined()
       expect(getByPlaceholderText('Enter your email')).toBeDefined()
       expect(getByPlaceholderText('Enter your password')).toBeDefined()
+      expect(getByPlaceholderText('Confirm your password')).toBeDefined()
     })
 
     it('should render register button', () => {
@@ -51,6 +52,9 @@ describe('RegisterForm', () => {
 
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, 'Password123')
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'Password123')
 
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
@@ -74,6 +78,9 @@ describe('RegisterForm', () => {
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, 'Password123')
 
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'Password123')
+
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
 
@@ -92,6 +99,9 @@ describe('RegisterForm', () => {
 
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, 'Password123')
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'Password123')
 
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
@@ -115,6 +125,9 @@ describe('RegisterForm', () => {
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, 'Password123')
 
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'Password123')
+
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
 
@@ -136,6 +149,9 @@ describe('RegisterForm', () => {
 
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, 'Pass1')
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'Pass1')
 
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
@@ -161,6 +177,9 @@ describe('RegisterForm', () => {
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, 'password123')
 
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'password123')
+
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
 
@@ -185,6 +204,9 @@ describe('RegisterForm', () => {
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, 'Passwordonly')
 
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'Passwordonly')
+
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
 
@@ -192,6 +214,53 @@ describe('RegisterForm', () => {
         expect(
           getByText('Password must contain at least one number'),
         ).toBeDefined()
+      })
+    })
+
+    it('should show error when confirm password is empty', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, randFullName())
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, randEmail())
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'Password123')
+
+      const registerButton = getByText('Create Account')
+      fireEvent.press(registerButton)
+
+      await waitFor(() => {
+        expect(getByText('Confirm password is required')).toBeDefined()
+      })
+    })
+
+    it('should show error when passwords do not match', async () => {
+      const { getByText, getByPlaceholderText } = render(
+        <RegisterForm onSuccess={mockOnSuccess} />,
+      )
+
+      const nameInput = getByPlaceholderText('Enter your name')
+      fireEvent.changeText(nameInput, randFullName())
+
+      const emailInput = getByPlaceholderText('Enter your email')
+      fireEvent.changeText(emailInput, randEmail())
+
+      const passwordInput = getByPlaceholderText('Enter your password')
+      fireEvent.changeText(passwordInput, 'Password123')
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, 'Password321')
+
+      const registerButton = getByText('Create Account')
+      fireEvent.press(registerButton)
+
+      await waitFor(() => {
+        expect(getByText('Passwords must match')).toBeDefined()
       })
     })
   })
@@ -216,6 +285,9 @@ describe('RegisterForm', () => {
 
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, password)
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, password)
 
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
@@ -252,6 +324,9 @@ describe('RegisterForm', () => {
 
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, password)
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, password)
 
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
@@ -298,6 +373,9 @@ describe('RegisterForm', () => {
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, password)
 
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, password)
+
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
 
@@ -325,6 +403,9 @@ describe('RegisterForm', () => {
 
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, password)
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, password)
 
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
@@ -360,6 +441,9 @@ describe('RegisterForm', () => {
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, password)
 
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, password)
+
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
 
@@ -394,6 +478,9 @@ describe('RegisterForm', () => {
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, password)
 
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, password)
+
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
 
@@ -423,6 +510,9 @@ describe('RegisterForm', () => {
 
       const passwordInput = getByPlaceholderText('Enter your password')
       fireEvent.changeText(passwordInput, password)
+
+      const confirmPasswordInput = getByPlaceholderText('Confirm your password')
+      fireEvent.changeText(confirmPasswordInput, password)
 
       const registerButton = getByText('Create Account')
       fireEvent.press(registerButton)
