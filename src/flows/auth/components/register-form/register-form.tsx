@@ -13,6 +13,7 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
   const { onSuccess } = props
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: 'onSubmit',
     defaultValues: {
       displayName: '',
       email: '',
@@ -20,6 +21,7 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
       confirmPassword: '',
     },
   })
+  const { errors } = form.formState
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -53,7 +55,7 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
       <Controller
         control={form.control}
         name="displayName"
-        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Name"
             placeholder="Enter your name"
@@ -62,14 +64,14 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            error={fieldState.error?.message}
+            error={errors.displayName?.message}
           />
         )}
       />
       <Controller
         control={form.control}
         name="email"
-        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Email"
             placeholder="Enter your email"
@@ -79,14 +81,14 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            error={fieldState.error?.message}
+            error={errors.email?.message}
           />
         )}
       />
       <Controller
         control={form.control}
         name="password"
-        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Password"
             placeholder="Enter your password"
@@ -96,14 +98,14 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            error={fieldState.error?.message}
+            error={errors.password?.message}
           />
         )}
       />
       <Controller
         control={form.control}
         name="confirmPassword"
-        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Confirm Password"
             placeholder="Confirm your password"
@@ -113,7 +115,7 @@ const RegisterForm = (props: RegisterFormProps): React.ReactElement => {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            error={fieldState.error?.message}
+            error={errors.confirmPassword?.message}
           />
         )}
       />

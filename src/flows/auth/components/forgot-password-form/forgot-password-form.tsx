@@ -22,8 +22,10 @@ const ForgotPasswordForm = (
   const [providerMessage, setProviderMessage] = useState<string | null>(null)
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
+    mode: 'onSubmit',
     defaultValues: { email: '' },
   })
+  const { errors } = form.formState
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
@@ -61,7 +63,7 @@ const ForgotPasswordForm = (
       <Controller
         control={form.control}
         name="email"
-        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Email"
             placeholder="Enter your email"
@@ -71,7 +73,7 @@ const ForgotPasswordForm = (
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            error={fieldState.error?.message}
+            error={errors.email?.message}
           />
         )}
       />

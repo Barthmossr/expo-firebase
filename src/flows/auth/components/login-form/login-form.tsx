@@ -15,15 +15,15 @@ const LoginForm = ({
   const { signIn, isLoading, error } = useAuth()
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    mode: 'onSubmit',
     defaultValues: { email: '', password: '' },
   })
+  const { errors } = form.formState
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data)
-    } catch {
-      // Error handled by AuthProvider
-    }
+    } catch {}
   }
 
   return (
@@ -31,7 +31,7 @@ const LoginForm = ({
       <Controller
         control={form.control}
         name="email"
-        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Email"
             placeholder="Enter your email"
@@ -41,14 +41,14 @@ const LoginForm = ({
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            error={fieldState.error?.message}
+            error={errors.email?.message}
           />
         )}
       />
       <Controller
         control={form.control}
         name="password"
-        render={({ field: { onChange, onBlur, value }, fieldState }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Password"
             placeholder="Enter your password"
@@ -58,7 +58,7 @@ const LoginForm = ({
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            error={fieldState.error?.message}
+            error={errors.password?.message}
           />
         )}
       />

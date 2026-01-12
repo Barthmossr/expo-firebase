@@ -43,9 +43,7 @@ const RootLayout = (): React.ReactElement => {
             router.push(`/(auth)/reset-password?oobCode=${oobCode}`)
           }
         }
-      } catch {
-        // Silent fail - invalid deep link format
-      }
+      } catch {}
     }
 
     const subscription = Linking.addEventListener('url', handleDeepLink)
