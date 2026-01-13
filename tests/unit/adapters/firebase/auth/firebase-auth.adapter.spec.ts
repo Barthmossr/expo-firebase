@@ -6,12 +6,23 @@ import {
   randUuid,
 } from '@ngneat/falso'
 import { createFirebaseAuthAdapter } from '@/adapters/firebase/auth'
-import auth from '@react-native-firebase/auth'
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithCredential,
+  signOut,
+  sendPasswordResetEmail,
+  confirmPasswordReset,
+  verifyPasswordResetCode,
+  fetchSignInMethodsForEmail,
+  onAuthStateChanged,
+  updateProfile,
+  GoogleAuthProvider,
+} from '@react-native-firebase/auth'
+import { mockAuthInstance } from '@mocks/@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import type { AuthPort } from '@/core/ports/auth'
-import type { FirebaseAuthTypes } from '@react-native-firebase/auth'
 
-jest.mock('@react-native-firebase/auth')
 jest.mock('@react-native-google-signin/google-signin')
 jest.mock('expo-constants', () => ({
   expoConfig: {
@@ -21,48 +32,46 @@ jest.mock('expo-constants', () => ({
   },
 }))
 
-const mockAuth = auth as jest.MockedFunction<typeof auth>
+const mockSignInWithEmailAndPassword =
+  signInWithEmailAndPassword as jest.MockedFunction<
+    typeof signInWithEmailAndPassword
+  >
+const mockCreateUserWithEmailAndPassword =
+  createUserWithEmailAndPassword as jest.MockedFunction<
+    typeof createUserWithEmailAndPassword
+  >
+const mockSignInWithCredential = signInWithCredential as jest.MockedFunction<
+  typeof signInWithCredential
+>
+const mockSignOut = signOut as jest.MockedFunction<typeof signOut>
+const mockSendPasswordResetEmail =
+  sendPasswordResetEmail as jest.MockedFunction<typeof sendPasswordResetEmail>
+const mockConfirmPasswordReset = confirmPasswordReset as jest.MockedFunction<
+  typeof confirmPasswordReset
+>
+const mockVerifyPasswordResetCode =
+  verifyPasswordResetCode as jest.MockedFunction<typeof verifyPasswordResetCode>
+const mockFetchSignInMethodsForEmail =
+  fetchSignInMethodsForEmail as jest.MockedFunction<
+    typeof fetchSignInMethodsForEmail
+  >
+const mockOnAuthStateChanged = onAuthStateChanged as jest.MockedFunction<
+  typeof onAuthStateChanged
+>
+const mockUpdateProfile = updateProfile as jest.MockedFunction<
+  typeof updateProfile
+>
+const mockGoogleAuthProvider = GoogleAuthProvider as jest.Mocked<
+  typeof GoogleAuthProvider
+>
 const mockGoogleSignin = GoogleSignin as jest.Mocked<typeof GoogleSignin>
 
 describe('createFirebaseAuthAdapter', () => {
   let adapter: AuthPort
-  let mockAuthInstance: {
-    signInWithEmailAndPassword: jest.Mock
-    createUserWithEmailAndPassword: jest.Mock
-    signInWithCredential: jest.Mock
-    signOut: jest.Mock
-    sendPasswordResetEmail: jest.Mock
-    confirmPasswordReset: jest.Mock
-    verifyPasswordResetCode: jest.Mock
-    onAuthStateChanged: jest.Mock
-    fetchSignInMethodsForEmail: jest.Mock
-    currentUser: Partial<FirebaseAuthTypes.User> | null
-  }
-  let mockGoogleAuthProviderCredential: jest.Mock
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    mockAuthInstance = {
-      signInWithEmailAndPassword: jest.fn(),
-      createUserWithEmailAndPassword: jest.fn(),
-      signInWithCredential: jest.fn(),
-      signOut: jest.fn(),
-      sendPasswordResetEmail: jest.fn(),
-      confirmPasswordReset: jest.fn(),
-      verifyPasswordResetCode: jest.fn(),
-      onAuthStateChanged: jest.fn(),
-      fetchSignInMethodsForEmail: jest.fn(),
-      currentUser: null,
-    }
-
-    mockGoogleAuthProviderCredential = jest.fn()
-
-    mockAuth.mockReturnValue(mockAuthInstance as never)
-    mockAuth.GoogleAuthProvider = {
-      credential: mockGoogleAuthProviderCredential,
-    } as never
-
+    mockAuthInstance.currentUser = null
     adapter = createFirebaseAuthAdapter()
   })
 
@@ -129,13 +138,14 @@ describe('createFirebaseAuthAdapter', () => {
         emailVerified: true,
       }
 
-      mockAuthInstance.signInWithEmailAndPassword.mockResolvedValue({
+      mockSignInWithEmailAndPassword.mockResolvedValue({
         user: mockUser,
       } as never)
 
       const user = await adapter.signIn(credentials)
 
-      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(
+      expect(mockSignInWithEmailAndPassword).toHaveBeenCalledWith(
+        mockAuthInstance,
         credentials.email,
         credentials.password,
       )
@@ -154,7 +164,7 @@ describe('createFirebaseAuthAdapter', () => {
         password: randPassword(),
       }
 
-      mockAuthInstance.signInWithEmailAndPassword.mockResolvedValue({
+      mockSignInWithEmailAndPassword.mockResolvedValue({
         user: null,
       } as never)
 
@@ -169,7 +179,7 @@ describe('createFirebaseAuthAdapter', () => {
         password: randPassword(),
       }
 
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValue({
+      mockSignInWithEmailAndPassword.mockRejectedValue({
         code: 'auth/invalid-credential',
       })
 
@@ -193,19 +203,21 @@ describe('createFirebaseAuthAdapter', () => {
         displayName: null,
         photoURL: null,
         emailVerified: false,
-        updateProfile: jest.fn().mockResolvedValue(undefined),
       }
 
-      mockAuthInstance.createUserWithEmailAndPassword.mockResolvedValue({
+      mockCreateUserWithEmailAndPassword.mockResolvedValue({
         user: mockUser,
       } as never)
+      mockUpdateProfile.mockResolvedValue(undefined as never)
 
       const user = await adapter.signUp(credentials)
 
-      expect(
-        mockAuthInstance.createUserWithEmailAndPassword,
-      ).toHaveBeenCalledWith(credentials.email, credentials.password)
-      expect(mockUser.updateProfile).toHaveBeenCalledWith({
+      expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledWith(
+        mockAuthInstance,
+        credentials.email,
+        credentials.password,
+      )
+      expect(mockUpdateProfile).toHaveBeenCalledWith(mockUser, {
         displayName: credentials.displayName,
       })
       expect(user).toEqual({
@@ -224,7 +236,7 @@ describe('createFirebaseAuthAdapter', () => {
         displayName: randFullName(),
       }
 
-      mockAuthInstance.createUserWithEmailAndPassword.mockResolvedValue({
+      mockCreateUserWithEmailAndPassword.mockResolvedValue({
         user: null,
       } as never)
 
@@ -240,7 +252,7 @@ describe('createFirebaseAuthAdapter', () => {
         displayName: randFullName(),
       }
 
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValue({
+      mockCreateUserWithEmailAndPassword.mockRejectedValue({
         code: 'auth/email-already-in-use',
       })
 
@@ -267,8 +279,8 @@ describe('createFirebaseAuthAdapter', () => {
       mockGoogleSignin.signIn.mockResolvedValue({
         data: { idToken: mockIdToken },
       } as never)
-      mockGoogleAuthProviderCredential.mockReturnValue(mockCredential as never)
-      mockAuthInstance.signInWithCredential.mockResolvedValue({
+      mockGoogleAuthProvider.credential.mockReturnValue(mockCredential as never)
+      mockSignInWithCredential.mockResolvedValue({
         user: mockUser,
       } as never)
 
@@ -278,8 +290,11 @@ describe('createFirebaseAuthAdapter', () => {
         showPlayServicesUpdateDialog: true,
       })
       expect(mockGoogleSignin.signIn).toHaveBeenCalled()
-      expect(mockGoogleAuthProviderCredential).toHaveBeenCalledWith(mockIdToken)
-      expect(mockAuthInstance.signInWithCredential).toHaveBeenCalledWith(
+      expect(mockGoogleAuthProvider.credential).toHaveBeenCalledWith(
+        mockIdToken,
+      )
+      expect(mockSignInWithCredential).toHaveBeenCalledWith(
+        mockAuthInstance,
         mockCredential,
       )
       expect(user).toEqual({
@@ -321,8 +336,8 @@ describe('createFirebaseAuthAdapter', () => {
       mockGoogleSignin.signIn.mockResolvedValue({
         data: { idToken: mockIdToken },
       } as never)
-      mockGoogleAuthProviderCredential.mockReturnValue(mockCredential as never)
-      mockAuthInstance.signInWithCredential.mockResolvedValue({
+      mockGoogleAuthProvider.credential.mockReturnValue(mockCredential as never)
+      mockSignInWithCredential.mockResolvedValue({
         user: null,
       } as never)
 
@@ -346,29 +361,29 @@ describe('createFirebaseAuthAdapter', () => {
     it('should sign out from Firebase and Google when Google user exists', async () => {
       mockGoogleSignin.getCurrentUser.mockResolvedValue({} as never)
       mockGoogleSignin.signOut.mockResolvedValue(null as never)
-      mockAuthInstance.signOut.mockResolvedValue(undefined)
+      mockSignOut.mockResolvedValue(undefined as never)
 
       await adapter.signOut()
 
       expect(mockGoogleSignin.getCurrentUser).toHaveBeenCalled()
       expect(mockGoogleSignin.signOut).toHaveBeenCalled()
-      expect(mockAuthInstance.signOut).toHaveBeenCalled()
+      expect(mockSignOut).toHaveBeenCalledWith(mockAuthInstance)
     })
 
     it('should sign out from Firebase only when no Google user', async () => {
       mockGoogleSignin.getCurrentUser.mockResolvedValue(null as never)
-      mockAuthInstance.signOut.mockResolvedValue(undefined)
+      mockSignOut.mockResolvedValue(undefined as never)
 
       await adapter.signOut()
 
       expect(mockGoogleSignin.getCurrentUser).toHaveBeenCalled()
       expect(mockGoogleSignin.signOut).not.toHaveBeenCalled()
-      expect(mockAuthInstance.signOut).toHaveBeenCalled()
+      expect(mockSignOut).toHaveBeenCalledWith(mockAuthInstance)
     })
 
     it('should handle sign out errors', async () => {
       mockGoogleSignin.getCurrentUser.mockResolvedValue(null as never)
-      mockAuthInstance.signOut.mockRejectedValue({
+      mockSignOut.mockRejectedValue({
         code: 'auth/network-request-failed',
       })
 
@@ -389,14 +404,17 @@ describe('createFirebaseAuthAdapter', () => {
         emailVerified: true,
       }
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation((cb) => {
-        cb(mockUser as never)
+      mockOnAuthStateChanged.mockImplementation((_auth, cb) => {
+        ;(cb as (user: unknown) => void)(mockUser)
         return (): void => {}
       })
 
       adapter.onAuthStateChanged(callback)
 
-      expect(mockAuthInstance.onAuthStateChanged).toHaveBeenCalled()
+      expect(mockOnAuthStateChanged).toHaveBeenCalledWith(
+        mockAuthInstance,
+        expect.any(Function),
+      )
       expect(callback).toHaveBeenCalledWith({
         id: mockUser.uid,
         email: mockUser.email,
@@ -409,8 +427,8 @@ describe('createFirebaseAuthAdapter', () => {
     it('should call callback with null when user signs out', () => {
       const callback = jest.fn()
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation((cb) => {
-        cb(null)
+      mockOnAuthStateChanged.mockImplementation((_auth, cb) => {
+        ;(cb as (user: unknown) => void)(null)
         return (): void => {}
       })
 
@@ -423,7 +441,7 @@ describe('createFirebaseAuthAdapter', () => {
       const callback = jest.fn()
       const unsubscribe = jest.fn()
 
-      mockAuthInstance.onAuthStateChanged.mockReturnValue(unsubscribe)
+      mockOnAuthStateChanged.mockReturnValue(unsubscribe as never)
 
       const result = adapter.onAuthStateChanged(callback)
 
@@ -434,11 +452,12 @@ describe('createFirebaseAuthAdapter', () => {
   describe('sendPasswordResetEmail', () => {
     it('should send password reset email', async () => {
       const email = randEmail()
-      mockAuthInstance.sendPasswordResetEmail.mockResolvedValue(undefined)
+      mockSendPasswordResetEmail.mockResolvedValue(undefined as never)
 
       await adapter.sendPasswordResetEmail(email)
 
-      expect(mockAuthInstance.sendPasswordResetEmail).toHaveBeenCalledWith(
+      expect(mockSendPasswordResetEmail).toHaveBeenCalledWith(
+        mockAuthInstance,
         email,
         expect.objectContaining({
           handleCodeInApp: true,
@@ -450,7 +469,7 @@ describe('createFirebaseAuthAdapter', () => {
 
     it('should handle user-not-found error', async () => {
       const email = randEmail()
-      mockAuthInstance.sendPasswordResetEmail.mockRejectedValue({
+      mockSendPasswordResetEmail.mockRejectedValue({
         code: 'auth/user-not-found',
       })
 
@@ -467,11 +486,12 @@ describe('createFirebaseAuthAdapter', () => {
       const code = randUuid()
       const newPassword = randPassword()
 
-      mockAuthInstance.confirmPasswordReset.mockResolvedValue(undefined)
+      mockConfirmPasswordReset.mockResolvedValue(undefined as never)
 
       await adapter.confirmPasswordReset(code, newPassword)
 
-      expect(mockAuthInstance.confirmPasswordReset).toHaveBeenCalledWith(
+      expect(mockConfirmPasswordReset).toHaveBeenCalledWith(
+        mockAuthInstance,
         code,
         newPassword,
       )
@@ -481,7 +501,7 @@ describe('createFirebaseAuthAdapter', () => {
       const code = 'invalid-code'
       const newPassword = randPassword()
 
-      mockAuthInstance.confirmPasswordReset.mockRejectedValue({
+      mockConfirmPasswordReset.mockRejectedValue({
         code: 'auth/invalid-action-code',
       })
 
@@ -496,7 +516,7 @@ describe('createFirebaseAuthAdapter', () => {
       const code = 'expired-code'
       const newPassword = randPassword()
 
-      mockAuthInstance.confirmPasswordReset.mockRejectedValue({
+      mockConfirmPasswordReset.mockRejectedValue({
         code: 'auth/expired-action-code',
       })
 
@@ -513,12 +533,13 @@ describe('createFirebaseAuthAdapter', () => {
       const code = randUuid()
       const email = randEmail()
 
-      mockAuthInstance.verifyPasswordResetCode.mockResolvedValue(email)
+      mockVerifyPasswordResetCode.mockResolvedValue(email as never)
 
       const result = await adapter.verifyPasswordResetCode(code)
 
       expect(result).toBe(email)
-      expect(mockAuthInstance.verifyPasswordResetCode).toHaveBeenCalledWith(
+      expect(mockVerifyPasswordResetCode).toHaveBeenCalledWith(
+        mockAuthInstance,
         code,
       )
     })
@@ -526,7 +547,7 @@ describe('createFirebaseAuthAdapter', () => {
     it('should handle invalid code error', async () => {
       const code = 'invalid-code'
 
-      mockAuthInstance.verifyPasswordResetCode.mockRejectedValue({
+      mockVerifyPasswordResetCode.mockRejectedValue({
         code: 'auth/invalid-action-code',
       })
 
@@ -540,7 +561,7 @@ describe('createFirebaseAuthAdapter', () => {
     it('should handle expired code error', async () => {
       const code = 'expired-code'
 
-      mockAuthInstance.verifyPasswordResetCode.mockRejectedValue({
+      mockVerifyPasswordResetCode.mockRejectedValue({
         code: 'auth/expired-action-code',
       })
 
@@ -555,13 +576,12 @@ describe('createFirebaseAuthAdapter', () => {
   describe('fetchSignInMethodsForEmail', () => {
     it('should fetch sign-in methods for email', async () => {
       const email = randEmail()
-      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([
-        'password',
-      ])
+      mockFetchSignInMethodsForEmail.mockResolvedValue(['password'] as never)
 
       const result = await adapter.fetchSignInMethodsForEmail(email)
 
-      expect(mockAuthInstance.fetchSignInMethodsForEmail).toHaveBeenCalledWith(
+      expect(mockFetchSignInMethodsForEmail).toHaveBeenCalledWith(
+        mockAuthInstance,
         email,
       )
       expect(result).toEqual({
@@ -573,9 +593,7 @@ describe('createFirebaseAuthAdapter', () => {
 
     it('should detect OAuth provider', async () => {
       const email = randEmail()
-      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([
-        'google.com',
-      ])
+      mockFetchSignInMethodsForEmail.mockResolvedValue(['google.com'] as never)
 
       const result = await adapter.fetchSignInMethodsForEmail(email)
 
@@ -588,10 +606,10 @@ describe('createFirebaseAuthAdapter', () => {
 
     it('should detect both password and OAuth', async () => {
       const email = randEmail()
-      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([
+      mockFetchSignInMethodsForEmail.mockResolvedValue([
         'password',
         'google.com',
-      ])
+      ] as never)
 
       const result = await adapter.fetchSignInMethodsForEmail(email)
 
@@ -604,7 +622,7 @@ describe('createFirebaseAuthAdapter', () => {
 
     it('should return empty methods for non-existent user', async () => {
       const email = randEmail()
-      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValue([])
+      mockFetchSignInMethodsForEmail.mockResolvedValue([] as never)
 
       const result = await adapter.fetchSignInMethodsForEmail(email)
 
@@ -617,7 +635,7 @@ describe('createFirebaseAuthAdapter', () => {
 
     it('should return empty result on fetch error', async () => {
       const email = randEmail()
-      mockAuthInstance.fetchSignInMethodsForEmail.mockRejectedValue({
+      mockFetchSignInMethodsForEmail.mockRejectedValue({
         code: 'auth/invalid-email',
       })
 
@@ -640,14 +658,14 @@ describe('createFirebaseAuthAdapter', () => {
         displayName: null,
         photoURL: null,
         emailVerified: true,
-        updateProfile: jest.fn().mockResolvedValue(undefined),
       }
 
       mockAuthInstance.currentUser = mockUser as never
+      mockUpdateProfile.mockResolvedValue(undefined as never)
 
       await adapter.updateProfile({ displayName })
 
-      expect(mockUser.updateProfile).toHaveBeenCalledWith({
+      expect(mockUpdateProfile).toHaveBeenCalledWith(mockUser, {
         displayName,
         photoURL: undefined,
       })
@@ -661,14 +679,14 @@ describe('createFirebaseAuthAdapter', () => {
         displayName: randFullName(),
         photoURL: null,
         emailVerified: true,
-        updateProfile: jest.fn().mockResolvedValue(undefined),
       }
 
       mockAuthInstance.currentUser = mockUser as never
+      mockUpdateProfile.mockResolvedValue(undefined as never)
 
       await adapter.updateProfile({ photoUrl })
 
-      expect(mockUser.updateProfile).toHaveBeenCalledWith({
+      expect(mockUpdateProfile).toHaveBeenCalledWith(mockUser, {
         displayName: undefined,
         photoURL: photoUrl,
       })
@@ -683,14 +701,14 @@ describe('createFirebaseAuthAdapter', () => {
         displayName: null,
         photoURL: null,
         emailVerified: true,
-        updateProfile: jest.fn().mockResolvedValue(undefined),
       }
 
       mockAuthInstance.currentUser = mockUser as never
+      mockUpdateProfile.mockResolvedValue(undefined as never)
 
       await adapter.updateProfile({ displayName, photoUrl })
 
-      expect(mockUser.updateProfile).toHaveBeenCalledWith({
+      expect(mockUpdateProfile).toHaveBeenCalledWith(mockUser, {
         displayName,
         photoURL: photoUrl,
       })
@@ -719,12 +737,12 @@ describe('createFirebaseAuthAdapter', () => {
         displayName: null,
         photoURL: null,
         emailVerified: false,
-        updateProfile: jest.fn().mockResolvedValue(undefined),
       }
 
-      mockAuthInstance.createUserWithEmailAndPassword.mockResolvedValue({
+      mockCreateUserWithEmailAndPassword.mockResolvedValue({
         user: mockUser,
       } as never)
+      mockUpdateProfile.mockResolvedValue(undefined as never)
 
       const user = await adapter.createUserAfterVerification(
         email,
@@ -732,10 +750,12 @@ describe('createFirebaseAuthAdapter', () => {
         displayName,
       )
 
-      expect(
-        mockAuthInstance.createUserWithEmailAndPassword,
-      ).toHaveBeenCalledWith(email, password)
-      expect(mockUser.updateProfile).toHaveBeenCalledWith({ displayName })
+      expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledWith(
+        mockAuthInstance,
+        email,
+        password,
+      )
+      expect(mockUpdateProfile).toHaveBeenCalledWith(mockUser, { displayName })
       expect(user).toEqual({
         id: mockUser.uid,
         email: mockUser.email,
@@ -746,7 +766,7 @@ describe('createFirebaseAuthAdapter', () => {
     })
 
     it('should throw error when user is null', async () => {
-      mockAuthInstance.createUserWithEmailAndPassword.mockResolvedValue({
+      mockCreateUserWithEmailAndPassword.mockResolvedValue({
         user: null,
       } as never)
 
@@ -762,7 +782,7 @@ describe('createFirebaseAuthAdapter', () => {
     })
 
     it('should handle errors during user creation', async () => {
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValue({
+      mockCreateUserWithEmailAndPassword.mockRejectedValue({
         code: 'auth/email-already-in-use',
       })
 

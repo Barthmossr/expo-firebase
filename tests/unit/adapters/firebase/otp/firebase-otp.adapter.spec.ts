@@ -1,4 +1,5 @@
-import functions from '@react-native-firebase/functions'
+import { httpsCallableFromUrl } from '@react-native-firebase/functions'
+import { mockFunctionsInstance } from '@mocks/@react-native-firebase/functions'
 import {
   randEmail,
   randFullName,
@@ -14,19 +15,17 @@ import {
   MOCK_TEST_REGION,
 } from './__mocks__'
 
-jest.mock('@react-native-firebase/functions', () => {
-  return jest.fn()
-})
+jest.mock('@react-native-firebase/functions')
 jest.mock('@/config/firebase')
 
 const mockGetFirebaseConfig = getFirebaseConfig as jest.MockedFunction<
   typeof getFirebaseConfig
 >
-const mockFunctions = functions as jest.MockedFunction<typeof functions>
+const mockHttpsCallableFromUrl = httpsCallableFromUrl as jest.MockedFunction<
+  typeof httpsCallableFromUrl
+>
 
 describe('createFirebaseOTPAdapter', () => {
-  const mockHttpsCallableFromUrl = jest.fn()
-
   beforeEach(() => {
     jest.clearAllMocks()
     mockGetFirebaseConfig.mockReturnValue(
@@ -35,16 +34,12 @@ describe('createFirebaseOTPAdapter', () => {
         region: MOCK_TEST_REGION,
       }),
     )
-
-    mockFunctions.mockReturnValue({
-      httpsCallableFromUrl: mockHttpsCallableFromUrl,
-    } as Partial<ReturnType<typeof functions>> as ReturnType<typeof functions>)
   })
 
   describe('sendVerificationCode', () => {
     it('should call cloud function with correct data', async () => {
       const mockCallable = jest.fn().mockResolvedValue(undefined)
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
       const email = randEmail()
@@ -58,6 +53,7 @@ describe('createFirebaseOTPAdapter', () => {
       })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
+        mockFunctionsInstance,
         `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/sendOTPEmail`,
       )
       expect(mockCallable).toHaveBeenCalledWith({
@@ -73,7 +69,7 @@ describe('createFirebaseOTPAdapter', () => {
       )
 
       const mockCallable = jest.fn().mockResolvedValue(undefined)
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
 
@@ -84,6 +80,7 @@ describe('createFirebaseOTPAdapter', () => {
       })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
+        mockFunctionsInstance,
         `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/sendOTPEmail`,
       )
     })
@@ -92,7 +89,7 @@ describe('createFirebaseOTPAdapter', () => {
       const mockCallable = jest
         .fn()
         .mockRejectedValue(new Error('Function failed'))
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
 
@@ -119,12 +116,13 @@ describe('createFirebaseOTPAdapter', () => {
       const mockCallable = jest
         .fn()
         .mockResolvedValue({ data: verificationResult })
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
       const result = await adapter.verifyCode({ email, code })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
+        mockFunctionsInstance,
         `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/verifyOTPEmail`,
       )
       expect(mockCallable).toHaveBeenCalledWith({ email, code })
@@ -141,7 +139,7 @@ describe('createFirebaseOTPAdapter', () => {
       const mockCallable = jest
         .fn()
         .mockResolvedValue({ data: verificationResult })
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
       const result = await adapter.verifyCode({
@@ -157,7 +155,7 @@ describe('createFirebaseOTPAdapter', () => {
       const mockCallable = jest
         .fn()
         .mockRejectedValue(new Error('Invalid code'))
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
 
@@ -173,7 +171,7 @@ describe('createFirebaseOTPAdapter', () => {
   describe('resendCode', () => {
     it('should call cloud function with email and resend flag', async () => {
       const mockCallable = jest.fn().mockResolvedValue(undefined)
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
       const email = randEmail()
@@ -181,6 +179,7 @@ describe('createFirebaseOTPAdapter', () => {
       await adapter.resendCode({ email })
 
       expect(mockHttpsCallableFromUrl).toHaveBeenCalledWith(
+        mockFunctionsInstance,
         `https://${MOCK_TEST_REGION}-${MOCK_TEST_PROJECT_ID}.cloudfunctions.net/sendOTPEmail`,
       )
       expect(mockCallable).toHaveBeenCalledWith({ email, resend: true })
@@ -190,7 +189,7 @@ describe('createFirebaseOTPAdapter', () => {
       const mockCallable = jest
         .fn()
         .mockRejectedValue(new Error('Resend failed'))
-      mockHttpsCallableFromUrl.mockReturnValue(mockCallable)
+      mockHttpsCallableFromUrl.mockReturnValue(mockCallable as never)
 
       const adapter = createFirebaseOTPAdapter()
 

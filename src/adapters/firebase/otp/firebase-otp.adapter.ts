@@ -1,4 +1,7 @@
-import functions from '@react-native-firebase/functions'
+import {
+  getFunctions,
+  httpsCallableFromUrl,
+} from '@react-native-firebase/functions'
 import type {
   OTPPort,
   SendOTPRequest,
@@ -11,9 +14,11 @@ const createFirebaseOTPAdapter = (): OTPPort => {
   const config = getFirebaseConfig()
   const region = config.region ?? 'southamerica-east1'
   const projectId = config.projectId
+  const functionsInstance = getFunctions()
 
   const sendVerificationCode = async (data: SendOTPRequest): Promise<void> => {
-    const callable = functions().httpsCallableFromUrl(
+    const callable = httpsCallableFromUrl(
+      functionsInstance,
       `https://${region}-${projectId}.cloudfunctions.net/sendOTPEmail`,
     )
     await callable(data)
@@ -22,16 +27,20 @@ const createFirebaseOTPAdapter = (): OTPPort => {
   const verifyCode = async (
     data: VerifyOTPRequest,
   ): Promise<OTPVerificationResult> => {
-    const callable = functions().httpsCallableFromUrl<
+    const callable = httpsCallableFromUrl<
       VerifyOTPRequest,
       OTPVerificationResult
-    >(`https://${region}-${projectId}.cloudfunctions.net/verifyOTPEmail`)
+    >(
+      functionsInstance,
+      `https://${region}-${projectId}.cloudfunctions.net/verifyOTPEmail`,
+    )
     const result = await callable(data)
     return result.data
   }
 
   const resendCode = async (data: { email: string }): Promise<void> => {
-    const callable = functions().httpsCallableFromUrl(
+    const callable = httpsCallableFromUrl(
+      functionsInstance,
       `https://${region}-${projectId}.cloudfunctions.net/sendOTPEmail`,
     )
     await callable({ email: data.email, resend: true })

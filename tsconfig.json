@@ -10,7 +10,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@assets/*": ["assets/*"],
-      "@tests/*": ["tests/*"]
+      "@tests/*": ["tests/*"],
+      "@mocks/*": ["tests/__mocks__/*"]
     },
     "resolveJsonModule": true,
     "allowImportingTsExtensions": false,

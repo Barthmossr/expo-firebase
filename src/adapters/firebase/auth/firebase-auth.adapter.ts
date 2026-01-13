@@ -1,4 +1,17 @@
-import auth from '@react-native-firebase/auth'
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithCredential,
+  signOut as firebaseSignOut,
+  sendPasswordResetEmail as firebaseSendPasswordResetEmail,
+  confirmPasswordReset as firebaseConfirmPasswordReset,
+  verifyPasswordResetCode as firebaseVerifyPasswordResetCode,
+  fetchSignInMethodsForEmail as firebaseFetchSignInMethodsForEmail,
+  onAuthStateChanged as firebaseOnAuthStateChanged,
+  updateProfile as firebaseUpdateProfile,
+  GoogleAuthProvider,
+} from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import type { AuthPort } from '@/core/ports/auth'
 import type {
@@ -16,9 +29,12 @@ import {
 import { getActionCodeSettings } from './firebase-auth.constants'
 
 const createFirebaseAuthAdapter = (): AuthPort => {
+  const authInstance = getAuth()
+
   const signIn = async (credentials: AuthCredentials): Promise<AuthUser> => {
     try {
-      const result = await auth().signInWithEmailAndPassword(
+      const result = await signInWithEmailAndPassword(
+        authInstance,
         credentials.email,
         credentials.password,
       )
@@ -36,11 +52,14 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     credentials: RegisterCredentials,
   ): Promise<AuthUser> => {
     try {
-      const result = await auth().createUserWithEmailAndPassword(
+      const result = await createUserWithEmailAndPassword(
+        authInstance,
         credentials.email,
         credentials.password,
       )
-      await result.user.updateProfile({ displayName: credentials.displayName })
+      await firebaseUpdateProfile(result.user, {
+        displayName: credentials.displayName,
+      })
       const user = ensureUserExists(mapFirebaseUser(result.user))
       return {
         id: user.id,
@@ -61,10 +80,8 @@ const createFirebaseAuthAdapter = (): AuthPort => {
       if (!response.data?.idToken) {
         throw createAuthError({ code: 'auth/popup-closed-by-user' })
       }
-      const credential = auth.GoogleAuthProvider.credential(
-        response.data.idToken,
-      )
-      const result = await auth().signInWithCredential(credential)
+      const credential = GoogleAuthProvider.credential(response.data.idToken)
+      const result = await signInWithCredential(authInstance, credential)
       const user = mapFirebaseUser(result.user)
       if (!user) {
         throw createAuthError({ code: 'auth/unknown' })
@@ -81,27 +98,31 @@ const createFirebaseAuthAdapter = (): AuthPort => {
       if (isGoogleSignedIn) {
         await GoogleSignin.signOut()
       }
-      await auth().signOut()
+      await firebaseSignOut(authInstance)
     } catch (error) {
       throw createAuthError(error)
     }
   }
 
   const getCurrentUser = (): AuthUser | null => {
-    return mapFirebaseUser(auth().currentUser)
+    return mapFirebaseUser(authInstance.currentUser)
   }
 
   const onAuthStateChanged = (
     callback: (user: AuthUser | null) => void,
   ): (() => void) => {
-    return auth().onAuthStateChanged((firebaseUser) => {
+    return firebaseOnAuthStateChanged(authInstance, (firebaseUser) => {
       callback(mapFirebaseUser(firebaseUser))
     })
   }
 
   const sendPasswordResetEmail = async (email: string): Promise<void> => {
     try {
-      await auth().sendPasswordResetEmail(email, getActionCodeSettings())
+      await firebaseSendPasswordResetEmail(
+        authInstance,
+        email,
+        getActionCodeSettings(),
+      )
     } catch (error) {
       throw createAuthError(error)
     }
@@ -112,7 +133,7 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     newPassword: string,
   ): Promise<void> => {
     try {
-      await auth().confirmPasswordReset(code, newPassword)
+      await firebaseConfirmPasswordReset(authInstance, code, newPassword)
     } catch (error) {
       throw createAuthError(error)
     }
@@ -120,7 +141,7 @@ const createFirebaseAuthAdapter = (): AuthPort => {
 
   const verifyPasswordResetCode = async (code: string): Promise<string> => {
     try {
-      const email = await auth().verifyPasswordResetCode(code)
+      const email = await firebaseVerifyPasswordResetCode(authInstance, code)
       return email
     } catch (error) {
       throw createAuthError(error)
@@ -129,11 +150,11 @@ const createFirebaseAuthAdapter = (): AuthPort => {
 
   const updateProfile = async (data: Partial<AuthUser>): Promise<void> => {
     try {
-      const currentUser = auth().currentUser
+      const currentUser = authInstance.currentUser
       if (!currentUser) {
         throw createAuthError({ code: 'auth/user-not-found' })
       }
-      await currentUser.updateProfile({
+      await firebaseUpdateProfile(currentUser, {
         displayName: data.displayName ?? undefined,
         photoURL: data.photoUrl ?? undefined,
       })
@@ -148,11 +169,12 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     displayName: string,
   ): Promise<AuthUser> => {
     try {
-      const result = await auth().createUserWithEmailAndPassword(
+      const result = await createUserWithEmailAndPassword(
+        authInstance,
         email,
         password,
       )
-      await result.user.updateProfile({ displayName })
+      await firebaseUpdateProfile(result.user, { displayName })
       const user = ensureUserExists(mapFirebaseUser(result.user))
       return {
         id: user.id,
@@ -170,7 +192,10 @@ const createFirebaseAuthAdapter = (): AuthPort => {
     email: string,
   ): Promise<SignInMethodsResult> => {
     try {
-      const methods = await auth().fetchSignInMethodsForEmail(email)
+      const methods = await firebaseFetchSignInMethodsForEmail(
+        authInstance,
+        email,
+      )
       const typedMethods = methods as SignInMethod[]
       const hasPassword = typedMethods.includes('password')
       const hasOAuth = typedMethods.some((method) => method === 'google.com')

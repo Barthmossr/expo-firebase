@@ -10,8 +10,13 @@ const config: Config = {
   testMatch: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@mocks/(.*)$': '<rootDir>/tests/__mocks__/$1',
     '^@react-native-firebase/auth$':
       '<rootDir>/tests/__mocks__/@react-native-firebase/auth.ts',
+    '^@react-native-firebase/analytics$':
+      '<rootDir>/tests/__mocks__/@react-native-firebase/analytics.ts',
+    '^@react-native-firebase/functions$':
+      '<rootDir>/tests/__mocks__/@react-native-firebase/functions.ts',
     '^@react-native-google-signin/google-signin$':
       '<rootDir>/tests/__mocks__/@react-native-google-signin/google-signin.ts',
   },

@@ -1,8 +1,10 @@
-const mockHttpsCallable = jest.fn(() => jest.fn())
+const mockFunctionsInstance = {}
 
-const mockFunctionsModule = (): { httpsCallable: jest.Mock } => ({
-  httpsCallable: mockHttpsCallable,
-})
+const mockGetFunctions = jest.fn(() => mockFunctionsInstance)
+const mockHttpsCallableFromUrl = jest.fn(() => jest.fn())
 
-export default mockFunctionsModule
-export { mockHttpsCallable }
+export {
+  mockGetFunctions as getFunctions,
+  mockHttpsCallableFromUrl as httpsCallableFromUrl,
+  mockFunctionsInstance,
+}
