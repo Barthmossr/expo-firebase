@@ -43,7 +43,10 @@
 **Expo Firebase** is a React Native Expo template integrated with Firebase, designed to serve as a solid foundation for mobile application projects. This template provides everything you need to start a new Expo project with Firebase and best practices already in place, including:
 
 - 📱 **React Native with Expo** - Cross-platform mobile development
-- 🔥 **Firebase integration** - Ready for authentication, Firestore, storage, and more
+- 🔥 **Firebase integration** - Authentication, Firestore, Cloud Functions, storage, and more
+- ☁️ **Cloud Functions** - Server-side logic with OTP email verification system
+- 📧 **Email Verification** - Complete OTP system with SendGrid integration
+- 🏛️ **Hexagonal Architecture** - Ports & adapters pattern for flexibility
 - 🏗️ **Strict folder structure** - No loose files, organized subfolders for everything
 - 🛠️ **Complete development tooling** - ESLint (flat config), Prettier, Husky, commitlint
 - 🧪 **Testing infrastructure** - Jest with 100% coverage threshold
@@ -56,11 +59,12 @@
 This template focuses on providing a production-ready React Native Expo setup with Firebase integration. The main goals are:
 
 1. **Mobile Development Environment** - Setting up a robust Expo development experience
-2. **Firebase Integration** - Pre-configured for easy Firebase service integration
-3. **Code Quality** - Enforcing best practices through linting, formatting, and testing
-4. **Automation** - CI/CD pipelines for validation, testing, and security
-5. **Structure** - A scalable, organized folder structure
-6. **Documentation** - Clear guidance for contributors and users
+2. **Firebase Integration** - Pre-configured for authentication, Firestore, Cloud Functions, and more
+3. **Email Verification** - Production-ready OTP system with SendGrid
+4. **Code Quality** - Enforcing best practices through linting, formatting, and testing
+5. **Automation** - CI/CD pipelines for validation, testing, and security
+6. **Structure** - A scalable, organized folder structure with hexagonal architecture
+7. **Documentation** - Clear guidance for contributors and users
 
 ## 🚀 Quick Start
 
@@ -85,19 +89,24 @@ npm run build
 
 ## 🛠️ Technology Stack
 
-| Tool         | Version  | Purpose                |
-| ------------ | -------- | ---------------------- |
-| Node.js      | v24.12.0 | Runtime                |
-| React Native | Expo     | Mobile framework       |
-| Firebase     | Latest   | Backend services       |
-| TypeScript   | ^5.9.3   | Type system            |
-| ESLint       | ^9.39.2  | Linting (flat config)  |
-| Prettier     | ^3.7.4   | Formatting             |
-| Jest         | ^30.2.0  | Testing                |
-| Husky        | ^9.1.7   | Git hooks              |
-| lint-staged  | ^16.2.7  | Pre-commit linting     |
-| commitlint   | ^20.2.0  | Commit message linting |
-| tsx          | ^4.21.0  | Direct TS execution    |
+| Tool            | Version | Purpose                |
+| --------------- | ------- | ---------------------- |
+| Node.js         | v22     | Runtime                |
+| React Native    | Expo 54 | Mobile framework       |
+| React           | 19.1.0  | UI library             |
+| Firebase        | Latest  | Backend services       |
+| Cloud Functions | v2      | Server-side logic      |
+| SendGrid        | -       | Email delivery         |
+| TypeScript      | ^5.9.3  | Type system            |
+| bcryptjs        | ^2.4.3  | Password/OTP hashing   |
+| react-hook-form | Latest  | Form management        |
+| zod             | Latest  | Schema validation      |
+| ESLint          | ^9.39.2 | Linting (flat config)  |
+| Prettier        | ^3.7.4  | Formatting             |
+| Jest            | ^30.2.0 | Testing                |
+| Husky           | ^9.1.7  | Git hooks              |
+| lint-staged     | ^16.2.7 | Pre-commit linting     |
+| commitlint      | ^20.2.0 | Commit message linting |
 
 ## 📁 Project Structure
 
@@ -166,6 +175,9 @@ For detailed documentation, please refer to the `docs/` directory:
 - [Library Decisions](docs/guides/libraries.md) - Why each tool was chosen
 - [Development Guide](docs/guides/development.md) - Setup and workflow instructions
 - [Configuration Guide](docs/guides/configuration.md) - Understanding config files
+- [Firebase Setup](docs/services/firebase/setup.md) - Firebase configuration
+- [Email Verification Setup](docs/services/sendgrid/setup.md) - OTP email system
+- [Cost Optimization](docs/guides/cost-optimization.md) - Cloud Functions cost reduction
 
 ## 🧪 Testing
 

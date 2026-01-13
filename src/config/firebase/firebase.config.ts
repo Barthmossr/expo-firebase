@@ -33,6 +33,7 @@ const getFirebaseConfig = (): FirebaseConfig => {
     messagingSenderId: firebase['messagingSenderId'] as string,
     appId: firebase['appId'] as string,
     measurementId: firebase['measurementId'],
+    region: firebase['region'] as string | undefined,
   }
 }
 

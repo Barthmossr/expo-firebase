@@ -8,7 +8,10 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@assets/*": ["assets/*"],
+      "@tests/*": ["tests/*"],
+      "@mocks/*": ["tests/__mocks__/*"]
     },
     "resolveJsonModule": true,
     "allowImportingTsExtensions": false,
@@ -37,7 +40,7 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*", "tests/**/*", "app/**/*"],
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "compilerOptions": {
