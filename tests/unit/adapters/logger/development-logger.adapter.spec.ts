@@ -30,4 +30,14 @@ describe('createDevelopmentLoggerAdapter', () => {
     expect(adapter.warn).toBeDefined()
     expect(adapter.error).toBeDefined()
   })
+
+  describe('debug', () => {
+    it('should call console.debug with formatted message', () => {
+      const adapter = createDevelopmentLoggerAdapter()
+
+      adapter.debug('test message')
+
+      expect(console.debug).toHaveBeenCalledWith('[DEBUG] test message')
+    })
+  })
 })
