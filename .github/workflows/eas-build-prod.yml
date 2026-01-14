@@ -29,7 +29,7 @@ on:
         description: 'Skip store submission (build only)'
         required: false
         type: boolean
-        default: false
+        default: true # Change to false after first manual store submission
 
 concurrency:
   group: eas-build-production
