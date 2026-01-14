@@ -73,4 +73,16 @@ describe('logger.service', () => {
       expect(first).toBe(second)
     })
   })
+
+  describe('resetLoggerService', () => {
+    it('should create new adapter after reset', () => {
+      mockGetLoggerConfig.mockReturnValue({ isDevelopment: true })
+
+      getLoggerService()
+      resetLoggerService()
+      getLoggerService()
+
+      expect(mockCreateDevAdapter).toHaveBeenCalledTimes(2)
+    })
+  })
 })
