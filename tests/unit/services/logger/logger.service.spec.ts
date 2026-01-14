@@ -62,5 +62,15 @@ describe('logger.service', () => {
       expect(mockCreateDevAdapter).not.toHaveBeenCalled()
       expect(service).toBe(mockProdAdapter)
     })
+
+    it('should return same instance on subsequent calls', () => {
+      mockGetLoggerConfig.mockReturnValue({ isDevelopment: true })
+
+      const first = getLoggerService()
+      const second = getLoggerService()
+
+      expect(mockCreateDevAdapter).toHaveBeenCalledTimes(1)
+      expect(first).toBe(second)
+    })
   })
 })
