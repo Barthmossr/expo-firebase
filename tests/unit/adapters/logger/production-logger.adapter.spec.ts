@@ -91,5 +91,18 @@ describe('createProductionLoggerAdapter', () => {
         expect.any(Error),
       )
     })
+
+    it('should create error with formatted message', () => {
+      const adapter = createProductionLoggerAdapter()
+
+      adapter.error('fetch failed', { userId: '123' })
+
+      expect(mockRecordError).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        expect.objectContaining({
+          message: 'fetch failed {"userId":"123"}',
+        }),
+      )
+    })
   })
 })
