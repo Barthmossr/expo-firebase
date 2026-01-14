@@ -79,4 +79,17 @@ describe('createProductionLoggerAdapter', () => {
       )
     })
   })
+
+  describe('error', () => {
+    it('should call crashlytics recordError', () => {
+      const adapter = createProductionLoggerAdapter()
+
+      adapter.error('test error')
+
+      expect(mockRecordError).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        expect.any(Error),
+      )
+    })
+  })
 })
