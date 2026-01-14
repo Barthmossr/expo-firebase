@@ -89,5 +89,15 @@ describe('createDevelopmentLoggerAdapter', () => {
 
       expect(console.error).toHaveBeenCalledWith('[ERROR] test message')
     })
+
+    it('should include context in message', () => {
+      const adapter = createDevelopmentLoggerAdapter()
+
+      adapter.error('failed', { code: 'ERR_001' })
+
+      expect(console.error).toHaveBeenCalledWith(
+        '[ERROR] failed {"code":"ERR_001"}',
+      )
+    })
   })
 })
