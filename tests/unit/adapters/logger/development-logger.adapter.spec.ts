@@ -59,5 +59,15 @@ describe('createDevelopmentLoggerAdapter', () => {
 
       expect(console.info).toHaveBeenCalledWith('[INFO] test message')
     })
+
+    it('should include context in message', () => {
+      const adapter = createDevelopmentLoggerAdapter()
+
+      adapter.info('test message', { screen: 'home' })
+
+      expect(console.info).toHaveBeenCalledWith(
+        '[INFO] test message {"screen":"home"}',
+      )
+    })
   })
 })
