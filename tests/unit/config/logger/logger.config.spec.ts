@@ -26,5 +26,15 @@ describe('logger.config', () => {
 
       expect(config.isDevelopment).toBe(true)
     })
+
+    it('should return isDevelopment false when __DEV__ is false', () => {
+      ;(global as Record<string, unknown>)['__DEV__'] = false
+      ;(Constants as { executionEnvironment: string }).executionEnvironment =
+        'standalone'
+
+      const config = getLoggerConfig()
+
+      expect(config.isDevelopment).toBe(false)
+    })
   })
 })
