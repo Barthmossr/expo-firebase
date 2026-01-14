@@ -50,4 +50,14 @@ describe('createDevelopmentLoggerAdapter', () => {
       )
     })
   })
+
+  describe('info', () => {
+    it('should call console.info with formatted message', () => {
+      const adapter = createDevelopmentLoggerAdapter()
+
+      adapter.info('test message')
+
+      expect(console.info).toHaveBeenCalledWith('[INFO] test message')
+    })
+  })
 })
