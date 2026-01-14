@@ -52,5 +52,15 @@ describe('logger.service', () => {
       expect(mockCreateProdAdapter).not.toHaveBeenCalled()
       expect(service).toBe(mockDevAdapter)
     })
+
+    it('should create production adapter when isDevelopment is false', () => {
+      mockGetLoggerConfig.mockReturnValue({ isDevelopment: false })
+
+      const service = getLoggerService()
+
+      expect(mockCreateProdAdapter).toHaveBeenCalledTimes(1)
+      expect(mockCreateDevAdapter).not.toHaveBeenCalled()
+      expect(service).toBe(mockProdAdapter)
+    })
   })
 })
