@@ -36,4 +36,13 @@ export default defineConfig([
       'no-console': 'off',
     },
   },
+  {
+    files: [
+      'src/adapters/logger/**/*.ts',
+      'tests/unit/adapters/logger/**/*.ts',
+    ],
+    rules: {
+      'no-console': 'off',
+    },
+  },
 ])
