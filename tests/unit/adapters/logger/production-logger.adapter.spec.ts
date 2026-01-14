@@ -55,4 +55,17 @@ describe('createProductionLoggerAdapter', () => {
       expect(mockRecordError).not.toHaveBeenCalled()
     })
   })
+
+  describe('warn', () => {
+    it('should call crashlytics log with formatted message', () => {
+      const adapter = createProductionLoggerAdapter()
+
+      adapter.warn('test warning')
+
+      expect(mockLog).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        '[WARN] test warning',
+      )
+    })
+  })
 })
