@@ -67,5 +67,16 @@ describe('createProductionLoggerAdapter', () => {
         '[WARN] test warning',
       )
     })
+
+    it('should include context in log message', () => {
+      const adapter = createProductionLoggerAdapter()
+
+      adapter.warn('slow response', { duration: 5000 })
+
+      expect(mockLog).toHaveBeenCalledWith(
+        mockCrashlyticsInstance,
+        '[WARN] slow response {"duration":5000}',
+      )
+    })
   })
 })
