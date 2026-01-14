@@ -70,4 +70,14 @@ describe('createDevelopmentLoggerAdapter', () => {
       )
     })
   })
+
+  describe('warn', () => {
+    it('should call console.warn with formatted message', () => {
+      const adapter = createDevelopmentLoggerAdapter()
+
+      adapter.warn('test message')
+
+      expect(console.warn).toHaveBeenCalledWith('[WARN] test message')
+    })
+  })
 })
