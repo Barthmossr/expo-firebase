@@ -44,4 +44,15 @@ describe('createProductionLoggerAdapter', () => {
       expect(mockRecordError).not.toHaveBeenCalled()
     })
   })
+
+  describe('info', () => {
+    it('should not call any crashlytics method', () => {
+      const adapter = createProductionLoggerAdapter()
+
+      adapter.info('test message')
+
+      expect(mockLog).not.toHaveBeenCalled()
+      expect(mockRecordError).not.toHaveBeenCalled()
+    })
+  })
 })
