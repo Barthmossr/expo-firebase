@@ -36,5 +36,15 @@ describe('logger.config', () => {
 
       expect(config.isDevelopment).toBe(false)
     })
+
+    it('should return isDevelopment false when storeClient', () => {
+      ;(global as Record<string, unknown>)['__DEV__'] = true
+      ;(Constants as { executionEnvironment: string }).executionEnvironment =
+        'storeClient'
+
+      const config = getLoggerConfig()
+
+      expect(config.isDevelopment).toBe(false)
+    })
   })
 })
