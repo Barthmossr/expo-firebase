@@ -39,5 +39,15 @@ describe('createDevelopmentLoggerAdapter', () => {
 
       expect(console.debug).toHaveBeenCalledWith('[DEBUG] test message')
     })
+
+    it('should include context in message', () => {
+      const adapter = createDevelopmentLoggerAdapter()
+
+      adapter.debug('test message', { userId: '123' })
+
+      expect(console.debug).toHaveBeenCalledWith(
+        '[DEBUG] test message {"userId":"123"}',
+      )
+    })
   })
 })
