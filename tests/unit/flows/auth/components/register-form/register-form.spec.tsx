@@ -2,7 +2,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native'
 import { randEmail, randFullName, randPassword } from '@ngneat/falso'
 import { RegisterForm } from '@/flows/auth/components/register-form'
 import { getOTPService } from '@/services/otp'
-import { createMockOTPService } from '@tests/unit/adapters/firebase/otp/__mocks__'
+import { createMockOTPService } from '@tests/unit/adapters/firebase/otp/__mocks__/otp.mocks'
 
 jest.mock('@/services/otp')
 

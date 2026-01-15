@@ -1,7 +1,7 @@
 import { Platform } from 'react-native'
 import Constants from 'expo-constants'
 import { createAdmobAdapter } from '@/adapters/admob'
-import { MOCK_TEST_BANNER_ID } from './__mocks__'
+import { MOCK_TEST_BANNER_ID } from './__mocks__/admob.mocks'
 
 jest.mock('expo-constants')
 jest.mock('react-native-google-mobile-ads', () => {

@@ -13,7 +13,7 @@ import {
   createMockOTPVerificationResult,
   MOCK_TEST_PROJECT_ID,
   MOCK_TEST_REGION,
-} from './__mocks__'
+} from './__mocks__/otp.mocks'
 
 jest.mock('@react-native-firebase/functions')
 jest.mock('@/config/firebase')

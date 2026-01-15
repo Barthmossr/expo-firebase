@@ -47,9 +47,11 @@
     "clean": "rimraf dist coverage android ios",
     "validate": "npm run lint && npm run format:check && npm run typecheck",
     "check": "ncu -ui",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "jest --silent",
+    "test:verbose": "jest",
+    "test:watch": "jest --watch --silent",
+    "test:coverage": "jest --coverage --silent",
+    "test:coverage:verbose": "jest --coverage",
     "prepare": "husky"
   },
   "bugs": {
