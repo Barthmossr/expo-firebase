@@ -42,7 +42,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ios, android]
+        # TODO: Add 'ios' back after configuring Apple Developer credentials
+        platform: [android]
 
     steps:
       - name: Checkout repository
@@ -85,7 +86,8 @@ jobs:
     name: Submit to App Store
     needs: build
     runs-on: ubuntu-latest
-    if: success() && github.event.inputs.skip_submit != 'true'
+    # TODO: Enable after configuring Apple Developer credentials
+    if: false && success() && github.event.inputs.skip_submit != 'true'
 
     steps:
       - name: Checkout repository
