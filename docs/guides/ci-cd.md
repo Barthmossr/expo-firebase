@@ -29,10 +29,13 @@ This project uses **Expo Application Services (EAS)** for building and deploying
 │   develop   │────▶│    stage    │────▶│    main     │
 │             │     │             │     │             │
 │ OTA Updates │     │ OTA Updates │     │ OTA Updates │
+│  (skipped)  │     │  (skipped)  │     │  (skipped)  │
 │             │     │ + Builds    │     │ + Builds    │
-│             │     │ + TestFlight│     │ + Store     │
+│             │     │  (Android)  │     │  (Android)  │
 └─────────────┘     └─────────────┘     └─────────────┘
 ```
+
+> **Note**: iOS builds and store submissions are currently disabled until Apple Developer credentials are configured. OTA updates are skipped until the app is published to stores.
 
 ## 🌿 Branch Strategy
 
@@ -81,13 +84,62 @@ docs/xxx ─────┘       │          │         │
 
 ## 📜 Workflow Summary
 
-| Workflow              | Trigger                | Actions                                       |
-| --------------------- | ---------------------- | --------------------------------------------- |
-| `validate.yml`        | Push/PR to any branch  | Lint, format check, typecheck                 |
-| `test.yml`            | Push/PR to any branch  | Run tests, upload coverage                    |
-| `eas-update.yml`      | Push to main/stage/dev | Publish OTA update to channel                 |
-| `eas-build-stage.yml` | Push to stage          | Build preview + submit to TestFlight/Internal |
-| `eas-build-prod.yml`  | Push to main           | Build production + submit to stores           |
+| Workflow              | Trigger                | Actions                         | Status                         |
+| --------------------- | ---------------------- | ------------------------------- | ------------------------------ |
+| `validate.yml`        | Push/PR to any branch  | Lint, format check, typecheck   | ✅ Active                      |
+| `test.yml`            | Push/PR to any branch  | Run tests, upload coverage      | ✅ Active                      |
+| `eas-update.yml`      | Push to main/stage/dev | Publish OTA update to channel   | ⏸️ Skipped until app in stores |
+| `eas-build-stage.yml` | Push to stage          | Build preview (Android only)    | ✅ Active (iOS disabled)       |
+| `eas-build-prod.yml`  | Push to main           | Build production (Android only) | ✅ Active (iOS disabled)       |
+
+### Current Limitations
+
+- **iOS builds**: Disabled - requires Apple Developer Program ($99/year)
+- **Store submissions**: Disabled - requires first manual release
+- **OTA updates**: Skipped - no users to receive updates until app is in stores
+
+### Enabling Features When Ready
+
+#### Enable iOS Builds
+
+1. Get Apple Developer Program membership ($99/year)
+2. Run `eas credentials` to configure iOS credentials
+3. Edit `.github/workflows/eas-build-stage.yml` and `.github/workflows/eas-build-prod.yml`:
+   ```yaml
+   # Change this:
+   platform: [android]
+   # To this:
+   platform: [ios, android]
+   ```
+4. Remove `false &&` from the `submit-ios` job conditions
+
+#### Enable Store Submissions
+
+After your first manual release to the stores:
+
+1. Edit the `submit-android` and `submit-ios` jobs in both workflow files
+2. Change the condition from:
+   ```yaml
+   if: github.event_name == 'workflow_dispatch' && github.event.inputs.skip_submit == 'false'
+   ```
+   To:
+   ```yaml
+   if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_submit == 'false')
+   ```
+
+#### Enable OTA Updates
+
+After your app is in the stores:
+
+1. Edit `.github/workflows/eas-update.yml`
+2. Change the condition from:
+   ```yaml
+   if: github.event_name == 'workflow_dispatch' && github.event.inputs.skip_update == 'false'
+   ```
+   To:
+   ```yaml
+   if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_update == 'false')
+   ```
 
 ## 🔄 EAS Update (OTA)
 
@@ -286,15 +338,46 @@ Add these secrets in your GitHub repository:
 
 ### Required Secrets
 
-| Secret                        | Description                                     | How to Get                                                                        |
-| ----------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------- |
-| `EXPO_TOKEN`                  | EAS authentication token                        | [expo.dev](https://expo.dev) → Access Tokens                                      |
-| `APPLE_ID`                    | Apple ID email                                  | Your Apple Developer email                                                        |
-| `ASC_APP_ID`                  | App Store Connect App ID                        | App Store Connect → App → General → App ID                                        |
-| `APPLE_TEAM_ID`               | Apple Developer Team ID                         | [Developer Portal](https://developer.apple.com) → Membership                      |
-| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password                           | [appleid.apple.com](https://appleid.apple.com) → Security                         |
-| `GOOGLE_SERVICE_ACCOUNT_KEY`  | Google Play Service Account JSON (full content) | See [Creating Google Play Service Account](#creating-google-play-service-account) |
-| `CODECOV_TOKEN`               | (Optional) Codecov upload token                 | [codecov.io](https://codecov.io)                                                  |
+| Secret                        | Description                                     | Required For   | How to Get                                                                        |
+| ----------------------------- | ----------------------------------------------- | -------------- | --------------------------------------------------------------------------------- |
+| `EXPO_TOKEN`                  | EAS authentication token                        | All builds     | [expo.dev](https://expo.dev) → Access Tokens                                      |
+| `APPLE_ID`                    | Apple ID email                                  | iOS only       | Your Apple Developer email                                                        |
+| `ASC_APP_ID`                  | App Store Connect App ID                        | iOS only       | App Store Connect → App → General → App ID                                        |
+| `APPLE_TEAM_ID`               | Apple Developer Team ID                         | iOS only       | [Developer Portal](https://developer.apple.com) → Membership                      |
+| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password                           | iOS only       | [appleid.apple.com](https://appleid.apple.com) → Security                         |
+| `GOOGLE_SERVICE_ACCOUNT_KEY`  | Google Play Service Account JSON (full content) | Android submit | See [Creating Google Play Service Account](#creating-google-play-service-account) |
+| `CODECOV_TOKEN`               | (Optional) Codecov upload token                 | Coverage       | [codecov.io](https://codecov.io)                                                  |
+
+## 🔑 EAS Secrets Setup
+
+EAS Secrets are environment variables stored securely on Expo's servers and injected during builds.
+
+**Required for builds:**
+
+| Secret                      | Type | Visibility | Description                                    |
+| --------------------------- | ---- | ---------- | ---------------------------------------------- |
+| `GOOGLE_SERVICES_JSON`      | File | Sensitive  | Firebase Android config file                   |
+| `GOOGLE_SERVICE_INFO_PLIST` | File | Sensitive  | Firebase iOS config file (when iOS is enabled) |
+
+### Creating EAS Secrets
+
+```bash
+# Android Firebase config (required)
+eas env:create --scope project --name GOOGLE_SERVICES_JSON --type file --value ./android/app/google-services.json
+
+# iOS Firebase config (when iOS is enabled)
+eas env:create --scope project --name GOOGLE_SERVICE_INFO_PLIST --type file --value ./ios/GoogleService-Info.plist
+```
+
+When prompted for visibility, select **Sensitive**.
+
+### Viewing EAS Secrets
+
+```bash
+eas env:list
+```
+
+Or view at [expo.dev](https://expo.dev) → Project → Secrets
 
 ### Creating App-Specific Password (Apple)
 

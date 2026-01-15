@@ -175,18 +175,26 @@ For detailed documentation, please refer to the `docs/` directory:
 - [Library Decisions](docs/guides/libraries.md) - Why each tool was chosen
 - [Development Guide](docs/guides/development.md) - Setup and workflow instructions
 - [Configuration Guide](docs/guides/configuration.md) - Understanding config files
+- [CI/CD Guide](docs/guides/ci-cd.md) - EAS builds, OTA updates, store submissions
 - [Firebase Setup](docs/services/firebase/setup.md) - Firebase configuration
+- [AdMob Setup](docs/services/admob/setup.md) - Ads configuration
 - [Email Verification Setup](docs/services/sendgrid/setup.md) - OTP email system
 - [Cost Optimization](docs/guides/cost-optimization.md) - Cloud Functions cost reduction
 
 ## 🧪 Testing
 
 ```bash
-# Run all tests
+# Run all tests (silent mode)
 npm test
 
-# Run tests with coverage
+# Run tests with console output visible
+npm run test:verbose
+
+# Run tests with coverage (silent)
 npm run test:coverage
+
+# Run tests with coverage and console output
+npm run test:coverage:verbose
 
 # Run tests in watch mode
 npm run test:watch

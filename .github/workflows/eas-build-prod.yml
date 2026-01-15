@@ -132,7 +132,9 @@ jobs:
     name: Submit to Play Store
     needs: build
     runs-on: ubuntu-latest
-    if: success() && github.event.inputs.skip_submit != 'true'
+    # Only run on workflow_dispatch with skip_submit=false
+    # TODO: Enable after configuring Google Play credentials: github.event_name == 'push' || ...
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.skip_submit == 'false'
 
     steps:
       - name: Checkout repository
