@@ -27,7 +27,10 @@ jobs:
   update:
     name: EAS Update
     runs-on: ubuntu-latest
-    if: github.event.inputs.skip_update != 'true'
+    # Only run if: manual trigger with skip_update=false
+    # Change condition to include push events after first store submission:
+    # if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_update == 'false')
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.skip_update == 'false'
 
     steps:
       - name: Checkout repository
