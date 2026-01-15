@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "382102907936",
+    "project_id": "expo-firebase-46af7",
+    "storage_bucket": "expo-firebase-46af7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382102907936:android:d86577abad362340576045",
+        "android_client_info": {
+          "package_name": "com.barthmossr.expofirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382102907936-uv03kgvjha72o1t660gm5tf3rjpkr2le.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.barthmossr.expofirebase",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "382102907936-j8luvvdlti0ojepg2mmutf8a1qu4o9tm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3lqNQ42N_BvzDZHk0oU9LoRc2h3kDf60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382102907936-j8luvvdlti0ojepg2mmutf8a1qu4o9tm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "382102907936-4c72n0fr2uuoltacfqr2c23jrs5fp7fj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.barthmossr.expofirebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
