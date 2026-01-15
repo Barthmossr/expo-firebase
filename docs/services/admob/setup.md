@@ -6,22 +6,54 @@
 
 ## Environment variables
 
-- NODE_ENV
-- ADMOB_APP_ID_ANDROID
-- ADMOB_APP_ID_IOS
-- ADMOB_BANNER_UNIT_ANDROID
-- ADMOB_BANNER_UNIT_IOS
+| Variable                    | Required       | Description                   |
+| --------------------------- | -------------- | ----------------------------- |
+| `ADMOB_APP_ID_ANDROID`      | For production | AdMob App ID for Android      |
+| `ADMOB_APP_ID_IOS`          | For production | AdMob App ID for iOS          |
+| `ADMOB_BANNER_UNIT_ANDROID` | For production | Banner Ad Unit ID for Android |
+| `ADMOB_BANNER_UNIT_IOS`     | For production | Banner Ad Unit ID for iOS     |
 
-## Selection rules
+## Selection Rules
 
-- NODE_ENV in development or test uses official Google test IDs.
-- Any other NODE_ENV requires all AdMob env vars; build fails if missing.
+The app automatically selects test or production AdMob IDs based on the following logic:
 
-## Setup steps
+```
+Has production AdMob IDs configured?
+├── YES → Use production IDs
+└── NO  → Use Google's official test IDs
+```
 
-1. Set NODE_ENV=development for local work; omit prod AdMob IDs to stay on test ads.
-2. For staging/production, set NODE_ENV accordingly and provide all AdMob env vars.
-3. Run `npm run android` or `npm run ios` to build; config injects IDs via the Expo plugin.
+**Test IDs (automatically used when no production IDs are set):**
+
+- Android App ID: `ca-app-pub-3940256099942544~3347511713`
+- iOS App ID: `ca-app-pub-3940256099942544~1458002511`
+- Android Banner: `ca-app-pub-3940256099942544/6300978111`
+- iOS Banner: `ca-app-pub-3940256099942544/2934735716`
+
+## Setup Steps
+
+### For Development (Test Ads)
+
+No configuration needed. Test ads are used automatically when production IDs are not set.
+
+```bash
+# Just run the app - test ads will be shown
+npm run android
+npm run ios
+```
+
+### For Production (Real Ads)
+
+1. Create an AdMob account at [admob.google.com](https://admob.google.com)
+2. Create an app and ad units
+3. Configure environment variables in EAS:
+
+```bash
+eas env:create --name ADMOB_APP_ID_ANDROID --value "ca-app-pub-xxx" --environment production
+eas env:create --name ADMOB_APP_ID_IOS --value "ca-app-pub-xxx" --environment production
+eas env:create --name ADMOB_BANNER_UNIT_ANDROID --value "ca-app-pub-xxx/xxx" --environment production
+eas env:create --name ADMOB_BANNER_UNIT_IOS --value "ca-app-pub-xxx/xxx" --environment production
+```
 
 ## Important: Plugin Parameter Format
 
@@ -56,5 +88,8 @@ Using snake_case parameters will cause the app to crash immediately on Android w
 
 ## Troubleshooting
 
-- Build fails with missing AdMob IDs: set NODE_ENV to development/test for test IDs or supply all prod env vars.
-- Crash at launch: confirm manifest/meta-data matches the intended app ID and that Google Play services are up to date.
+| Issue                          | Solution                                               |
+| ------------------------------ | ------------------------------------------------------ |
+| Test ads showing in production | Verify all 4 AdMob env vars are set in EAS             |
+| Crash at launch                | Confirm manifest/meta-data matches the intended app ID |
+| Ads not loading                | Check Google Play services are up to date              |

@@ -50,7 +50,13 @@ Guides for external services:
    - Cloud Functions deployment
    - Testing and troubleshooting
 
-6. **[Cost Optimization Guide](guides/cost-optimization.md)** 💰
+6. **[AdMob Setup](services/admob/setup.md)** 📱
+   - Banner ads configuration
+   - Test vs production IDs
+   - Environment variables
+   - Troubleshooting
+
+7. **[Cost Optimization Guide](guides/cost-optimization.md)** 💰
    - Cloud Functions cost reduction strategies
    - Memory and timeout optimization
    - Firestore query optimization
@@ -60,7 +66,7 @@ Guides for external services:
 
 Understanding the tools we use:
 
-7. **[Libraries](guides/libraries.md)** 📦
+8. **[Libraries](guides/libraries.md)** 📦
    - Why each library was chosen
    - Alternatives we considered
    - Configuration explanations
@@ -70,11 +76,13 @@ Understanding the tools we use:
 
 Building and deploying the app:
 
-8. **[CI/CD Guide](guides/ci-cd.md)** 🚀
+9. **[CI/CD Guide](guides/ci-cd.md)** 🚀
    - Branch strategy (develop, stage, main)
    - EAS Build and Update workflows
+   - EAS Secrets configuration
    - First release process
    - GitHub Secrets setup
+   - Enabling iOS and store submissions
    - Troubleshooting deployments
 
 ### Contributing
