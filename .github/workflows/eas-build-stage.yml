@@ -4,6 +4,12 @@ on:
   push:
     branches: [stage]
   workflow_dispatch:
+    inputs:
+      skip_submit:
+        description: 'Skip store submission (build only)'
+        required: false
+        type: boolean
+        default: true # Change to false after first manual store submission
 
 concurrency:
   group: eas-build-stage
@@ -66,7 +72,7 @@ jobs:
     name: Submit to TestFlight
     needs: build
     runs-on: ubuntu-latest
-    if: success()
+    if: success() && github.event.inputs.skip_submit != 'true'
 
     steps:
       - name: Checkout repository
@@ -104,7 +110,7 @@ jobs:
     name: Submit to Internal Testing
     needs: build
     runs-on: ubuntu-latest
-    if: success()
+    if: success() && github.event.inputs.skip_submit != 'true'
 
     steps:
       - name: Checkout repository
