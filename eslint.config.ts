@@ -7,7 +7,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default defineConfig([
   {
-    ignores: ['dist/**'],
+    ignores: ['dist/**', 'functions/lib/**', 'android/**', 'ios/**'],
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
@@ -28,6 +28,21 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
+    },
+  },
+  {
+    files: ['tests/setup.ts'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
+    files: [
+      'src/adapters/logger/**/*.ts',
+      'tests/unit/adapters/logger/**/*.ts',
+    ],
+    rules: {
+      'no-console': 'off',
     },
   },
 ])

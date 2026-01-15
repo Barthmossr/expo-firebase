@@ -1,0 +1,92 @@
+name: EAS Update (OTA)
+
+on:
+  push:
+    branches: [main, stage, develop]
+  workflow_dispatch:
+    inputs:
+      skip_update:
+        description: 'Skip OTA update'
+        required: false
+        type: boolean
+        default: true # Change to false after first store submission
+      branch:
+        description: 'Branch to update'
+        required: true
+        type: choice
+        options:
+          - develop
+          - stage
+          - main
+
+concurrency:
+  group: eas-update-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: EAS Update
+    runs-on: ubuntu-latest
+    # Only run if: manual trigger with skip_update=false
+    # Change condition to include push events after first store submission:
+    # if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_update == 'false')
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.skip_update == 'false'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine channel
+        id: channel
+        run: |
+          BRANCH="${{ github.event.inputs.branch || github.ref_name }}"
+          case "$BRANCH" in
+            main)
+              echo "channel=production" >> $GITHUB_OUTPUT
+              echo "message=Production OTA Update" >> $GITHUB_OUTPUT
+              ;;
+            stage)
+              echo "channel=staging" >> $GITHUB_OUTPUT
+              echo "message=Staging OTA Update" >> $GITHUB_OUTPUT
+              ;;
+            develop)
+              echo "channel=development" >> $GITHUB_OUTPUT
+              echo "message=Development OTA Update" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "channel=development" >> $GITHUB_OUTPUT
+              echo "message=Development OTA Update" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      - name: Publish EAS Update
+        run: |
+          eas update \
+            --branch ${{ steps.channel.outputs.channel }} \
+            --message "${{ steps.channel.outputs.message }} - ${{ github.sha }}" \
+            --non-interactive
+
+      - name: Summary
+        run: |
+          echo "## EAS Update Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Channel:** ${{ steps.channel.outputs.channel }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View updates at [expo.dev](https://expo.dev)" >> $GITHUB_STEP_SUMMARY

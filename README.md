@@ -1,21 +1,24 @@
-# Node ts
+# Expo Firebase
 
-> A production-ready Node.js TypeScript template repository with comprehensive development tooling, CI/CD pipelines, and strict organizational standards.
+> A production-ready React Native Expo with Firebase template repository with comprehensive development tooling, CI/CD pipelines, and strict organizational standards.
 
 <!-- CI/CD Status -->
 
-[![CI - Validate](https://github.com/Barthmossr/node-ts/actions/workflows/validate.yml/badge.svg)](https://github.com/Barthmossr/node-ts/actions/workflows/validate.yml)
-[![CI - Test](https://github.com/Barthmossr/node-ts/actions/workflows/test.yml/badge.svg)](https://github.com/Barthmossr/node-ts/actions/workflows/test.yml)
+[![CI - Validate](https://github.com/Barthmossr/expo-firebase/actions/workflows/validate.yml/badge.svg)](https://github.com/Barthmossr/expo-firebase/actions/workflows/validate.yml)
+[![CI - Test](https://github.com/Barthmossr/expo-firebase/actions/workflows/test.yml/badge.svg)](https://github.com/Barthmossr/expo-firebase/actions/workflows/test.yml)
+[![CI - Security](https://github.com/Barthmossr/expo-firebase/actions/workflows/security.yml/badge.svg)](https://github.com/Barthmossr/expo-firebase/actions/workflows/security.yml)
 
 <!-- Code Quality -->
 
-[![Code Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://codecov.io/gh/Barthmossr/node-ts)
+[![Code Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://codecov.io/gh/Barthmossr/expo-firebase)
 
 <!-- Technology -->
 
-[![Node.js Version](https://img.shields.io/badge/node-v24.11.1-brightgreen.svg)](https://nodejs.org/)
+[![Node.js Version](https://img.shields.io/badge/node-v24.12.0-brightgreen.svg)](https://nodejs.org/)
+[![React Native](https://img.shields.io/badge/React%20Native-Expo-blue.svg)](https://expo.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-integrated-orange.svg)](https://firebase.google.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-v5.9.3-blue.svg)](https://www.typescriptlang.org/)
-[![ESLint](https://img.shields.io/badge/ESLint-v9.39.1-4B32C3.svg)](https://eslint.org/)
+[![ESLint](https://img.shields.io/badge/ESLint-v9.39.2-4B32C3.svg)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/Prettier-v3.7.4-F7B93E.svg)](https://prettier.io/)
 [![Jest](https://img.shields.io/badge/Jest-v30.2.0-C21325.svg)](https://jestjs.io/)
 
@@ -37,40 +40,38 @@
 
 ## 📋 Overview
 
-**Node ts** is a general-purpose Node.js TypeScript template designed to serve as a solid foundation for future projects. This template provides everything you need to start a new project with best practices already in place, including:
+**Expo Firebase** is a React Native Expo template integrated with Firebase, designed to serve as a solid foundation for mobile application projects. This template provides everything you need to start a new Expo project with Firebase and best practices already in place, including:
 
+- 📱 **React Native with Expo** - Cross-platform mobile development
+- 🔥 **Firebase integration** - Authentication, Firestore, Cloud Functions, storage, and more
+- ☁️ **Cloud Functions** - Server-side logic with OTP email verification system
+- 📧 **Email Verification** - Complete OTP system with SendGrid integration
+- 🏛️ **Hexagonal Architecture** - Ports & adapters pattern for flexibility
 - 🏗️ **Strict folder structure** - No loose files, organized subfolders for everything
 - 🛠️ **Complete development tooling** - ESLint (flat config), Prettier, Husky, commitlint
 - 🧪 **Testing infrastructure** - Jest with 100% coverage threshold
-- 🚀 **CI/CD pipelines** - GitHub Actions with validation and test workflows
+- 🚀 **CI/CD pipelines** - GitHub Actions with validation, test, and security workflows
 - 📝 **Conventional commits** - Enforced for all commits
 - 📚 **Comprehensive documentation** - Detailed guides for all aspects
 
 ## 🎯 Objectives
 
-This template is intentionally **framework-agnostic** and **database-agnostic**. The focus is on:
+This template focuses on providing a production-ready React Native Expo setup with Firebase integration. The main goals are:
 
-1. **Development Environment** - Setting up a robust, consistent development experience
-2. **Code Quality** - Enforcing best practices through linting, formatting, and testing
-3. **Automation** - CI/CD pipelines for validation and testing
-4. **Structure** - A scalable, organized folder structure
-5. **Documentation** - Clear guidance for contributors and users
-
-### Future Plans
-
-This template will serve as the base for specialized templates:
-
-- Backend API template
-- Frontend application template
-- Full-stack template
-- And more...
+1. **Mobile Development Environment** - Setting up a robust Expo development experience
+2. **Firebase Integration** - Pre-configured for authentication, Firestore, Cloud Functions, and more
+3. **Email Verification** - Production-ready OTP system with SendGrid
+4. **Code Quality** - Enforcing best practices through linting, formatting, and testing
+5. **Automation** - CI/CD pipelines for validation, testing, and security
+6. **Structure** - A scalable, organized folder structure with hexagonal architecture
+7. **Documentation** - Clear guidance for contributors and users
 
 ## 🚀 Quick Start
 
 ```bash
 # Clone the repository
-git clone https://github.com/Barthmossr/node-ts.git
-cd node-ts
+git clone https://github.com/Barthmossr/expo-firebase.git
+cd expo-firebase
 
 # Option 1: Use the setup script (recommended)
 ./scripts/setup.sh
@@ -78,9 +79,6 @@ cd node-ts
 # Option 2: Manual setup
 nvm use
 npm install
-
-# Run in development mode
-npm run dev
 
 # Run tests
 npm test
@@ -91,29 +89,37 @@ npm run build
 
 ## 🛠️ Technology Stack
 
-| Tool        | Version  | Purpose                |
-| ----------- | -------- | ---------------------- |
-| Node.js     | v24.11.1 | Runtime                |
-| TypeScript  | ^5.9.3   | Type system            |
-| ESLint      | ^9.39.1  | Linting (flat config)  |
-| Prettier    | ^3.7.3   | Formatting             |
-| Jest        | ^30.2.0  | Testing                |
-| Husky       | ^9.1.7   | Git hooks              |
-| lint-staged | ^16.2.7  | Pre-commit linting     |
-| commitlint  | ^20.2.0  | Commit message linting |
-| tsx         | ^4.21.0  | Direct TS execution    |
+| Tool            | Version | Purpose                |
+| --------------- | ------- | ---------------------- |
+| Node.js         | v22     | Runtime                |
+| React Native    | Expo 54 | Mobile framework       |
+| React           | 19.1.0  | UI library             |
+| Firebase        | Latest  | Backend services       |
+| Cloud Functions | v2      | Server-side logic      |
+| SendGrid        | -       | Email delivery         |
+| TypeScript      | ^5.9.3  | Type system            |
+| bcryptjs        | ^2.4.3  | Password/OTP hashing   |
+| react-hook-form | Latest  | Form management        |
+| zod             | Latest  | Schema validation      |
+| ESLint          | ^9.39.2 | Linting (flat config)  |
+| Prettier        | ^3.7.4  | Formatting             |
+| Jest            | ^30.2.0 | Testing                |
+| Husky           | ^9.1.7  | Git hooks              |
+| lint-staged     | ^16.2.7 | Pre-commit linting     |
+| commitlint      | ^20.2.0 | Commit message linting |
 
 ## 📁 Project Structure
 
 ```
-node-ts/
+expo-firebase/
 ├── src/
 │   └── app/              # Application code
 │       └── main.ts       # Entry point
 ├── tests/
 │   ├── setup.ts          # Global test setup
-│   └── app/
-│       └── main.test.ts  # Tests mirror src/ structure
+│   └── unit/
+│       └── app/
+│           └── main.test.ts  # Tests mirror src/ structure
 ├── docs/
 │   ├── CONTRIBUTING.md
 │   ├── README.md
@@ -169,6 +175,9 @@ For detailed documentation, please refer to the `docs/` directory:
 - [Library Decisions](docs/guides/libraries.md) - Why each tool was chosen
 - [Development Guide](docs/guides/development.md) - Setup and workflow instructions
 - [Configuration Guide](docs/guides/configuration.md) - Understanding config files
+- [Firebase Setup](docs/services/firebase/setup.md) - Firebase configuration
+- [Email Verification Setup](docs/services/sendgrid/setup.md) - OTP email system
+- [Cost Optimization](docs/guides/cost-optimization.md) - Cloud Functions cost reduction
 
 ## 🧪 Testing
 
@@ -207,6 +216,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/Barthmossr/node-ts)
-- [Issue Tracker](https://github.com/Barthmossr/node-ts/issues)
+- [GitHub Repository](https://github.com/Barthmossr/expo-firebase)
+- [Issue Tracker](https://github.com/Barthmossr/expo-firebase/issues)
 - [Documentation](docs/README.md)

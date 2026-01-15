@@ -1,0 +1,143 @@
+import { randEmail, randFullName, randPassword } from '@ngneat/falso'
+import { registerSchema } from '@/flows/auth/components/register-form'
+
+describe('registerSchema', () => {
+  const getValidData = (): {
+    displayName: string
+    email: string
+    password: string
+    confirmPassword: string
+  } => {
+    const password = `${randPassword()}1A`
+
+    return {
+      displayName: randFullName(),
+      email: randEmail(),
+      password,
+      confirmPassword: password,
+    }
+  }
+
+  it('should validate correct registration data', () => {
+    const result = registerSchema.safeParse(getValidData())
+
+    expect(result.success).toBe(true)
+  })
+
+  describe('displayName validation', () => {
+    it('should fail when name is empty', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        displayName: '',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe('Name is required')
+      }
+    })
+
+    it('should fail when name is too short', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        displayName: 'A',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Name must be at least 2 characters',
+        )
+      }
+    })
+
+    it('should fail when name is too long', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        displayName: 'A'.repeat(51),
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Name must be less than 50 characters',
+        )
+      }
+    })
+  })
+
+  describe('password validation', () => {
+    it('should fail when password is too short', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        password: 'Pass1',
+        confirmPassword: 'Pass1',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Password must be at least 8 characters',
+        )
+      }
+    })
+
+    it('should fail when password has no uppercase', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        password: 'password1',
+        confirmPassword: 'password1',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Password must contain at least one uppercase letter',
+        )
+      }
+    })
+
+    it('should fail when password has no number', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        password: 'Password',
+        confirmPassword: 'Password',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Password must contain at least one number',
+        )
+      }
+    })
+  })
+
+  describe('confirmPassword validation', () => {
+    it('should fail when confirmPassword is empty', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        confirmPassword: '',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          'Confirm password is required',
+        )
+      }
+    })
+
+    it('should fail when passwords do not match', () => {
+      const result = registerSchema.safeParse({
+        ...getValidData(),
+        confirmPassword: 'Different1A',
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe('Passwords must match')
+      }
+    })
+  })
+})
