@@ -9,6 +9,7 @@ const TEST_ADMOB = {
 
 const nodeEnv = (process.env.NODE_ENV ?? '').toLowerCase()
 const easBuildProfile = process.env.EAS_BUILD_PROFILE ?? ''
+const isCI = process.env.CI === 'true'
 const isDevMode = nodeEnv === 'development' || nodeEnv === 'test'
 const isPreviewBuild =
   easBuildProfile === 'preview' || easBuildProfile === 'development'
@@ -19,7 +20,7 @@ const hasProdAdMobIds =
   Boolean(process.env.ADMOB_BANNER_UNIT_ANDROID) &&
   Boolean(process.env.ADMOB_BANNER_UNIT_IOS)
 
-const allowTestAds = isDevMode || isPreviewBuild
+const allowTestAds = isDevMode || isPreviewBuild || isCI
 
 if (!allowTestAds && !hasProdAdMobIds) {
   throw new Error('AdMob production IDs are required for production builds')
