@@ -26,9 +26,8 @@ Thumbs.db
 .env.local
 .env.*.local
 
-# Firebase config files (sensitive - use EAS secrets)
-google-services.json
-GoogleService-Info.plist
+# iOS Firebase config (requires Apple Developer account to restrict)
+# GoogleService-Info.plist
 
 # Logs
 logs

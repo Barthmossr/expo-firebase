@@ -73,8 +73,7 @@ const config: ExpoConfig = {
       backgroundColor: '#0D0D0D',
     },
     edgeToEdgeEnabled: true,
-    googleServicesFile:
-      process.env.GOOGLE_SERVICES_JSON ?? './google-services.json',
+    googleServicesFile: './google-services.json',
   },
   web: {
     favicon: './assets/favicon.png',
