@@ -1,18 +1,32 @@
 import type { Config } from 'jest'
 
 const config: Config = {
-  preset: 'ts-jest',
+  preset: 'jest-expo',
+  transformIgnorePatterns: [
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)',
+  ],
   testEnvironment: 'node',
   roots: ['<rootDir>/tests'],
-  testMatch: ['**/*.test.ts', '**/*.spec.ts'],
+  testMatch: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@mocks/(.*)$': '<rootDir>/tests/__mocks__/$1',
+    '^@react-native-firebase/auth$':
+      '<rootDir>/tests/__mocks__/@react-native-firebase/auth.ts',
+    '^@react-native-firebase/analytics$':
+      '<rootDir>/tests/__mocks__/@react-native-firebase/analytics.ts',
+    '^@react-native-firebase/functions$':
+      '<rootDir>/tests/__mocks__/@react-native-firebase/functions.ts',
+    '^@react-native-google-signin/google-signin$':
+      '<rootDir>/tests/__mocks__/@react-native-google-signin/google-signin.ts',
   },
+  setupFiles: ['jest-expo/src/preset/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   collectCoverageFrom: [
-    'src/**/*.ts',
+    'src/**/*.{ts,tsx}',
     '!src/**/*.types.ts',
     '!src/**/index.ts',
+    '!src/core/ports/**/*.ts',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
@@ -26,10 +40,6 @@ const config: Config = {
   },
   verbose: true,
   clearMocks: true,
-  resetMocks: true,
-  restoreMocks: true,
 }
-
-export { config }
 
 export default config

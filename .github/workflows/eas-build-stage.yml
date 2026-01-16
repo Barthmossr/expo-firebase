@@ -1,0 +1,151 @@
+name: EAS Build (Stage)
+
+on:
+  push:
+    branches: [stage]
+  workflow_dispatch:
+    inputs:
+      skip_submit:
+        description: 'Skip store submission (build only)'
+        required: false
+        type: boolean
+        default: true # Change to false after first manual store submission
+
+concurrency:
+  group: eas-build-stage
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Preview (${{ matrix.platform }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: Add 'ios' back after configuring Apple Developer credentials
+        platform: [android]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build ${{ matrix.platform }}
+        run: |
+          eas build \
+            --profile preview \
+            --platform ${{ matrix.platform }} \
+            --non-interactive \
+            --no-wait
+
+      - name: Summary
+        run: |
+          echo "## EAS Build Started (${{ matrix.platform }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Profile:** preview" >> $GITHUB_STEP_SUMMARY
+          echo "- **Platform:** ${{ matrix.platform }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** stage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check build status at [expo.dev](https://expo.dev)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Distribution" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ matrix.platform }}" = "ios" ]; then
+            echo "- iOS: Available via TestFlight after build completes" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Android: Available via Internal Testing track" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  submit-ios:
+    name: Submit to TestFlight
+    needs: build
+    runs-on: ubuntu-latest
+    # TODO: Enable after configuring Apple Developer credentials
+    if: false && success() && github.event.inputs.skip_submit != 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Submit to TestFlight
+        run: |
+          eas submit \
+            --profile preview \
+            --platform ios \
+            --latest \
+            --non-interactive
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+
+  submit-android:
+    name: Submit to Internal Testing
+    needs: build
+    runs-on: ubuntu-latest
+    # Only run on workflow_dispatch with skip_submit=false
+    # TODO: Enable after configuring Google Play credentials: github.event_name == 'push' || ...
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.skip_submit == 'false'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Google Service Account file
+        run: echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}' > google-service-account.json
+
+      - name: Submit to Internal Testing
+        run: |
+          eas submit \
+            --profile preview \
+            --platform android \
+            --latest \
+            --non-interactive
+
+      - name: Cleanup
+        if: always()
+        run: rm -f google-service-account.json

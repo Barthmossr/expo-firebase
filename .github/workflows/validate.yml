@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate:
-    name: Lint, Format & Build
+    name: Lint, Format & TypeCheck
     runs-on: ubuntu-latest
 
     steps:
@@ -28,10 +28,7 @@ jobs:
         run: npm run lint
 
       - name: Check Prettier formatting
-        run: npm run format:check && npm run format
+        run: npm run format:check
 
       - name: TypeScript type check
         run: npm run typecheck
-
-      - name: Build project
-        run: npm run build
